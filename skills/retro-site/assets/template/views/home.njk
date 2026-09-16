@@ -1,0 +1,37 @@
+{% extends "layout.njk" %}
+{% block body %}
+<table cellpadding="0" cellspacing="0" class="full"><tr>
+  <td class="side">
+    <div class="box"><h3>栏目导航</h3>
+      <a href="/" class="row{% if not channel %} on{% endif %}">全部内容 ({{ entryCount }})</a>
+      {% for c in channels %}<a href="/?channel={{ c.channel | urlencode }}" class="row{% if channel == c.channel %} on{% endif %}">{{ c.channel }} ({{ c.n }})</a>{% endfor %}
+    </div>
+    <div class="box"><h3>人气排行</h3>
+      {% for h in hot %}<a href="/entry/{{ h.id }}" class="row">{{ loop.index }}. {{ h.title | cut(12) }}</a>{% endfor %}
+      {% if not hot.length %}<div class="pad gray">还没有内容</div>{% endif %}
+    </div>
+    <div class="box"><h3>站长公告</h3><div class="pad lh18">{{ site.notice | nl2br }}</div></div>
+  </td>
+  <td class="main">
+    <div class="bar"><span>共 <b class="hi">{{ total }}</b> 条内容{% if q %} &nbsp; 关键词：“{{ q }}”{% endif %}</span><span><a href="/publish">+ 我要发布</a></span></div>
+    <table class="grid" cellpadding="6" cellspacing="0">
+      <tr class="h"><td>标题</td><td class="c-author">作者</td><td class="c-num">人气</td><td class="c-date">时间</td></tr>
+      {% for e in entries %}
+      <tr class="p">
+        <td class="brk">[{{ e.channel }}] <a href="/entry/{{ e.id }}" class="ttl">{{ e.title | highlight(q) }}</a>{% if e.created_at > (today and 0) %}{% endif %}</td>
+        <td class="brk"><a href="/u/{{ e.author_id }}" class="plain">{{ e.author_name }}</a></td>
+        <td>{{ e.views }}</td>
+        <td class="gray">{{ e.created_at | md }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% if not entries.length %}<div class="empty">还没有内容{% if q %}匹配“{{ q }}”{% endif %}，<a href="/publish">来发第一条</a>吧！</div>{% endif %}
+    {% if pager.pages > 1 %}<div class="pager">
+      {% if pager.prev %}<a href="{{ pager.prev }}">上一页</a>{% else %}<span class="gray">上一页</span>{% endif %}
+      {% for n in pager.nums %} {% if n.current %}<b class="hi">[{{ n.n }}]</b>{% else %}<a href="{{ n.url }}">{{ n.n }}</a>{% endif %}{% endfor %}
+      {% if pager.next %}<a href="{{ pager.next }}">下一页</a>{% else %}<span class="gray">下一页</span>{% endif %}
+      <span class="gray">共 {{ pager.pages }} 页</span>
+    </div>{% endif %}
+  </td>
+</tr></table>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "layout.njk" %}
+{% block body %}
+<div class="box"><h3>我要发布</h3>
+{% if errors.length %}<div class="err m8">{% for e in errors %}{{ e }}{% if not loop.last %}<br>{% endif %}{% endfor %}</div>{% endif %}
+<form method="post" action="/publish" enctype="multipart/form-data" id="publishform"><input type="hidden" name="_csrf" value="{{ csrf }}">
+<table class="form" cellpadding="5" cellspacing="0">
+  <tr><td class="k">栏目：</td><td><select name="channel" class="txt"><option value="">请选择</option>{% for c in CHANNELS %}<option value="{{ c }}"{% if form.channel == c %} selected{% endif %}>{{ c }}</option>{% endfor %}</select></td></tr>
+  <tr><td class="k">标题：</td><td><input name="title" value="{{ form.title }}" maxlength="60" class="txt w400"></td></tr>
+  <tr><td class="k">正文：</td><td><textarea name="body" maxlength="5000" class="txt bodyarea">{{ form.body }}</textarea></td></tr>
+  <tr><td class="k">配图：</td><td><input type="file" name="image" accept="image/jpeg,image/png,image/gif,image/webp" class="txt"> <span class="gray">选填，单张不超过 2MB</span></td></tr>
+  <tr><td></td><td><button type="submit" class="btn btn-big">发 表</button></td></tr>
+</table>
+</form>
+</div>
+{% endblock %}

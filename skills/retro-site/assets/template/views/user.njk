@@ -1,0 +1,12 @@
+{% extends "layout.njk" %}
+{% block body %}
+<div class="box"><h3>{{ u.username }} 的主页</h3>
+  <div class="pad lh18">所在地：{{ u.city or '未填写' }} &nbsp; 注册于 {{ u.created_at | date }}{% if u.intro %}<div class="mt4 brk">{{ u.intro | nl2br }}</div>{% endif %}</div>
+</div>
+<h4 class="sectionh">TA 发布的内容</h4>
+<table class="grid" cellpadding="6" cellspacing="0">
+  <tr class="h"><td>标题</td><td class="c-num">人气</td><td class="c-date">时间</td></tr>
+  {% for e in entries %}<tr class="p"><td class="brk">[{{ e.channel }}] <a href="/entry/{{ e.id }}">{{ e.title }}</a></td><td>{{ e.views }}</td><td class="gray">{{ e.created_at | md }}</td></tr>{% endfor %}
+  {% if not entries.length %}<tr><td colspan="3" class="empty">还没有发布过内容</td></tr>{% endif %}
+</table>
+{% endblock %}

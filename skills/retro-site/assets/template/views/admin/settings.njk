@@ -1,0 +1,14 @@
+{% extends "admin/layout.njk" %}
+{% block body %}
+{% if saved %}<div class="ok">设置已保存。</div>{% endif %}
+<form method="post" action="/admin/settings"><input type="hidden" name="_csrf" value="{{ csrf }}">
+<table class="t w760">
+  {% for f in fields %}<tr><th class="w220">{{ f.label }}</th><td>
+    {% if f.type == 'bool' %}<label><input type="checkbox" name="{{ f.key }}" value="1"{% if s[f.key] == '1' %} checked{% endif %}> 开启</label>
+    {% elif f.type == 'textarea' %}<textarea name="{{ f.key }}" class="txt ta" maxlength="{{ f.max }}">{{ s[f.key] }}</textarea>
+    {% else %}<input name="{{ f.key }}" value="{{ s[f.key] }}" class="txt w480"{% if f.max %} maxlength="{{ f.max }}"{% endif %}>{% endif %}
+  </td></tr>{% endfor %}
+  <tr><th></th><td><button type="submit" class="btn">保 存</button></td></tr>
+</table>
+</form>
+{% endblock %}

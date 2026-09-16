@@ -58,6 +58,29 @@ npm run dev:taobao            # 淘宝网 2003 → http://localhost:3004
 两个站点都启动后把地址发给我，并告诉我演示账号。
 ```
 
+## 自己做一个：retro-site 技能包
+
+这个仓库不只是两个成品，还把「怎么做出来的」整理成了一个可复用的技能包 [skills/retro-site](skills/retro-site)：完整工作流程、1999-2005 年的形态参考、视觉与点阵字体规则、演示数据配方、安全与测试清单、部署方案，外加一个脚手架。
+
+**一条命令生成一个能跑的复古站骨架：**
+
+```bash
+node skills/retro-site/scripts/new-site.mjs \
+  --slug douban2003 --name "豆瓣 2003" --port 3005 \
+  --tagline "我读我看我想" --theme "#2e7d32" --width 778
+cd sites/douban2003 && npm install && npm test && npm start
+```
+
+生成的骨架自带：会员注册登录、内容发布（带图上传）、留言、顶一下、个人空间、站长后台、演示数据、8 项集成测试 + 2 项浏览器测试、Dockerfile、点阵字体。跑起来就是一个 2003 年的站，然后把示例的「内容/留言」换成你要复刻的产品对象即可。
+
+**交给 AI 做：**
+
+```bash
+npm run install-skill     # 装到 ~/.claude/skills/retro-site
+```
+
+之后在 Claude Code 里说「帮我做一个 2003 版的豆瓣」，它会按这套流程走：问清产品和年代 → 写需求拆解 → 生成骨架 → 实现核心闭环 → 造演示数据 → 跑测试 → 部署。用别的 agent（Codex、Cursor）就把 `skills/retro-site/SKILL.md` 指给它。
+
 ## 站点清单
 
 | 状态 | 站点 | 复刻的年代形态 | 主要功能 |
@@ -96,6 +119,7 @@ retro2003/
 ├── sites/
 │   ├── xhs2003/         小红书 2003（端口 3003）
 │   └── taobao2003/      淘宝网 2003（端口 3004）
+├── skills/retro-site/   「怎么复刻一个 2003 版网站」技能包 + 脚手架
 ├── docs/                项目文档与截图
 ├── docker-compose.yml   两个站一起跑
 └── AGENTS.md            给 AI agent 的部署说明

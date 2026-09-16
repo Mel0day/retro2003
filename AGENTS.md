@@ -67,7 +67,16 @@ node sites/taobao2003/scripts/crawl.mjs http://127.0.0.1:3004 demo demo1234   # 
 2. 不开公网端口的做法：Cloudflare Worker + Workers VPC + Cloudflare Tunnel，步骤写在 `sites/*/deploy/cloudflare/README.md`（文档里的服务器地址、密钥名、账号 ID 都是占位符，换成自己的）。
 3. 上线前务必设置强 `ADMIN_PASSWORD` 和 `SESSION_SECRET`，并把 `SEED_DEMO` 改回 `false`。
 
-## 五、改代码时的约定
+## 五、再做一个复古站
+
+仓库自带技能包 `skills/retro-site`（流程 + 年代形态参考 + 脚手架）。要新增一个复刻站点时，先读 `skills/retro-site/SKILL.md`，再用脚手架生成骨架：
+
+```bash
+node skills/retro-site/scripts/new-site.mjs --slug <英文短名> --name "<站名>" --port <端口> --theme "#rrggbb"
+cd sites/<英文短名> && npm install && npm test
+```
+
+## 六、改代码时的约定
 
 - 两个站点互相独立，不要在它们之间抽公共包；各自的 `README.md` 和 `docs/需求拆解.md` 是权威文档，改了功能要同步更新。
 - 保持 2003 年的形态：表格排版、内联风格、跑马灯、点阵字体；**凡是写 `font-size` 的地方都要同时写对应的点阵字体族变量**（`var(--f-song-12)` 这类），否则点阵字会被缩放糊掉。

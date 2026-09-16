@@ -1,0 +1,14 @@
+{% extends "layout.njk" %}
+{% block body %}
+<form method="post" action="/login">
+<input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="next" value="{{ next }}">
+<table class="loginbox" cellpadding="5" cellspacing="0">
+  <tr><td colspan="2" class="h">会员登录</td></tr>
+  {% if err %}<tr><td colspan="2"><div class="err">{{ err }}</div></td></tr>{% endif %}
+  <tr><td class="k">用户名：</td><td><input name="username" value="{{ username }}" maxlength="16" class="txt w170" autofocus autocomplete="username"></td></tr>
+  <tr><td class="k">密　码：</td><td><input type="password" name="password" maxlength="64" class="txt w170" autocomplete="current-password"></td></tr>
+  <tr><td></td><td><button type="submit" class="btn btn-login">登 录</button> <label class="gray"><input type="checkbox" name="remember" value="1"> 两周内免登录</label></td></tr>
+  <tr><td colspan="2" class="gray">还没有账号？<a href="/register{% if next %}?next={{ next | urlencode }}{% endif %}">免费注册</a></td></tr>
+</table>
+</form>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "admin/layout.njk" %}
+{% block body %}
+<form method="get" action="/admin/entries" class="bar">标题 <input name="q" value="{{ q }}" class="txt"> <button type="submit" class="btn">查找</button> &nbsp; 共 {{ total }} 条</form>
+<table class="t"><tr><th>ID</th><th>标题</th><th>作者</th><th>栏目</th><th>人气</th><th>状态</th><th>操作</th></tr>
+  {% for e in entries %}<tr><td>{{ e.id }}</td><td class="brk"><a href="/entry/{{ e.id }}" target="_blank">{{ e.title }}</a></td><td>{{ e.author_name }}</td><td>{{ e.channel }}</td><td>{{ e.views }}</td><td>{{ e.status }}</td>
+    <td><form method="post" action="/admin/entries/{{ e.id }}/hide"><input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="hide" value="{{ 0 if e.status != 'public' else 1 }}"><button type="submit" class="linkbtn">{{ '恢复' if e.status != 'public' else '隐藏' }}</button></form></td></tr>{% endfor %}
+</table>
+{% if pager.pages > 1 %}<div class="pager">{% for n in pager.nums %}{% if n.current %}<b>[{{ n.n }}]</b>{% else %}<a href="{{ n.url }}">{{ n.n }}</a>{% endif %}{% endfor %}</div>{% endif %}
+<h3>最近留言</h3>
+<table class="t"><tr><th>时间</th><th>会员</th><th>内容</th><th>所属</th><th>操作</th></tr>
+  {% for c in comments %}<tr><td>{{ c.created_at | dt }}</td><td>{{ c.username }}</td><td class="brk">{{ c.body }}{% if c.hidden %} <span class="red">（已隐藏）</span>{% endif %}</td><td class="brk"><a href="/entry/{{ c.entry_id }}" target="_blank">{{ c.title | cut(14) }}</a></td>
+    <td><form method="post" action="/admin/comments/{{ c.id }}/hide"><input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="hide" value="{{ 0 if c.hidden else 1 }}"><button type="submit" class="linkbtn">{{ '恢复' if c.hidden else '隐藏' }}</button></form></td></tr>{% endfor %}
+</table>
+{% endblock %}

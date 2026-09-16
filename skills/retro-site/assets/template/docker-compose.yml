@@ -1,0 +1,20 @@
+services:
+  __SLUG__:
+    build: .
+    image: __SLUG__:latest
+    container_name: __SLUG__
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      DATA_DIR: /data
+    ports:
+      - "${PORT:-__PORT__}:__PORT__"
+    volumes:
+      - __SLUG__-data:/data
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+volumes:
+  __SLUG__-data:

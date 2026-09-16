@@ -1,0 +1,24 @@
+{% extends "layout.njk" %}
+{% block body %}
+<div class="box"><h3>{{ entry.title }}</h3>
+  <div class="meta">作者：<a href="/u/{{ entry.author_id }}">{{ entry.author_name }}</a> &nbsp; 栏目：{{ entry.channel }} &nbsp; 发表于 {{ entry.created_at | dt }} &nbsp; 人气 {{ entry.views }} &nbsp; 顶 {{ entry.likes }}
+    {% if mine or isAdmin %} &nbsp; <form method="post" action="/entry/{{ entry.id }}/delete" class="inline" data-confirm="确定删除这条内容吗？"><input type="hidden" name="_csrf" value="{{ csrf }}"><button type="submit" class="linkbtn red">删除</button></form>{% endif %}
+  </div>
+  <div class="article brk">{% if entry.image %}<img src="{{ entry.image }}" alt="" class="entryimg">{% endif %}{{ entry.body | nl2br }}</div>
+  <div class="center pad">
+    <form method="post" action="/entry/{{ entry.id }}/like" class="inline"><input type="hidden" name="_csrf" value="{{ csrf }}"><button type="submit" class="btn">顶一下（{{ entry.likes }}）</button></form>
+  </div>
+</div>
+
+<h4 class="sectionh" id="comments">网友留言（{{ comments.length }}）</h4>
+<div class="qbox">
+  {% for c in comments %}<div class="qa brk"><span class="gray">{{ loop.index }} 楼 &nbsp; <a href="/u/{{ c.user_id }}" class="plain">{{ c.username }}</a> &nbsp; {{ c.created_at | dt }}</span><div>{{ c.body | nl2br }}</div></div>{% endfor %}
+  {% if not comments.length %}<div class="qa gray">还没有人留言，来抢沙发！</div>{% endif %}
+  {% if user %}
+  <form method="post" action="/entry/{{ entry.id }}/comment" class="qform"><input type="hidden" name="_csrf" value="{{ csrf }}">
+    <input name="body" maxlength="300" class="txt w400" placeholder="说点什么……" required> <button type="submit" class="btn">发表留言</button>
+  </form>
+  {% else %}<div class="qa">请先 <a href="/login?next={{ here | urlencode }}">登录</a> 后留言。</div>{% endif %}
+</div>
+<div class="mt8"><a href="/?channel={{ entry.channel | urlencode }}">&lt;&lt; 返回{{ entry.channel }}</a></div>
+{% endblock %}

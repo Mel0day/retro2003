@@ -1,0 +1,14 @@
+{% extends "admin/layout.njk" %}
+{% block body %}
+<div class="stat">
+  <div>注册会员<b>{{ stat.users }}</b><span>24 小时新增 {{ stat.newUsers }}</span></div>
+  <div>公开内容<b>{{ stat.entries }}</b><span>24 小时新增 {{ stat.todayEntries }}</span></div>
+  <div>留言<b>{{ stat.comments }}</b><span></span></div>
+  <div>访问量<b>{{ stat.visitors }}</b><span></span></div>
+</div>
+<h3>最近发布</h3>
+<table class="t"><tr><th>ID</th><th>标题</th><th>作者</th><th>栏目</th><th>状态</th><th>时间</th></tr>
+  {% for e in recent %}<tr><td>{{ e.id }}</td><td class="brk"><a href="/entry/{{ e.id }}" target="_blank">{{ e.title }}</a></td><td>{{ e.author_name }}</td><td>{{ e.channel }}</td><td>{{ e.status }}</td><td>{{ e.created_at | dt }}</td></tr>{% endfor %}
+  {% if not recent.length %}<tr><td colspan="6" class="gray">还没有内容</td></tr>{% endif %}
+</table>
+{% endblock %}

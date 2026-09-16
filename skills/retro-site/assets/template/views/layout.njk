@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>{% if title %}{{ title }} - {% endif %}__NAME__</title>
+<link rel="stylesheet" href="/static/css/fonts.css?v={{ assetVersion }}">
+<link rel="stylesheet" href="/static/css/site.css?v={{ assetVersion }}">
+{% block head %}{% endblock %}
+</head>
+<body data-csrf="{{ csrf }}">
+<div class="wrap">
+<table class="frame" cellpadding="0" cellspacing="0">
+  <tr><td class="topbar">
+    <span>{% if user %}您好，<a href="/my" class="uname">{{ user.username }}</a>！ <form method="post" action="/logout" class="inline"><input type="hidden" name="_csrf" value="{{ csrf }}"><button type="submit" class="linkbtn">[退出]</button></form>{% if isAdmin %} <a href="/admin">[管理后台]</a>{% endif %}{% else %}您好，欢迎光临！ <a href="/login?next={{ here | urlencode }}">[登录]</a> <a href="/register">[免费注册]</a>{% endif %}</span>
+    <span>{{ today }} &nbsp; <a href="/publish">我要发布</a> | <a href="/page/help">帮助</a></span>
+  </td></tr>
+  <tr><td class="header">
+    <table cellpadding="0" cellspacing="0" class="full"><tr>
+      <td class="logocell"><a href="/" class="logolink"><span class="logo">__NAME__</span></a><div class="slogan">__TAGLINE__</div></td>
+      <td class="searchcell">
+        <form method="get" action="/" class="search">
+          <input name="q" value="{{ q }}" placeholder="站内搜索" maxlength="40" aria-label="搜索">
+          <button type="submit">搜 索</button>
+        </form>
+        <div class="hot">共有 <b>{{ entryCount }}</b> 条内容 · <b>{{ memberCount }}</b> 位会员</div>
+      </td>
+    </tr></table>
+  </td></tr>
+  <tr><td class="nav">
+    <a href="/"{% if nav == 'home' %} class="on"{% endif %}>首页</a>
+    {% for c in CHANNELS %}<a href="/?channel={{ c | urlencode }}"{% if nav == c %} class="on"{% endif %}>{{ c }}</a>{% endfor %}
+    <a href="/publish">我要发布</a>
+    <a href="/my">我的空间</a>
+  </td></tr>
+  <tr><td class="marquee"><div>{{ site.announcement }}</div></td></tr>
+  <tr><td class="crumb">所在位置：<a href="/">首页</a>{% for c in crumbs %} &gt; {% if c.url %}<a href="{{ c.url }}">{{ c.text }}</a>{% else %}{{ c.text }}{% endif %}{% endfor %}</td></tr>
+  <tr><td class="content">
+{% block body %}{% endblock %}
+  </td></tr>
+  <tr><td class="footer">
+    <a href="/page/about">关于本站</a> | <a href="/page/contact">联系我们</a> | <a href="/page/help">帮助中心</a><br>
+    Copyright © 2003 __NAME__ 版权所有 {% if site.icp %} &nbsp; {{ site.icp }}{% endif %} &nbsp; 建议使用 IE 5.0 以上浏览器 800×600 分辨率浏览<br>
+    站长信箱：{{ site.webmaster_email }} &nbsp; <span class="counter">访问量 {{ visitorsShown }}</span>
+  </td></tr>
+</table>
+</div>
+<script src="/static/js/site.js?v={{ assetVersion }}"></script>
+</body>
+</html>

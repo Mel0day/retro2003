@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>{{ title }} - __NAME__ 管理后台</title>
+<link rel="stylesheet" href="/static/css/fonts.css?v={{ assetVersion }}">
+<link rel="stylesheet" href="/static/css/admin.css?v={{ assetVersion }}">
+</head>
+<body data-csrf="{{ csrf }}">
+<div class="top"><span>__NAME__ · 管理后台（{{ user.username }}）</span><span>
+  <a href="/admin"{% if path == '/admin' or path == '/admin/' %} class="on"{% endif %}>首页</a>
+  <a href="/admin/users"{% if path.startsWith('/admin/users') %} class="on"{% endif %}>会员</a>
+  <a href="/admin/entries"{% if path.startsWith('/admin/entries') %} class="on"{% endif %}>内容</a>
+  <a href="/admin/settings"{% if path.startsWith('/admin/settings') %} class="on"{% endif %}>设置</a>
+  <a href="/">回到前台</a></span></div>
+<div class="main"><h2>{{ title }}</h2>
+{% block body %}{% endblock %}
+</div>
+<script src="/static/js/site.js?v={{ assetVersion }}"></script>
+</body>
+</html>

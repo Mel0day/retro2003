@@ -1,0 +1,39 @@
+{% extends "layout.njk" %}
+{% block body %}
+{% if saved %}<div class="okbox">资料已保存。</div>{% endif %}
+<table cellpadding="0" cellspacing="0" class="full"><tr>
+<td class="half pr8">
+  <div class="box"><h3>我的资料</h3>
+    <form method="post" action="/my/profile"><input type="hidden" name="_csrf" value="{{ csrf }}">
+    <table class="form" cellpadding="5" cellspacing="0">
+      <tr><td class="k">用户名：</td><td><b>{{ me.username }}</b> <span class="gray">注册于 {{ me.created_at | date }}</span></td></tr>
+      <tr><td class="k">所在地：</td><td><input name="city" value="{{ me.city }}" maxlength="20" class="txt w160"></td></tr>
+      <tr><td class="k">个人简介：</td><td><textarea name="intro" maxlength="300" class="txt introarea">{{ me.intro }}</textarea></td></tr>
+      <tr><td></td><td><button type="submit" class="btn">保存</button> <a href="/u/{{ me.id }}">查看我的主页</a></td></tr>
+    </table>
+    </form>
+  </div>
+  <div class="box mt10"><h3>修改密码</h3>
+    {% if pwErr %}<div class="err m8">{{ pwErr }}</div>{% endif %}
+    {% if pwOk %}<div class="okbox m8">{{ pwOk }}</div>{% endif %}
+    <form method="post" action="/my/password"><input type="hidden" name="_csrf" value="{{ csrf }}">
+    <table class="form" cellpadding="5" cellspacing="0">
+      <tr><td class="k">原密码：</td><td><input type="password" name="old" class="txt w160"></td></tr>
+      <tr><td class="k">新密码：</td><td><input type="password" name="password" class="txt w160"></td></tr>
+      <tr><td class="k">确认：</td><td><input type="password" name="password2" class="txt w160"> <button type="submit" class="btn">修改</button></td></tr>
+    </table>
+    </form>
+  </div>
+</td>
+<td class="half">
+  <div class="box"><h3>我发布的（{{ mine.length }}）</h3>
+    {% for e in mine %}<div class="line"><a href="/entry/{{ e.id }}" class="brk">{{ e.title | cut(20) }}</a><span class="gray nowrap">{{ e.created_at | md }}{% if e.status != 'public' %} · 已隐藏{% endif %}</span></div>{% endfor %}
+    {% if not mine.length %}<div class="pad gray">还没有发布过内容，<a href="/publish">来发一条</a>。</div>{% endif %}
+  </div>
+  <div class="box mt10"><h3>我的留言</h3>
+    {% for c in comments %}<div class="line"><span class="brk">{{ c.body | cut(18) }}</span><a href="/entry/{{ c.entry_id }}" class="gray nowrap">{{ c.title | cut(10) }}</a></div>{% endfor %}
+    {% if not comments.length %}<div class="pad gray">还没有留言。</div>{% endif %}
+  </div>
+</td>
+</tr></table>
+{% endblock %}

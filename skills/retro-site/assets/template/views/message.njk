@@ -1,0 +1,11 @@
+{% extends "layout.njk" %}
+{% block head %}{% if redirect %}<meta http-equiv="refresh" content="3;url={{ redirect }}">{% endif %}{% endblock %}
+{% block body %}
+<div class="msgbox {{ 'ok' if ok else 'bad' }}">
+  <div class="h">{{ title }}</div>
+  <div class="bd"><div class="ic">{{ '√' if ok else '×' }}</div><div class="brk">{{ text }}</div>
+  {% if redirect %}<div class="gray mt6">页面将在 3 秒后自动跳转，<a href="{{ redirect }}">如果浏览器没有自动跳转，请点击这里</a></div>{% endif %}
+  {% if back and not redirect %}<div class="mt8">{% if backUrl %}<a href="{{ backUrl }}">[ 返回上一页 ]</a> {% endif %}<a href="/">[ 返回首页 ]</a></div>{% endif %}
+  </div>
+</div>
+{% endblock %}

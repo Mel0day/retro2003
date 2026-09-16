@@ -1,0 +1,12 @@
+node_modules
+data
+test
+test-results
+design
+docs
+.git
+.github
+.env
+*.log
+.DS_Store
+.tunnel.env

@@ -16,7 +16,9 @@
     "test": "npm --prefix sites/xhs2003 test && npm --prefix sites/taobao2003 test",
     "test:e2e": "npm --prefix sites/xhs2003 run test:e2e && npm --prefix sites/taobao2003 run test:e2e",
     "up": "docker compose up -d --build",
-    "down": "docker compose down"
+    "down": "docker compose down",
+    "new-site": "node skills/retro-site/scripts/new-site.mjs",
+    "install-skill": "node skills/retro-site/scripts/install-skill.mjs"
   },
   "license": "MIT"
 }

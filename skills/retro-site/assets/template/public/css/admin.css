@@ -1,0 +1,32 @@
+:root{--theme:__THEME__;--theme-dark:__THEME_DARK__;--theme-light:__THEME_LIGHT__;--theme-border:__THEME_BORDER__}
+body{margin:0;background:#f4f4f4;font-family:var(--f-song-12);font-size:12px;color:#333}
+a{color:#0033cc}
+input,select,textarea,button{font-family:var(--f-song-12);font-size:12px}
+.top{background:linear-gradient(var(--theme),var(--theme-dark));color:#fff;padding:6px 14px;font-weight:bold;display:flex;justify-content:space-between}
+.top a{color:#fff;text-decoration:none;margin-left:14px}.top a.on{text-decoration:underline}
+.main{width:960px;margin:14px auto;background:#fff;border:1px solid #ccc;padding:12px}
+h2{font-size:14px;font-family:var(--f-song-14);color:var(--theme-dark);margin:0 0 10px;border-bottom:1px solid var(--theme-border);padding-bottom:4px}
+h3{font-size:12px;font-family:var(--f-song-12);color:var(--theme-dark);margin:12px 0 6px}
+.t{width:100%;border-collapse:collapse}
+.t td,.t th{border:1px solid #ddd;padding:4px 6px;text-align:left;vertical-align:top}
+.t th{background:var(--theme-light);color:var(--theme-dark);font-weight:bold}
+.t tr:nth-child(even) td{background:#fafafa}
+.txt{border:1px solid #999;padding:2px}
+.ta{width:320px;height:60px}
+.btn{border:1px solid var(--theme-border);background:linear-gradient(#fff,var(--theme-light));color:var(--theme-dark);font-weight:bold;padding:2px 10px;cursor:pointer;border-radius:3px;text-decoration:none;display:inline-block}
+.btn-red{border-color:#c00;background:#fff0f0;color:#c00}
+.linkbtn{border:0;background:none;padding:0;color:#0033cc;text-decoration:underline;cursor:pointer}
+.ok{border:1px solid #9c9;background:#f0fff0;color:#1a8a1a;padding:4px 8px;margin-bottom:8px}
+.err{border:1px solid #c00;background:#fff0f0;color:#c00;padding:4px 8px;margin-bottom:8px}
+.bar{margin-bottom:8px}
+.stat{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.stat div{border:1px solid var(--theme-border);background:#fff8e6;padding:6px 12px;min-width:130px}
+.stat b{display:block;font:bold 18px Arial,sans-serif;color:var(--theme)}
+.stat span{color:#888}
+.cols{display:flex;gap:16px}.cols>div{flex:1}
+.pager{margin-top:8px}.pager a,.pager b{margin:0 3px}
+.gray{color:#888}.red{color:#c00}.green{color:#1a8a1a}
+.g1{color:#1a8a1a}.g0{color:#f90}.g-1{color:#c00}
+.brk{word-break:break-all;overflow-wrap:anywhere}
+.w100{width:100px}.w220{width:220px}.w480{width:480px}.w760{width:760px}
+form{margin:0}

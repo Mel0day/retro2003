@@ -1,0 +1,6 @@
+{% extends "layout.njk" %}
+{% block body %}
+<div class="box"><h3>{{ pg.title }}</h3>
+  <div class="pad lh2">{% for t in pg.paras %}<p>{{ t }}</p>{% endfor %}</div>
+</div>
+{% endblock %}

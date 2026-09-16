@@ -1,0 +1,104 @@
+/* __NAME__：2003 年风格皮肤。主色由 --theme 控制，改一个变量就能换配色。
+   规则：写 font-size 的地方必须同时写对应的点阵字体族 var(--f-song-N)，否则点阵字会被缩放糊掉。 */
+:root{
+  --theme:__THEME__;          /* 主色：导航条、标题条 */
+  --theme-dark:__THEME_DARK__;/* 深色：hover、选中 */
+  --theme-light:__THEME_LIGHT__;/* 浅色：盒子标题背景 */
+  --theme-border:__THEME_BORDER__;/* 边框色 */
+}
+body{margin:0;background:#fff;font-family:var(--f-song-12);font-size:12px;color:#333}
+a{color:#0033cc;text-decoration:underline}a:hover{color:var(--theme-dark)}
+a.plain{color:#333;text-decoration:none}a.plain:hover{color:var(--theme-dark);text-decoration:underline}
+p{margin:0 0 6px}
+img{border:0}
+input,select,textarea,button{font-family:var(--f-song-12);font-size:12px}
+.txt{border:1px solid #999;padding:2px;background:#fff;color:#333}
+form.inline{display:inline}
+.linkbtn{border:0;background:none;padding:0;color:#0033cc;text-decoration:underline;cursor:pointer;white-space:nowrap}
+.linkbtn:hover{color:var(--theme-dark)}
+.full{width:100%}.half{width:50%;vertical-align:top}
+.gray{color:#888}.red{color:#c00}.green{color:#1a8a1a}.hi{color:var(--theme-dark)}
+.brk{word-break:break-all;overflow-wrap:anywhere}
+.nowrap{white-space:nowrap}.center{text-align:center}
+.lh18{line-height:1.8}.lh2{line-height:2}
+.mt4{margin-top:4px}.mt8{margin-top:8px}.mt10{margin-top:10px}.m8{margin:8px}.pr8{padding-right:8px}.pad{padding:8px}
+.w100{width:100px}.w160{width:160px}.w170{width:170px}.w400{width:400px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+@keyframes marq{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+.wrap{width:__WIDTH__px;margin:0 auto;border-left:1px solid #ddd;border-right:1px solid #ddd}
+.frame{width:100%;border-collapse:collapse;table-layout:fixed}
+.topbar{background:#f2f2f2;padding:3px 8px;color:#666;border-bottom:1px solid #ddd;display:flex;justify-content:space-between}
+.uname{color:var(--theme-dark);font-weight:bold;text-decoration:none}
+.header{padding:10px 12px}
+.logocell{width:240px}
+.logolink{text-decoration:none}
+.logo{font:bold 30px/1 'Microsoft YaHei','PingFang SC',sans-serif;color:var(--theme)}
+.slogan{color:var(--theme-dark);font-weight:bold;margin-top:2px}
+.searchcell{vertical-align:middle}
+.search{border:2px solid var(--theme);display:flex;align-items:stretch}
+.search input{flex:1;border:0;font-size:13px;font-family:var(--f-song-13);padding:4px 6px;outline:none;min-width:0}
+.search button{border:0;background:var(--theme);color:#fff;font-weight:bold;padding:0 18px;cursor:pointer;font-size:13px;font-family:var(--f-song-13)}
+.hot{color:#666;margin-top:4px}
+.nav{background:linear-gradient(var(--theme),var(--theme-dark));padding:0;display:flex;font-weight:bold}
+.nav a{color:#fff;text-decoration:none;padding:6px 18px}
+.nav a.on,.nav a:hover{background:var(--theme-dark);color:#fff}
+.marquee{background:var(--theme-light);padding:3px 8px;border-bottom:1px solid var(--theme-border);overflow:hidden;white-space:nowrap}
+.marquee div{display:inline-block;animation:marq 22s linear infinite;color:var(--theme-dark)}
+.crumb{padding:8px 12px;color:#666;border-bottom:1px dotted #ccc}
+.content{padding:10px 12px;vertical-align:top}
+.footer{border-top:2px solid var(--theme);background:#f5f5f5;padding:10px;text-align:center;color:#666;line-height:1.9}
+.counter{background:#000;color:#3f3;font-family:'Courier New',monospace;padding:0 4px}
+
+.btn{display:inline-block;padding:2px 10px;text-decoration:none;color:var(--theme-dark);font-weight:bold;background:linear-gradient(#fff,var(--theme-light));border:1px solid var(--theme-border);border-radius:3px;cursor:pointer;line-height:normal;white-space:nowrap}
+.btn:hover{color:var(--theme-dark)}
+.btn-big{padding:5px 20px}
+.btn-login{padding:2px 16px}
+
+.side{width:170px;vertical-align:top;padding-right:10px}
+.main{vertical-align:top}
+.box{border:1px solid var(--theme-border)}
+.box+.box,.mt10{margin-top:10px}
+.box h3{background:var(--theme-light);padding:4px 8px;font-weight:bold;color:var(--theme-dark);margin:0;font-size:12px;font-family:var(--f-song-12)}
+.box a.row{display:block;padding:4px 10px;border-bottom:1px dotted var(--theme-border)}
+.box a.row:last-child{border-bottom:0}
+.box a.row.on{background:var(--theme-light)}
+.box .line{padding:4px 8px;border-bottom:1px dotted #ddd;display:flex;justify-content:space-between;gap:8px}
+.bar{background:#f5f5f5;border:1px solid #ddd;padding:4px 8px;display:flex;justify-content:space-between;align-items:center}
+.grid{width:100%;border-collapse:collapse;margin-top:6px;table-layout:fixed}
+.grid tr.h{background:var(--theme-light);color:var(--theme-dark)}
+.grid tr.p{border-bottom:1px dotted #ccc}
+.c-author{width:90px}.c-num{width:56px}.c-date{width:56px}
+.ttl{font-weight:bold}
+.new{color:#f00;font-weight:bold;animation:blink 1s step-end infinite;font-family:var(--f-sans-11);font-size:11px}
+.hl{color:var(--theme-dark)}
+.empty{padding:30px;text-align:center;color:#999}
+.pager{margin-top:8px;text-align:center}
+.pager a,.pager b,.pager span{margin:0 3px}
+.err{border:1px solid #c00;background:#fff0f0;color:#c00;padding:6px 8px;margin-bottom:8px}
+.okbox{border:1px solid #9c9;background:#f0fff0;color:#1a8a1a;padding:6px 8px;margin-bottom:8px}
+
+.meta{padding:6px 8px;border-bottom:1px dotted #ccc;color:#666}
+.article{padding:12px;line-height:1.9}
+.entryimg{max-width:100%;display:block;margin-bottom:8px}
+.sectionh{margin:12px 0 4px;color:var(--theme-dark);font-size:12px;font-family:var(--f-song-12)}
+.qbox{border:1px solid #ddd}
+.qa{padding:6px 8px;border-bottom:1px dotted #ddd;line-height:1.7}
+.qform{padding:8px;background:#fafafa}
+.form td.k{width:84px;text-align:right;color:#666;white-space:nowrap;vertical-align:top;padding-top:6px}
+.bodyarea{width:440px;height:160px}
+.introarea{width:300px;height:60px}
+
+.loginbox{margin:20px auto;border:1px solid var(--theme);background:var(--theme-light);width:340px}
+.loginbox.wide{width:560px}
+.loginbox td.h{background:var(--theme);color:#fff;font-weight:bold}
+.loginbox td.k{width:80px;text-align:right}
+
+.msgbox{width:420px;margin:30px auto;border:1px solid var(--theme);background:#fff}
+.msgbox.bad{border-color:#c00}
+.msgbox .h{background:var(--theme);color:#fff;font-weight:bold;padding:3px 8px}
+.msgbox.bad .h{background:#c00}
+.msgbox .bd{padding:16px 20px;line-height:1.9;text-align:center}
+.msgbox .ic{font-size:16px;font-family:var(--f-song-16);font-weight:bold;color:#1a8a1a}
+.msgbox.bad .ic{color:#c00}
