@@ -1,0 +1,47 @@
+{% extends "admin/layout.njk" %}
+{% from "macros.njk" import pager as pagerLinks %}
+{% block body %}
+<div class="box">
+  <div class="box-hd"><span>▪ 留言审核</span><span class="nb">共 {{ pager.total }} 条</span></div>
+  <div class="tabs">
+    <a href="/admin/comments?status=pending"{% if status == 'pending' %} class="on"{% endif %}>待审核 ({{ counts.pending or 0 }})</a>
+    <a href="/admin/comments?status=approved"{% if status == 'approved' %} class="on"{% endif %}>已通过 ({{ counts.approved or 0 }})</a>
+    <a href="/admin/comments?status=deleted"{% if status == 'deleted' %} class="on"{% endif %}>已删除 ({{ counts.deleted or 0 }})</a>
+  </div>
+  <form method="get" action="/admin/comments" class="admin-toolbar">
+    <input type="hidden" name="status" value="{{ status }}">
+    内容关键词：<input class="ipt w200" name="q" value="{{ q }}" maxlength="50"> <button class="btn" type="submit">搜索</button>
+  </form>
+  <form method="post" action="/admin/comments/batch" id="batch-form">
+    <input type="hidden" name="_csrf" value="{{ csrf }}">
+    <input type="hidden" name="back" value="{{ url }}">
+  </form>
+  <table class="tbl" style="border:0">
+    <tr><th style="width:20px"><input type="checkbox" class="chk" data-check-all="ids"></th><th>留言内容</th><th>所属笔记</th><th>留言人</th><th>IP</th><th>时间</th><th>操作</th></tr>
+    {% for c in list %}
+    <tr>
+      <td class="num"><input type="checkbox" class="chk" name="ids" value="{{ c.id }}" form="batch-form"></td>
+      <td style="max-width:280px;word-break:break-all">{{ c.content | cut(120) }}</td>
+      <td style="max-width:160px"><div class="ellipsis"><a href="/notes/{{ c.note_id }}#floor-{{ c.floor }}" target="_blank" title="{{ c.note_title }}">{{ c.note_title }}</a></div><span class="gray small">{{ c.floor }} 楼</span></td>
+      <td class="nowrap">{% if c.user_id %}<a href="/u/{{ c.user_id }}" target="_blank">{{ c.username }}</a>{% else %}{{ c.guest_name }} <span class="gray small">[游客]</span>{% endif %}</td>
+      <td class="num gray">{{ c.ip or '-' }}</td>
+      <td class="num gray">{{ c.created_at | dt }}</td>
+      <td class="acts">
+        {% if c.status != 'approved' %}<form method="post" action="/admin/comments/{{ c.id }}/approve"><input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="back" value="{{ url }}"><button class="btn sm" type="submit">通过</button></form>{% endif %}
+        {% if c.status != 'deleted' %}<form method="post" action="/admin/comments/{{ c.id }}/delete" data-confirm="确定删除这条留言？"><input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="back" value="{{ url }}"><button class="btn sm" type="submit">删除</button></form>{% endif %}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="box-empty">{% if status == 'pending' %}✔ 没有待审核的留言{% else %}暂无记录{% endif %}</td></tr>
+    {% endfor %}
+  </table>
+  <div class="flex-between" style="padding:4px 8px">
+    <span class="flex">选中项：
+      {% if status != 'approved' %}<button class="btn" type="submit" form="batch-form" name="action" value="approve">批量通过</button>{% endif %}
+      {% if status != 'deleted' %}<button class="btn" type="submit" form="batch-form" name="action" value="delete" data-confirm="确定删除选中的留言？">批量删除</button>{% endif %}
+    </span>
+    {{ pagerLinks(pager) }}
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="/static/js/admin.js?v={{ assetVersion }}"></script>{% endblock %}

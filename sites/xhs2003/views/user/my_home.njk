@@ -1,0 +1,45 @@
+{% extends "user/panel.njk" %}
+{% from "macros.njk" import avatar %}
+{% block panel %}
+<div class="box red">
+  <div class="box-hd">欢迎回来，{{ user.username }}！</div>
+  <div class="box-bd pink" style="display:flex;gap:12px;align-items:flex-start;padding:10px">
+    {{ avatar(user, 80) }}
+    <div class="grow" style="line-height:1.9">
+      <div>等级：<span class="stars">{{ level.stars }}</span> <b>{{ level.name }}</b> · 积分 <b class="red">{{ user.points }}</b>
+        {% if nextLevel %} · 距离「{{ nextLevel.name }}」还差 <b>{{ nextLevel.min - user.points }}</b> 分{% else %} · 已是最高等级{% endif %}</div>
+      <div class="flex"><span>升级进度：</span><span style="display:inline-block;width:200px;height:10px;border:1px solid #999;background:#fff;vertical-align:middle"><span class="poll-bar" style="width:{{ progress }}%;display:block"></span></span><span class="gray">{{ progress }}%</span></div>
+      <div>笔记 <b>{{ user.note_count }}</b> 篇 · 帖子 <b>{{ user.post_count }}</b> · 收藏 <b>{{ stats.favorites }}</b> · 好友 <b>{{ stats.friends }}</b> · 相册 <b>{{ stats.albums }}</b> · 收到鲜花 <b>{{ stats.flowers }}</b> 朵</div>
+      <div>{% if unread %}<a href="/pm" class="red b">📩 您有 {{ unread }} 条未读短消息，点击查看</a>{% else %}<span class="gray">没有未读短消息</span>{% endif %}</div>
+    </div>
+  </div>
+</div>
+
+<div class="box">
+  <div class="box-hd">▪ 快捷入口</div>
+  <div class="box-bd" style="display:flex;flex-wrap:wrap;gap:6px">
+    <a class="btn" href="/notes/new">发表笔记</a>
+    <a class="btn" href="/forum">逛逛论坛</a>
+    <a class="btn" href="/album/my">上传照片</a>
+    <a class="btn" href="/chat">进聊天室</a>
+    <a class="btn" href="/pm/new">写短消息</a>
+    <a class="btn" href="/my/profile">修改资料</a>
+    <a class="btn" href="/u/{{ user.id }}">我的主页</a>
+  </div>
+</div>
+
+<div class="grid2">
+  <div class="box">
+    <div class="box-hd"><span>▪ 我最近的笔记</span><a href="/my/notes">更多&gt;&gt;</a></div>
+    {% for n in recentNotes %}
+    <div class="row"><a href="/notes/{{ n.id }}" title="{{ n.title }}">· {{ n.title }}{% if n.status != 'published' %} <span class="gray">[已隐藏]</span>{% endif %}</a><span class="count">{{ n.hits }}/{{ n.comment_count }}</span></div>
+    {% else %}<div class="box-empty">还没有笔记，<a href="/notes/new">写一篇</a></div>{% endfor %}
+  </div>
+  <div class="box">
+    <div class="box-hd"><span>▪ 最新短消息</span><a href="/pm">收件箱&gt;&gt;</a></div>
+    {% for m in inbox %}
+    <div class="row"><a href="/pm/{{ m.id }}" title="{{ m.title }}"{% if not m.read_at %} class="b"{% endif %}>· {{ m.title }}</a><span class="count">{{ m.from_name if m.from_id else '系统' }}</span></div>
+    {% else %}<div class="box-empty">收件箱是空的</div>{% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "layout.njk" %}
+{#- 会员控制面板通用布局：页面设置 panelNav 高亮左侧菜单，内容写在 panel 块里 -#}
+{% set panelMenu = [
+  ['home', '/my', '控制面板首页'], ['profile', '/my/profile', '修改资料'], ['avatar', '/my/avatar', '修改头像'],
+  ['password', '/my/password', '修改密码'], ['notes', '/my/notes', '我的笔记'], ['favorites', '/my/favorites', '我的收藏'],
+  ['posts', '/my/posts', '我的帖子'], ['friends', '/my/friends', '我的好友'], ['pm', '/pm', '短消息'],
+  ['album', '/album/my', '我的相册'], ['orders', '/my/orders', '我的订单'], ['points', '/my/points', '积分记录']
+] %}
+{% block body %}
+<div class="cols2l">
+  <div class="stack">
+    <div class="box red menu">
+      <div class="box-hd">控制面板</div>
+      {% for m in panelMenu %}<a href="{{ m[1] }}"{% if panelNav == m[0] %} class="on"{% endif %}>» {{ m[2] }}{% if m[0] == 'pm' and unread %} <span class="red">({{ unread }})</span>{% endif %}</a>{% endfor %}
+    </div>
+    <div class="center"><a class="btn" href="/notes/new" style="padding:3px 20px;font-weight:bold">✎ 发表笔记</a></div>
+  </div>
+  <div class="stack">
+    {% block panel %}{% endblock %}
+  </div>
+</div>
+{% endblock %}

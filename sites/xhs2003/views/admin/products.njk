@@ -1,0 +1,40 @@
+{% extends "admin/layout.njk" %}
+{% from "macros.njk" import pager as pagerLinks %}
+{% block head %}<link rel="stylesheet" href="/static/css/shop.css?v={{ assetVersion }}">{% endblock %}
+{% block body %}
+<div class="box">
+  <div class="box-hd"><span>▪ 商品管理</span><span class="nb">共 {{ pager.total }} 件</span></div>
+  <form class="admin-toolbar" method="get" action="/admin/products">
+    <input class="ipt w200" name="q" value="{{ q }}" placeholder="商品名称">
+    <select class="sel" name="category"><option value="">全部分类</option>{% for c in categories %}<option value="{{ c.name }}"{% if category == c.name %} selected{% endif %}>{{ c.name }}（{{ c.count }}）</option>{% endfor %}</select>
+    <select class="sel" name="status"><option value="">全部状态</option><option value="on"{% if status == 'on' %} selected{% endif %}>上架中</option><option value="off"{% if status == 'off' %} selected{% endif %}>已下架</option></select>
+    <button class="btn" type="submit">筛选</button>
+    <a class="btn" href="/admin/products/new" style="margin-left:auto;font-weight:bold">+ 新增商品</a>
+  </form>
+  <table class="tbl">
+    <tr><th>ID</th><th>图片</th><th>名称</th><th>分类</th><th>价格</th><th>库存</th><th>销量</th><th>推荐</th><th>状态</th><th>排序</th><th>操作</th></tr>
+    {% for p in products %}
+    <tr>
+      <td class="num">{{ p.id }}</td>
+      <td>{% if p.image %}<img class="thumb40" src="{{ p.image }}" alt="">{% else %}<span class="gray">无</span>{% endif %}</td>
+      <td class="t"><div class="ellipsis"><a href="/shop/{{ p.id }}" target="_blank" title="{{ p.name }}">{{ p.name }}</a></div></td>
+      <td class="nowrap">{{ p.category or '-' }}</td>
+      <td class="num"><b class="red">¥{{ p.price_cents | yuan }}</b></td>
+      <td class="num{% if p.stock <= 0 %} red{% endif %}">{{ p.stock }}</td>
+      <td class="num">{{ p.sales }}</td>
+      <td class="num">{% if p.featured %}<span class="red">★</span>{% else %}-{% endif %}</td>
+      <td class="nowrap">{% if p.status == 'on' %}<span class="green">上架</span>{% else %}<span class="gray">下架</span>{% endif %}</td>
+      <td class="num">{{ p.sort }}</td>
+      <td class="acts">
+        <a href="/admin/products/{{ p.id }}/edit">[编辑]</a>
+        <form method="post" action="/admin/products/{{ p.id }}/toggle"><input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="back" value="{{ url }}"><button class="btn sm" type="submit">{% if p.status == 'on' %}下架{% else %}上架{% endif %}</button></form>
+        <form method="post" action="/admin/products/{{ p.id }}/delete" data-confirm="确定删除商品「{{ p.name }}」？历史订单会保留。"><input type="hidden" name="_csrf" value="{{ csrf }}"><button class="btn sm" type="submit">删除</button></form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="11" class="box-empty">没有符合条件的商品</td></tr>
+    {% endfor %}
+  </table>
+  {{ pagerLinks(pager) }}
+</div>
+{% endblock %}

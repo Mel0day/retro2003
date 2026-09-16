@@ -1,0 +1,23 @@
+{% extends "layout.njk" %}
+{% from "macros.njk" import editorBar %}
+{% block head %}<link rel="stylesheet" href="/static/css/forum.css?v={{ assetVersion }}">{% endblock %}
+{% block body %}
+<div class="col1">
+  <div class="box red">
+    <div class="box-hd">编辑帖子 · {{ thread.title }} · {{ post.floor }} 楼</div>
+    <form method="post" action="/forum/post/{{ post.id }}/edit" style="padding:8px">
+      <input type="hidden" name="_csrf" value="{{ csrf }}">
+      {% if error %}<div class="field-err" style="padding:4px 8px;background:#fee;border:1px solid #c99;margin-bottom:6px">✘ {{ error }}</div>{% endif %}
+      <table class="ftable">
+        {% if post.floor == 1 %}<tr><th><span class="red">*</span> 标　题：</th><td><input class="ipt w400" name="title" value="{{ form.title }}" required maxlength="60"></td></tr>{% endif %}
+        <tr><th><span class="red">*</span> 内　容：</th><td>
+          {{ editorBar('post-content') }}
+          <textarea class="ta" id="post-content" name="content" rows="14" required data-maxlen="20000" data-mode="post" data-purpose="post">{{ form.content }}</textarea>
+          <div class="editor-preview hidden" id="post-content-preview"></div>
+        </td></tr>
+        <tr><th></th><td><button class="btn" type="submit" style="font-weight:bold">保存修改</button> <a href="/forum/thread/{{ thread.id }}?floor={{ post.floor }}#floor-{{ post.floor }}">返回帖子</a></td></tr>
+      </table>
+    </form>
+  </div>
+</div>
+{% endblock %}

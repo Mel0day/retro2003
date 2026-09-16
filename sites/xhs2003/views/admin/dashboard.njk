@@ -1,0 +1,66 @@
+{% extends "admin/layout.njk" %}
+{% block body %}
+<div class="box red">
+  <div class="box-hd"><span>★ 站点概况</span><span class="nb">{{ today }}</span></div>
+  <div class="stat-grid">
+    <div class="stat"><b>{{ stats.users | thousands }}</b>会员总数 <span class="gray">（今日 +{{ stats.usersToday }}）</span></div>
+    <div class="stat"><b>{{ stats.notes | thousands }}</b>笔记总数 <span class="gray">（今日 +{{ stats.notesToday }}）</span></div>
+    <div class="stat"><b>{{ stats.comments | thousands }}</b>已发布留言</div>
+    <div class="stat"><b>{{ stats.threads | thousands }} / {{ stats.posts | thousands }}</b>论坛主题 / 帖子</div>
+    <div class="stat"><b>{{ stats.photos | thousands }}</b>相册照片</div>
+    <div class="stat"><b>{{ stats.visitors | thousands }}</b>访客计数</div>
+    <div class="stat"><b class="green">{{ stats.online }}</b>当前在线</div>
+    <div class="stat"><b>{{ stats.pendingOrders }}</b><a href="/admin/orders?status=pending">待确认订单</a></div>
+  </div>
+</div>
+
+<div class="box">
+  <div class="box-hd">▪ 待办事项</div>
+  <div class="box-bd yellow flex" style="gap:18px;flex-wrap:wrap">
+    <span>待审核留言：<a href="/admin/comments?status=pending" class="{% if stats.pendingComments %}red b{% endif %}">{{ stats.pendingComments }} 条</a></span>
+    <span>待处理举报：<a href="/admin/reports?status=open" class="{% if stats.openReports %}red b{% endif %}">{{ stats.openReports }} 条</a></span>
+    {% if isAdmin %}<span>待确认订单：<a href="/admin/orders?status=pending" class="{% if stats.pendingOrders %}red b{% endif %}">{{ stats.pendingOrders }} 笔</a></span>{% endif %}
+    {% if not stats.pendingComments and not stats.openReports and not stats.pendingOrders %}<span class="green">✔ 暂时没有需要处理的事项</span>{% endif %}
+  </div>
+</div>
+
+<div class="grid2">
+  <div class="box">
+    <div class="box-hd"><span>▪ 最新注册会员</span>{% if isAdmin %}<a href="/admin/users">更多&gt;&gt;</a>{% endif %}</div>
+    <table class="tbl" style="border:0">
+      <tr><th>用户名</th><th>积分</th><th>来自</th><th>注册时间</th></tr>
+      {% for u in recentUsers %}
+      <tr>
+        <td class="nowrap">{% if isAdmin %}<a href="/admin/users/{{ u.id }}">{{ u.username }}</a>{% else %}<a href="/u/{{ u.id }}">{{ u.username }}</a>{% endif %}{% if u.role != 'user' %} <span class="red small">[{{ '站长' if u.role == 'admin' else '版主' }}]</span>{% endif %}{% if u.banned %} <span class="gray small">[封禁]</span>{% endif %}</td>
+        <td class="num">{{ u.points }}</td>
+        <td class="gray6 nowrap">{{ u.location | cut(8) }}</td>
+        <td class="num gray">{{ u.created_at | md }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="box">
+    <div class="box-hd"><span>▪ 最新笔记</span><a href="/admin/notes">更多&gt;&gt;</a></div>
+    <table class="tbl" style="border:0">
+      <tr><th>标题</th><th>作者</th><th>时间</th></tr>
+      {% for n in recentNotes %}
+      <tr>
+        <td class="t"><div class="ellipsis"><a href="/notes/{{ n.id }}" target="_blank" title="{{ n.title }}">{{ n.title }}</a>{% if n.status != 'published' %} <span class="gray small">[隐藏]</span>{% endif %}{% if n.featured %} <span class="red small">[荐]</span>{% endif %}</div></td>
+        <td class="nowrap gray6">{{ n.username }}</td>
+        <td class="num gray">{{ n.created_at | md }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+<div class="box">
+  <div class="box-hd">▪ 系统信息</div>
+  <table class="ftable">
+    <tr><th>Node.js 版本</th><td class="verdana">{{ system.node }}</td><th>SQLite 版本</th><td class="verdana">{{ system.sqlite }}</td></tr>
+    <tr><th>运行环境</th><td class="verdana">{{ system.env }} · {{ system.platform }}</td><th>运行时长</th><td>{{ system.uptime }}</td></tr>
+    <tr><th>数据库大小</th><td class="verdana">{{ system.dbSize }}</td><th>上传目录</th><td class="verdana">{{ system.uploadSize }}（{{ system.uploadFiles }} 个文件）</td></tr>
+    <tr><th>进程内存</th><td class="verdana">{{ system.memory }}</td><th>快捷入口</th><td><a href="/" target="_blank">网站首页</a> · <a href="/wap" target="_blank">WAP 版</a>{% if isAdmin %} · <a href="/admin/settings">站点设置</a>{% endif %}</td></tr>
+  </table>
+</div>
+{% endblock %}

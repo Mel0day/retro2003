@@ -1,0 +1,26 @@
+{% extends "my/layout.njk" %}
+{% block main %}
+<div class="box"><h3>个人资料</h3>
+  {% if saved %}<div class="okbox m8">资料已保存。</div>{% endif %}
+  <form method="post" action="/my/profile"><input type="hidden" name="_csrf" value="{{ csrf }}">
+  <table class="form" cellpadding="5" cellspacing="0">
+    <tr><td class="k">会员名：</td><td><b>{{ me.username }}</b> <span class="gray">不能修改</span></td></tr>
+    <tr><td class="k">所在地：</td><td><input name="city" value="{{ me.city }}" maxlength="20" class="txt w160"></td></tr>
+    <tr><td class="k">店铺介绍：</td><td><textarea name="shop_intro" maxlength="300" class="txt introarea">{{ me.shop_intro }}</textarea><div class="gray">显示在您的店铺页，最多 300 字</div></td></tr>
+    <tr><td></td><td><button type="submit" class="btn">保存资料</button> <a href="/shop/{{ me.id }}">查看我的店铺</a></td></tr>
+  </table>
+  </form>
+</div>
+<div class="box mt10" id="pw"><h3>修改密码</h3>
+  {% if pwErr %}<div class="err m8">{{ pwErr }}</div>{% endif %}
+  {% if pwOk %}<div class="okbox m8">密码已修改，其他地方的登录已经下线。</div>{% endif %}
+  <form method="post" action="/my/password"><input type="hidden" name="_csrf" value="{{ csrf }}">
+  <table class="form" cellpadding="5" cellspacing="0">
+    <tr><td class="k">原密码：</td><td><input type="password" name="old" maxlength="64" class="txt w160" autocomplete="current-password"></td></tr>
+    <tr><td class="k">新密码：</td><td><input type="password" name="password" maxlength="64" class="txt w160" autocomplete="new-password"> <span class="gray">6-64 位</span></td></tr>
+    <tr><td class="k">确认新密码：</td><td><input type="password" name="password2" maxlength="64" class="txt w160" autocomplete="new-password"></td></tr>
+    <tr><td></td><td><button type="submit" class="btn">修改密码</button></td></tr>
+  </table>
+  </form>
+</div>
+{% endblock %}

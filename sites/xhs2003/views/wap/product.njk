@@ -1,0 +1,11 @@
+{% extends "wap/layout.njk" %}
+{% block body %}
+<div class="crumb"><a href="/wap">首页</a> &gt; <a href="/wap/shop">好物推荐</a> &gt; 详情</div>
+<div class="title">{{ product.name }}</div>
+{% if product.image %}<div class="content"><figure><a href="{{ product.image }}"><img src="{{ product.image }}" alt=""></a></figure></div>{% endif %}
+<div class="small">价格：<b class="red">¥{{ product.price }}</b>{% if product.market %} <s class="gray8">¥{{ product.market }}</s>{% endif %}</div>
+<div class="xs gray">库存 {{ product.stock }} · 已售 {{ product.sales }}{% if product.category %} · {{ product.category }}{% endif %}</div>
+<div class="content">{{ html | safe }}</div>
+<div class="small sep"><b>[1]</b> <a href="/shop/{{ product.id }}?pc=1" accesskey="1">请用电脑版下单</a></div>
+{% endblock %}
+{% block bottom %}<div class="small"><b>[0]</b> <a href="/wap" accesskey="0">首页</a></div>{% endblock %}

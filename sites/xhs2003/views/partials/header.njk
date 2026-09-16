@@ -1,0 +1,53 @@
+{% set ad = headerAd() %}
+<div class="hd no-print">
+  <div class="hd-brand">
+    <a href="/" class="logo">{{ site.site_name }}</a>
+    <span class="slogan">·&nbsp;&nbsp;{{ site.site_slogan }}&nbsp;&nbsp;·&nbsp;&nbsp;Since {{ site.site_since }}</span>
+  </div>
+  {% if ad %}
+  <a href="{{ ad.link or '#' }}" class="banner {{ ad.style }}"{% if ad.style == 'solid' %} style="background:{{ ad.bg | cssColor('#036') }}"{% endif %}{% if ad.link and (ad.link | first) != '/' %} target="_blank" rel="nofollow noopener"{% endif %} title="{{ ad.title }}">
+    {% if ad.style == 'image' and ad.image %}
+      <img src="{{ ad.image }}" alt="{{ ad.title }}">
+    {% else %}
+      {% if ad.style == 'rainbow' %}<div class="banner-bg"></div>{% endif %}
+      <div class="banner-in">
+        <div class="banner-txt"><span class="banner-title">{{ ad.title }}</span>{% if ad.subtitle %}<span class="banner-sub">{{ ad.subtitle }}</span>{% endif %}</div>
+        {% if ad.cta %}<span class="banner-cta">{{ ad.cta }}</span>{% endif %}
+      </div>
+    {% endif %}
+  </a>
+  {% else %}
+  <div class="banner solid" style="background:#036"><div class="banner-in"><span class="banner-title">{{ site.site_name }} · {{ site.site_slogan }}</span></div></div>
+  {% endif %}
+</div>
+{% set navItems = [
+  ['home', '/', '首 页'], ['notes', '/notes', '笔 记'], ['shop', '/shop', '购 物'], ['forum', '/forum', '论 坛'],
+  ['album', '/album', '相 册'], ['rank', '/rank', '排行榜'], ['chat', '/chat', '聊天室'], ['help', '/help', '帮 助']
+] %}
+<div class="nav no-print">
+  {% for item in navItems %}<a href="{{ item[1] }}"{% if nav == item[0] %} class="on"{% endif %}>{{ item[2] }}</a>{% if not loop.last %}<span class="sep">|</span>{% endif %}{% endfor %}
+  <span class="nav-right">
+  {% if nav == 'home' %}
+    {{ today }}&nbsp;&nbsp;<a href="#" data-sethome>设为首页</a> · <a href="#" data-bookmark>加入收藏</a>
+  {% elif user %}
+    欢迎您，<a href="/u/{{ user.id }}">{{ user.username }}</a>
+    [<a href="/my">控制面板</a>]
+    [<a href="/pm"{% if unread %} class="pm-new"{% endif %}>短消息{% if unread %}({{ unread }}){% endif %}</a>]
+    {% if isMod %}[<a href="/admin">管理</a>]{% endif %}
+    [<a href="/logout" data-post-link>退出</a>]
+  {% else %}
+    欢迎您，<a href="/login">游客</a> [<a href="/login?next={{ url | urlencode }}">登录</a>] [<a href="/register">注册</a>]
+  {% endif %}
+  </span>
+</div>
+{% if nav == 'home' and user and unread %}{% endif %}
+{% set notices = marquee() %}
+{% if site.show_marquee == '1' and notices.length %}
+<div class="marquee no-print">
+  <b>[公告]</b>
+  <div class="marquee-box"><span class="marquee-txt">{% for n in notices %}★ {{ n }} {% endfor %}★</span></div>
+</div>
+{% endif %}
+{% if crumbs %}
+<div class="crumb no-print">您现在的位置：<a href="/">首页</a>{% for c in crumbs %} &gt;&gt; {% if c[1] %}<a href="{{ c[1] }}">{{ c[0] }}</a>{% else %}{{ c[0] }}{% endif %}{% endfor %}</div>
+{% endif %}

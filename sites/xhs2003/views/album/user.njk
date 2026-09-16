@@ -1,0 +1,31 @@
+{% extends "layout.njk" %}
+{% from "macros.njk" import avatar, rankList, sideAd %}
+{% block head %}<link rel="stylesheet" href="/static/css/album.css?v={{ assetVersion }}">{% endblock %}
+{% block body %}
+<div class="cols2">
+  <div class="stack">
+    <div class="box red">
+      <div class="box-hd"><span>{{ owner.username }} 的相册（{{ albums.length }} 个）</span>{% if isOwner %}<a href="/album/my">[管理我的相册]</a>{% endif %}</div>
+      <div class="album-head">
+        {{ avatar(owner, 40) }}
+        <div class="grow"><a href="/u/{{ owner.id }}" class="b">{{ owner.username }}</a><div class="desc">[<a href="/u/{{ owner.id }}">个人主页</a>] [<a href="/pm/new?to={{ owner.username | urlencode }}">发短消息</a>]</div></div>
+      </div>
+      {% set emptyText = 'TA 还没有建相册' %}
+      {% include "album/_grid.njk" %}
+    </div>
+  </div>
+  <div class="stack">
+    <div class="box">
+      <div class="box-hd">▪ 热门相册</div>
+      {{ rankList(hotAlbums, '暂无相册') }}
+    </div>
+    <div class="box">
+      <div class="box-hd">▪ 会员相册</div>
+      {% for m in members %}
+      <div class="row"><a href="/album/user/{{ m.id }}"{% if m.id == owner.id %} class="red b"{% endif %}>» {{ m.username }}</a><span class="count">({{ m.photos or 0 }} 张)</span></div>
+      {% else %}<div class="box-empty">暂无</div>{% endfor %}
+    </div>
+    {{ sideAd() }}
+  </div>
+</div>
+{% endblock %}

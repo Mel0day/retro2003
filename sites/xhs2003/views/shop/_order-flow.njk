@@ -1,0 +1,3 @@
+<div class="order-flow">
+  {% for s in flow %}<span class="step {{ s.state }}">{% if s.state == 'done' %}✔ {% endif %}{{ s.label }}</span>{% if not loop.last %}<span class="arrow">→</span>{% endif %}{% endfor %}
+</div>

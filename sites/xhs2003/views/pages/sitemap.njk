@@ -1,0 +1,25 @@
+{% extends "layout.njk" %}
+{% block body %}
+<div class="col1">
+  <div class="box red">
+    <div class="box-hd">网站地图</div>
+    <table class="ftable">
+      <tr><th>首　页</th><td><a href="/">网站首页</a> · <a href="/wap">WAP 手机版</a> · <a href="/search">站内搜索</a></td></tr>
+      <tr><th>笔　记</th><td>
+        <a href="/notes">全部笔记</a> · <a href="/notes?sort=hot">最热笔记</a> · <a href="/notes?sort=featured">推荐笔记</a> · <a href="/notes/new">发表笔记</a><br>
+        {% for c in channels %}<a href="/notes?channel={{ c.slug }}">{{ c.name }}</a><span class="count">({{ c.note_count }})</span>{% if not loop.last %} · {% endif %}{% endfor %}
+      </td></tr>
+      <tr><th>购　物</th><td><a href="/shop">好物商城</a>{% for c in productCats %} · <a href="/shop?category={{ c.category | urlencode }}">{{ c.category }}</a>{% endfor %} · <a href="/my/orders">我的订单</a></td></tr>
+      <tr><th>论　坛</th><td>
+        <a href="/forum">论坛首页</a><br>
+        {% for c in forum %}<b>{{ c.name }}：</b>{% for b in c.boards %}<a href="/forum/board/{{ b.id }}">{{ b.name }}</a>{% if not loop.last %} · {% endif %}{% endfor %}<br>{% endfor %}
+      </td></tr>
+      <tr><th>相　册</th><td><a href="/album">相册首页</a> · <a href="/album/my">我的相册</a></td></tr>
+      <tr><th>排行榜</th><td><a href="/rank">排行榜</a></td></tr>
+      <tr><th>聊天室</th><td><a href="/chat">聊天室大厅</a>{% for r in rooms %} · <a href="/chat/{{ r.slug }}">{{ r.name }}</a>{% endfor %}</td></tr>
+      <tr><th>会员中心</th><td><a href="/register">注册</a> · <a href="/login">登录</a> · <a href="/forgot">找回密码</a> · <a href="/my">控制面板</a> · <a href="/pm">短消息</a> · <a href="/my/favorites">我的收藏</a> · <a href="/my/friends">我的好友</a></td></tr>
+      <tr><th>帮　助</th><td><a href="/help">帮助中心</a> · <a href="/help#ubb">UBB 代码</a>{% for p in pages %} · <a href="/page/{{ p.slug }}">{{ p.title }}</a>{% endfor %}</td></tr>
+    </table>
+  </div>
+</div>
+{% endblock %}

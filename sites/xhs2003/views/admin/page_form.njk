@@ -1,0 +1,23 @@
+{% extends "admin/layout.njk" %}
+{% from "macros.njk" import editorBar %}
+{% block body %}
+<div class="box red">
+  <div class="box-hd"><span>{{ title }}{% if not isNew %}：/page/{{ page.slug }}{% endif %}</span><a href="/admin/pages">&lt;&lt; 返回单页列表</a></div>
+  <form method="post" action="/admin/pages{% if not isNew %}/{{ page.slug }}{% endif %}" style="padding:8px">
+    <input type="hidden" name="_csrf" value="{{ csrf }}">
+    {% if error %}<div class="field-err" style="padding:4px 8px;background:#fee;border:1px solid #c99;margin-bottom:6px">✘ {{ error }}</div>{% endif %}
+    <table class="ftable">
+      {% if isNew %}<tr><th><span class="red">*</span> 标　识：</th><td><input class="ipt w120" name="slug" value="{{ page.slug }}" required maxlength="30" pattern="[a-z0-9-]{2,30}"> <span class="tip">小写字母、数字、短横线，访问地址为 /page/标识，创建后不能修改</span></td></tr>{% endif %}
+      <tr><th><span class="red">*</span> 标　题：</th><td><input class="ipt w300" name="title" value="{{ page.title }}" required maxlength="40"></td></tr>
+      <tr><th>排　序：</th><td><input class="ipt" style="width:50px" name="sort" value="{{ page.sort or 0 }}"></td></tr>
+      <tr><th>内　容：</th><td>
+        {{ editorBar('page-content') }}
+        <textarea class="ta" id="page-content" name="content" rows="20" data-mode="note" data-maxlen="50000">{{ page.content }}</textarea>
+        <div class="flex-between"><span class="tip">支持 UBB 代码，[h]小标题[/h]、[list][*]列表[/list] 等</span><span class="tip" data-len-for="page-content"></span></div>
+        <div class="editor-preview hidden" id="page-content-preview"></div>
+      </td></tr>
+      <tr><th></th><td><button class="btn" type="submit" style="font-weight:bold">保存单页</button> {% if not isNew %}<a href="/page/{{ page.slug }}" target="_blank">查看前台</a>{% endif %}</td></tr>
+    </table>
+  </form>
+</div>
+{% endblock %}

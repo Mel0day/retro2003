@@ -1,0 +1,93 @@
+{% extends "admin/layout.njk" %}
+{% from "macros.njk" import avatar %}
+{% block body %}
+{% if newPassword %}
+<div class="admin-flash" style="font-size:14px;font-family:var(--f-song-14)">✔ {{ u.username }} 的密码已重置为：<b class="red verdana" style="font-size:16px;font-family:var(--f-sans-16);letter-spacing:1px">{{ newPassword }}</b> 　请立即复制告知会员，本页离开后将不再显示。</div>
+{% endif %}
+<div class="box red">
+  <div class="box-hd"><span>会员资料：{{ u.username }}</span><a href="/admin/users">&lt;&lt; 返回会员列表</a></div>
+  <div class="flex" style="align-items:flex-start;padding:8px;gap:12px;background:#fff8f8">
+    {{ avatar(u, 80) }}
+    <div class="grow" style="line-height:1.8">
+      <div><b style="font-size:14px;font-family:var(--f-song-14)">{{ u.username }}</b> <span class="gray">(ID: {{ u.id }})</span> {% if u.banned %}<span class="red b">[已封禁]</span>{% endif %}
+        · <a href="/u/{{ u.id }}" target="_blank">查看前台主页</a></div>
+      <div>角色：<b>{{ roleLabel[u.role] }}</b> · 等级：<span class="stars">{{ level.stars }}</span> {{ level.name }} · 积分：<b>{{ u.points }}</b></div>
+      <div>笔记 <b>{{ u.note_count }}</b> 篇 · 帖子 <b>{{ u.post_count }}</b> 篇 · 有效登录会话 <b>{{ sessions }}</b> 个</div>
+      <div class="gray6">注册：{{ u.created_at | dt }} · 最近登录：{{ (u.last_login_at | dt) if u.last_login_at else '从未' }} · 最近活动：{{ (u.last_seen_at | dt) if u.last_seen_at else '-' }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="grid2">
+  <div class="box">
+    <div class="box-hd">▪ 编辑资料</div>
+    <form method="post" action="/admin/users/{{ u.id }}/profile">
+      <input type="hidden" name="_csrf" value="{{ csrf }}">
+      <table class="ftable">
+        <tr><th>角　色：</th><td>
+          <select class="sel" name="role"{% if isSelf %} disabled{% endif %}>
+            {% for k, v in roleLabel %}<option value="{{ k }}"{% if u.role == k %} selected{% endif %}>{{ v }}</option>{% endfor %}
+          </select>{% if isSelf %} <span class="tip">不能修改自己的角色</span>{% endif %}</td></tr>
+        <tr><th>头　衔：</th><td><input class="ipt w200" name="title" value="{{ u.title }}" maxlength="12" placeholder="留空则显示积分等级"></td></tr>
+        <tr><th>来　自：</th><td><input class="ipt w200" name="location" value="{{ u.location }}" maxlength="30"></td></tr>
+        <tr><th>签　名：</th><td><textarea class="ta" name="signature" rows="2" maxlength="100">{{ u.signature }}</textarea></td></tr>
+        <tr><th></th><td><button class="btn" type="submit">保存资料</button></td></tr>
+      </table>
+    </form>
+  </div>
+
+  <div class="stack">
+    <div class="box">
+      <div class="box-hd">▪ 调整积分</div>
+      <form method="post" action="/admin/users/{{ u.id }}/points">
+        <input type="hidden" name="_csrf" value="{{ csrf }}">
+        <table class="ftable">
+          <tr><th>积分变动：</th><td><input class="ipt w80" name="delta" type="number" required placeholder="如 50 或 -20"> <span class="tip">正数加分，负数扣分</span></td></tr>
+          <tr><th>原　因：</th><td><input class="ipt w200" name="reason" required maxlength="50" placeholder="例如：优质内容奖励"></td></tr>
+          <tr><th></th><td><button class="btn" type="submit">确定调整</button> <span class="tip">会员会收到系统短消息</span></td></tr>
+        </table>
+      </form>
+    </div>
+    <div class="box">
+      <div class="box-hd">▪ 账号安全</div>
+      <div class="box-bd flex" style="flex-wrap:wrap;gap:8px">
+        {% if not isSelf %}
+        <form method="post" action="/admin/users/{{ u.id }}/ban" class="inline-form"{% if not u.banned %} data-confirm="确定封禁 {{ u.username }}？封禁后该会员将立即被踢下线。"{% endif %}>
+          <input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="banned" value="{{ '0' if u.banned else '1' }}">
+          <button class="btn" type="submit">{{ '解除封禁' if u.banned else '封禁该会员' }}</button>
+        </form>
+        {% else %}<span class="gray">不能封禁自己</span>{% endif %}
+        <form method="post" action="/admin/users/{{ u.id }}/password" class="inline-form" data-confirm="确定为 {{ u.username }} 重置一个随机密码？">
+          <input type="hidden" name="_csrf" value="{{ csrf }}">
+          <button class="btn" type="submit">重置密码</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="grid2">
+  <div class="box">
+    <div class="box-hd">▪ 最近笔记</div>
+    {% for n in notes %}
+    <div class="row"><a href="/notes/{{ n.id }}" target="_blank" title="{{ n.title }}">· {{ n.title }}</a><span class="count">{% if n.status != 'published' %}[隐藏] {% endif %}{{ n.created_at | md }}</span></div>
+    {% else %}<div class="box-empty">暂无笔记</div>{% endfor %}
+  </div>
+  <div class="box">
+    <div class="box-hd">▪ 最近留言</div>
+    {% for c in comments %}
+    <div class="row"><a href="/notes/{{ c.note_id }}#floor-{{ c.floor }}" target="_blank" title="{{ c.content }}">· {{ c.content | cut(24) }}</a><span class="count">{% if c.status != 'approved' %}[{{ '待审' if c.status == 'pending' else '已删' }}] {% endif %}{{ c.created_at | md }}</span></div>
+    {% else %}<div class="box-empty">暂无留言</div>{% endfor %}
+  </div>
+</div>
+
+<div class="box">
+  <div class="box-hd">▪ 最近积分记录</div>
+  <table class="tbl" style="border:0">
+    <tr><th style="width:140px">时间</th><th style="width:80px">变动</th><th>原因</th></tr>
+    {% for p in pointsLog %}
+    <tr><td class="num gray">{{ p.created_at | dt }}</td><td class="num {{ 'green' if p.delta > 0 else 'red' }}">{{ '+' if p.delta > 0 }}{{ p.delta }}</td><td>{{ p.reason }}</td></tr>
+    {% else %}<tr><td colspan="3" class="box-empty">暂无记录</td></tr>{% endfor %}
+  </table>
+</div>
+{% endblock %}

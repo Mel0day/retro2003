@@ -1,0 +1,43 @@
+{% extends "admin/layout.njk" %}
+{% block body %}
+<div class="box red">
+  <div class="box-hd"><span>聊天室管理</span><a href="/chat" target="_blank">查看前台&gt;&gt;</a></div>
+  {% for room in rooms %}<form method="post" action="/admin/chat/rooms/{{ room.id }}" id="room-{{ room.id }}"><input type="hidden" name="_csrf" value="{{ csrf }}"></form>{% endfor %}
+  <table class="tbl" style="border:0">
+    <tr><th>排序</th><th>标识</th><th>名称</th><th>话题</th><th>在线</th><th>记录数</th><th>最后发言</th><th>操作</th></tr>
+    {% for room in rooms %}
+    <tr>
+      <td><input class="ipt" style="width:30px" name="sort" value="{{ room.sort }}" form="room-{{ room.id }}"></td>
+      <td><input class="ipt w80" name="slug" value="{{ room.slug }}" form="room-{{ room.id }}" required></td>
+      <td><input class="ipt w80" name="name" value="{{ room.name }}" form="room-{{ room.id }}" required></td>
+      <td class="t"><input class="ipt" style="width:98%" name="topic" value="{{ room.topic }}" form="room-{{ room.id }}"></td>
+      <td class="num">{{ room.online }}</td>
+      <td class="num">{{ room.message_count }}</td>
+      <td class="num gray">{% if room.last_at %}{{ room.last_at | dt }}{% else %}-{% endif %}</td>
+      <td class="acts">
+        <button class="btn sm" type="submit" form="room-{{ room.id }}">保存</button>
+        <a class="btn sm" href="/chat/{{ room.slug }}" target="_blank">进入</a>
+        <form method="post" action="/admin/chat/rooms/{{ room.id }}/clear" data-confirm="确定清空「{{ room.name }}」的全部聊天记录吗？"><input type="hidden" name="_csrf" value="{{ csrf }}"><button class="btn sm" type="submit">清空记录</button></form>
+        <form method="post" action="/admin/chat/rooms/{{ room.id }}/delete" data-confirm="确定删除聊天室「{{ room.name }}」吗？聊天记录也会一并删除！"><input type="hidden" name="_csrf" value="{{ csrf }}"><button class="btn sm" type="submit">删除</button></form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="8" class="box-empty">暂无聊天室</td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+<div class="box">
+  <div class="box-hd">▪ 添加聊天室</div>
+  <form method="post" action="/admin/chat/rooms" style="padding:6px">
+    <input type="hidden" name="_csrf" value="{{ csrf }}">
+    <table class="ftable">
+      <tr><th>标识：</th><td><input class="ipt w120" name="slug" required maxlength="20" placeholder="例如 music"> <span class="tip">用于网址 /chat/标识，小写字母、数字、短横线</span></td></tr>
+      <tr><th>名称：</th><td><input class="ipt w120" name="name" required maxlength="20" placeholder="例如 音乐"></td></tr>
+      <tr><th>话题：</th><td><input class="ipt w400" name="topic" maxlength="100"></td></tr>
+      <tr><th>排序：</th><td><input class="ipt w48" name="sort" value="{{ rooms.length }}"> <span class="tip">数字越小越靠前</span></td></tr>
+      <tr><th></th><td><button class="btn" type="submit">添 加</button></td></tr>
+    </table>
+  </form>
+</div>
+{% endblock %}

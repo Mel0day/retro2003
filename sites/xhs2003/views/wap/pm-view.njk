@@ -1,0 +1,8 @@
+{% extends "wap/layout.njk" %}
+{% block body %}
+<div class="crumb"><a href="/wap">首页</a> &gt; <a href="/wap/pm">短消息</a> &gt; 查看</div>
+<div class="title">{{ m.title }}</div>
+<div class="meta">来自：{{ m.from_name or '系统消息' }} · {{ m.created_at | dt }}</div>
+<div class="content plain">{{ html | safe }}</div>
+{% endblock %}
+{% block bottom %}<div class="small"><b>[1]</b> <a href="/wap/pm" accesskey="1">返回收件箱</a> <b>[0]</b> <a href="/wap" accesskey="0">首页</a></div>{% endblock %}

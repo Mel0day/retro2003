@@ -1,0 +1,32 @@
+/* 购物频道 */
+.goods-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:8px}
+.goods-card{display:flex;flex-direction:column;gap:2px;text-align:center;min-width:0}
+.goods-card .pic-img{height:120px}
+.goods-card .goods-name{color:#000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.goods-card .goods-price{line-height:1.4}
+.goods-card s,.goods-info s{color:#888;font-family:var(--f-sans-11);font-size:11px}
+.goods-sold{color:#888;font-size:11px;font-family:var(--f-song-11)}
+.goods-top{display:flex;gap:12px;padding:10px;align-items:flex-start}
+.goods-info{flex:1;min-width:0}
+.goods-info h1{font-size:16px;color:#c00;font-family:var(--f-heiti);margin-bottom:6px;line-height:1.4}
+.goods-info table{border-collapse:collapse;width:100%}
+.goods-info th{width:64px;text-align:right;font-weight:normal;color:#666;padding:3px 6px;vertical-align:middle;white-space:nowrap}
+.goods-info td{padding:3px 6px;border-bottom:1px dotted #ddd}
+.goods-badge{display:inline-block;background:#c00;color:#fff;font-size:11px;font-family:var(--f-song-11);padding:0 4px;margin-left:4px;vertical-align:middle}
+.soldout{color:#888;font-weight:bold}
+.order-form{border-top:1px dotted #c99;padding:8px 10px;background:#fffbe6}
+.order-form .ftable th{background:#fff8dc}
+.shop-notice{padding:6px 8px;color:#333;line-height:1.7}
+.shop-notice li{margin-left:16px}
+.order-flow{display:flex;align-items:center;gap:4px;padding:10px 8px;justify-content:center;flex-wrap:wrap}
+.order-flow span.step{border:1px solid #999;background:#f4f4f4;color:#888;padding:1px 10px}
+.order-flow span.step.done{border-color:#060;background:#efe;color:#060}
+.order-flow span.step.cur{border-color:#c00;background:#fee;color:#c00;font-weight:bold}
+.order-flow .arrow{color:#999}
+.status-pending{color:#e60;font-weight:bold}
+.status-confirmed{color:#009;font-weight:bold}
+.status-shipped{color:#069;font-weight:bold}
+.status-done{color:#060;font-weight:bold}
+.status-cancelled{color:#888}
+.pay-tip{margin:6px 8px;padding:6px 10px;border:1px dashed #c99;background:#fff8f8;color:#333}
+.thumb40{width:40px;height:40px;object-fit:cover;border:1px solid #999;display:block}

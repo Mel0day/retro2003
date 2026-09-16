@@ -1,0 +1,27 @@
+{% extends "layout.njk" %}
+{% import "macros.njk" as m with context %}
+{% block body %}
+<div class="steps"><span class="s1">1 我的购物车</span><span class="s3">2 确认订单</span><span class="s3">3 支付宝付款</span><span class="s3">4 确认收货</span></div>
+<table class="carttable" cellpadding="6" cellspacing="0">
+  <tr class="h"><td>宝贝</td><td class="c-price">单价</td><td class="c-qty">数量</td><td class="c-price">小计</td><td class="c-op2">操作</td></tr>
+  {% for g in cart.groups %}
+  <tr class="seller"><td colspan="5">卖家：<a href="/shop/{{ g.seller_id }}">{{ g.seller_name }}</a></td></tr>
+  {% for c in g.lines %}
+  <tr class="p{% if c.problem %} bad{% endif %}">
+    <td class="brk"><table cellpadding="0" cellspacing="0"><tr><td class="pr8">{{ m.thumb(c, '40') }}</td><td><a href="/item/{{ c.id }}">{{ c.title }}</a>{% if c.problem %}<div class="red">（{{ c.problem }}，结算时会跳过）</div>{% endif %}</td></tr></table></td>
+    <td class="orange">￥{{ c.price_cents | yuan }}</td>
+    <td><form method="post" action="/cart/update" class="qtycell">{{ m.csrfField() }}<input type="hidden" name="item_id" value="{{ c.id }}"><button type="submit" name="op" value="set" class="defbtn" tabindex="-1" aria-hidden="true">修改</button><button type="submit" name="op" value="minus" class="qbtn">-</button><input name="qty" value="{{ c.qty }}" class="qtyinput" data-autosubmit="1" data-max="{{ c.stock if c.stock < 99 and c.stock > 0 else (99 if c.stock >= 99 else 1) }}" maxlength="2" aria-label="数量"><button type="submit" name="op" value="plus" class="qbtn">+</button></form></td>
+    <td class="price">￥{{ c.sub_cents | yuan }}</td>
+    <td><form method="post" action="/cart/remove" class="inline">{{ m.csrfField() }}<input type="hidden" name="item_id" value="{{ c.id }}"><button type="submit" class="linkbtn red">删除</button></form></td>
+  </tr>
+  {% endfor %}
+  {% endfor %}
+  {% if not cart.rows.length %}<tr><td colspan="5" class="empty">购物车是空的，快去<a href="/">逛逛</a>吧！</td></tr>{% endif %}
+</table>
+<div class="cartsum">
+  共 <b>{{ cart.count }}</b> 件宝贝 &nbsp; 可结算合计（不含运费）：<b class="bigtotal">￥{{ cart.total_cents | yuan }}</b> &nbsp;
+  {% if cart.total_cents > 0 %}<a href="/checkout" class="btn btn-big btn-orange">去结算 &gt;&gt;</a>{% else %}<span class="btn btn-big btn-orange disabled">去结算 &gt;&gt;</span>{% endif %}
+</div>
+{% if cart.groups.length > 1 %}<div class="gray mt8">提示：购物车里有 {{ cart.groups.length }} 位卖家的宝贝，结算时会按卖家分别生成订单，每张订单单独计算运费。</div>{% endif %}
+{% if not user %}<div class="gray mt8">提示：游客的购物车保存在本浏览器里，<a href="/login?next=%2Fcart">登录</a>后会自动合并到您的账号。</div>{% endif %}
+{% endblock %}

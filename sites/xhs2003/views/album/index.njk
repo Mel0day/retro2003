@@ -1,0 +1,67 @@
+{% extends "layout.njk" %}
+{% from "macros.njk" import pager as pagerLinks, rankList, sideAd %}
+{% block head %}<link rel="stylesheet" href="/static/css/album.css?v={{ assetVersion }}">{% endblock %}
+{% block body %}
+<div class="cols2">
+  <div class="stack">
+    <div class="box red">
+      <div class="box-hd"><span>★ 最新照片</span><span class="nb">共 {{ stats.albums }} 个相册 · {{ stats.photos }} 张照片</span></div>
+      {% if photos.length %}
+      <div class="photo-wall">
+        {% for p in photos %}
+        <div class="photo-card">
+          <a class="pic-img" href="/album/photo/{{ p.id }}" title="{{ p.caption }}"><img src="/uploads/{{ p.path }}" alt="{{ p.caption }}" loading="lazy"></a>
+          <a class="cap" href="/album/photo/{{ p.id }}" title="{{ p.caption }}">{{ p.caption or '无题' }}</a>
+          <span class="meta">by <a href="/album/user/{{ p.user_id }}">{{ p.username }}</a></span>
+        </div>
+        {% endfor %}
+      </div>
+      {{ pagerLinks(pager) }}
+      {% else %}
+      <div class="box-empty">还没有人上传照片，<a href="/album/my">去建一个相册</a>吧！</div>
+      {% endif %}
+    </div>
+
+    {% if latestAlbums.length %}
+    <div class="box">
+      <div class="box-hd"><span>▪ 最近更新的相册</span></div>
+      <div class="album-grid" style="grid-template-columns:repeat(5,1fr)">
+        {% for a in latestAlbums %}
+        <div class="album-card">
+          <a class="pic-img" href="/album/{{ a.id }}">{% if a.cover %}<img src="{{ a.cover }}" alt="{{ a.title }}" loading="lazy">{% else %}<span class="noimg">暂无封面</span>{% endif %}</a>
+          <a class="title" href="/album/{{ a.id }}" title="{{ a.title }}">{{ a.title }}</a>
+          <span class="meta">{{ a.username }} · {{ a.photo_count }} 张</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="stack">
+    <div class="box red">
+      <div class="box-hd">我的相册</div>
+      <div class="box-bd pink center">
+        {% if user %}
+        <a class="btn" href="/album/my" style="font-weight:bold">管理我的相册</a>
+        <div class="gray small mt4">每位会员免费 {{ quotaMb }}MB 空间</div>
+        {% else %}
+        <div>登录后即可建相册、传照片</div>
+        <div class="mt4"><a class="btn" href="/login?next=%2Falbum%2Fmy">登 录</a> <a class="btn" href="/register">注 册</a></div>
+        {% endif %}
+      </div>
+    </div>
+    <div class="box">
+      <div class="box-hd">▪ 热门相册</div>
+      {{ rankList(hotAlbums, '暂无相册') }}
+    </div>
+    <div class="box">
+      <div class="box-hd">▪ 会员相册</div>
+      {% for m in members %}
+      <div class="row"><a href="/album/user/{{ m.id }}">» {{ m.username }}</a><span class="count">({{ m.photos or 0 }} 张)</span></div>
+      {% else %}<div class="box-empty">暂无</div>{% endfor %}
+    </div>
+    {{ sideAd() }}
+  </div>
+</div>
+{% endblock %}

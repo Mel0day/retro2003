@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=800">
+<title>{% if title %}{{ title }} - {% endif %}{{ site.site_name }}{% if not title %} · {{ site.site_slogan }}{% endif %}</title>
+<meta name="description" content="{{ description or (site.site_name + ' · ' + site.site_slogan) }}">
+<link rel="stylesheet" href="/static/css/fonts.css?v={{ assetVersion }}">
+<link rel="stylesheet" href="/static/css/site.css?v={{ assetVersion }}">
+<link rel="icon" href="/favicon.ico">
+{% block head %}{% endblock %}
+</head>
+<body{% if bodyClass %} class="{{ bodyClass }}"{% endif %} data-csrf="{{ csrf }}">
+<div class="wrap">
+{% include "partials/header.njk" %}
+{% block body %}{% endblock %}
+{% include "partials/footer.njk" %}
+</div>
+<script src="/static/js/site.js?v={{ assetVersion }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

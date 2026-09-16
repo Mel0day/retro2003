@@ -1,0 +1,65 @@
+{% macro avatar(u, size=60, name='') %}
+{%- if u and u.avatar_path -%}
+<span class="avatar s{{ size }}"><img src="/uploads/{{ u.avatar_path }}" alt="{{ u.username }}"></span>
+{%- else -%}
+<span class="avatar s{{ size }}" style="background:{{ (u.avatar_color if u else '') | cssColor }}">{{ (u.username if (u and u.username) else (name or '客')) | initial }}</span>
+{%- endif -%}
+{% endmacro %}
+
+{% macro userLink(id, name) %}{% if id %}<a href="/u/{{ id }}">{{ name }}</a>{% else %}{{ name }}{% endif %}{% endmacro %}
+
+{% macro pager(p, label=true) %}
+{%- if p and p.pages > 1 -%}
+<span class="pager">{% if label %}页次：<b>{{ p.current }}</b>/{{ p.pages }}&nbsp;&nbsp;{% endif %}
+{% if p.prev %}<a href="{{ p.prev }}">上一页</a>{% endif %}
+{% for n in p.nums %}{% if n.current %}<b class="cur">{{ n.n }}</b>{% else %}<a href="{{ n.url }}">{{ n.n }}</a>{% endif %} {% endfor %}
+{% if p.next %}<a href="{{ p.next }}">下一页</a>{% endif %}</span>
+{%- endif -%}
+{% endmacro %}
+
+{% macro captcha(scope) %}
+<img class="captcha" src="/captcha.svg?scope={{ scope }}" data-scope="{{ scope }}" alt="验证码" title="看不清？点击换一张" width="52" height="18">
+{% endmacro %}
+
+{% macro rankList(items, empty='暂无数据') %}
+{% for r in items %}
+<div class="rank-row"><span class="rk" style="background:{{ r.bg }}">{{ r.rank }}</span><a href="{{ r.url or ('/notes/' + r.id) }}" title="{{ r.title }}">{{ r.title }}</a></div>
+{% else %}<div class="box-empty">{{ empty }}</div>{% endfor %}
+{% endmacro %}
+
+{% macro sideAd() %}
+{% set sad = sidebarAd() %}
+<div class="adbox">
+{% if sad %}
+  {% if sad.style == 'image' and sad.image %}
+  <a class="adslot" href="{{ sad.link or '#' }}" title="{{ sad.title }}" style="border-style:solid"><img src="{{ sad.image }}" alt="{{ sad.title }}"></a>
+  {% else %}
+  <a class="adslot solid" href="{{ sad.link or '#' }}" style="background:{{ sad.bg | cssColor('#036') }}"><span class="ad-t">{{ sad.title }}</span>{% if sad.subtitle %}<span>{{ sad.subtitle }}</span>{% endif %}{% if sad.cta %}<span class="ad-cta">{{ sad.cta }}</span>{% endif %}</a>
+  {% endif %}
+{% else %}
+  <a class="adslot" href="/page/ads">160×100 广告位<span>虚位以待</span></a>
+{% endif %}
+</div>
+{% endmacro %}
+
+{% macro emots() %}
+<div class="emots">表情：{% for e in [':-)', ':-(', ';-)', ':-P', '^_^', '-_-!', 'T_T', '@_@'] %}<span data-emot="{{ e }}" title="插入表情">{{ e }}</span>{% endfor %}</div>
+{% endmacro %}
+
+{% macro editorBar(target) %}
+<div class="editor-bar" data-editor="{{ target }}">
+  <button type="button" class="btn" data-tag="b" title="粗体"><b>B</b></button>
+  <button type="button" class="btn" data-tag="i" title="斜体"><i>I</i></button>
+  <button type="button" class="btn" data-tag="u" title="下划线"><u>U</u></button>
+  <select data-tag-arg="color" title="颜色"><option value="">颜色</option><option value="#c00" style="color:#c00">红色</option><option value="#060" style="color:#060">绿色</option><option value="#009" style="color:#009">蓝色</option><option value="#e60" style="color:#e60">橙色</option><option value="#909" style="color:#909">紫色</option></select>
+  <select data-tag-arg="size" title="字号"><option value="">字号</option><option value="1">小</option><option value="3">中</option><option value="4">大</option><option value="5">特大</option></select>
+  <button type="button" class="btn" data-tag="h" title="小标题">小标题</button>
+  <button type="button" class="btn" data-tag="url" data-prompt="请输入链接地址：" title="链接">链接</button>
+  <button type="button" class="btn" data-tag="quote" title="引用">引用</button>
+  <button type="button" class="btn" data-insert="[list=1]&#10;[*]第一项&#10;[*]第二项&#10;[/list]" title="有序列表">列表</button>
+  <button type="button" class="btn" data-insert="[table]&#10;[tr][th]时间[th]安排[th]费用[/tr]&#10;[tr][td]D1 08:00[td]出发[td]22[/tr]&#10;[/table]" title="表格">表格</button>
+  <label class="btn" title="上传图片（可多选）">上传图片<input type="file" accept="image/*" multiple data-upload="{{ target }}" hidden></label>
+  <button type="button" class="btn" data-preview="{{ target }}" title="预览">预览</button>
+  <span class="upload-status" data-upload-status="{{ target }}"></span>
+</div>
+{% endmacro %}

@@ -1,0 +1,59 @@
+{% extends "layout.njk" %}
+{% from "macros.njk" import pager as pagerLinks, rankList, sideAd %}
+{% block body %}
+<div class="cols3" style="grid-template-columns:168px 1fr 178px">
+  <div class="stack">
+    <div class="box red">
+      <div class="box-hd">笔记频道</div>
+      <div class="row ccc"><a href="/notes"{% if not channel and not tag %} class="red b"{% endif %}>» 全部笔记</a></div>
+      {% for c in channels %}
+      <div class="row ccc"><a href="/notes?channel={{ c.slug }}"{% if channel and channel.id == c.id %} class="red b"{% endif %}>» {{ c.name }}</a><span class="count">({{ c.note_count }})</span></div>
+      {% endfor %}
+    </div>
+    <div class="center" style="padding:4px 0"><a class="btn" href="/notes/new{% if channel %}?channel={{ channel.slug }}{% endif %}" style="padding:3px 20px;font-weight:bold">✎ 发表笔记</a></div>
+    {% include "partials/searchbox.njk" %}
+  </div>
+
+  <div class="stack">
+    <div class="box">
+      <div class="box-hd"><span>▪ {{ heading }}{% if channel and channel.description %} <span class="nb gray6">— {{ channel.description }}</span>{% endif %}</span><span class="nb">共 {{ pager.total }} 篇</span></div>
+      {% if not tag %}
+      <div class="tabs">
+        {% set base = ('channel=' + channel.slug + '&') if channel else '' %}
+        <a href="/notes?{{ base }}"{% if sort == 'new' %} class="on"{% endif %}>最新</a>
+        <a href="/notes?{{ base }}sort=hot"{% if sort == 'hot' %} class="on"{% endif %}>最热</a>
+        <a href="/notes?{{ base }}sort=comments"{% if sort == 'comments' %} class="on"{% endif %}>热评</a>
+        <a href="/notes?{{ base }}sort=featured"{% if sort == 'featured' %} class="on"{% endif %}>推荐</a>
+      </div>
+      {% endif %}
+      <table class="tbl" style="border:0">
+        <tr><th style="width:30px"></th><th>标题</th><th>作者</th><th>点击/回复</th><th>发表时间</th></tr>
+        {% for n in list %}
+        <tr>
+          <td class="num red">{% if n.has_image %}[图]{% else %}[文]{% endif %}</td>
+          <td class="t"><div class="ellipsis">{% if not channel %}<a href="/notes?channel={{ n.channel_slug }}" class="gray6">[{{ n.channel_name }}]</a> {% endif %}<a href="/notes/{{ n.id }}" title="{{ n.title }}">{{ n.title }}</a>{% if n.featured %} <span class="red b small">[荐]</span>{% endif %}{% if n.isNew %} <span class="new">NEW</span>{% endif %}</div></td>
+          <td class="nowrap"><a href="/u/{{ n.user_id }}" class="gray6">{{ n.username }}</a></td>
+          <td class="num">{{ n.hits }}/{{ n.comment_count }}</td>
+          <td class="num gray">{{ n.created_at | dt }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="box-empty">这里还没有笔记，<a href="/notes/new">来发表第一篇吧</a>！</td></tr>
+        {% endfor %}
+      </table>
+      {{ pagerLinks(pager) }}
+    </div>
+  </div>
+
+  <div class="stack">
+    <div class="box">
+      <div class="box-hd">▪ 热门标签</div>
+      <div class="tagcloud">{% for t in tags %}<a href="/tags/{{ t.name | urlencode }}"{% if t.style %} style="{{ t.style }}"{% endif %}>{{ t.name }}</a>{% endfor %}</div>
+    </div>
+    <div class="box">
+      <div class="box-hd">▪ {% if channel %}本频道{% endif %}人气排行</div>
+      {{ rankList(ranking) }}
+    </div>
+    {{ sideAd() }}
+  </div>
+</div>
+{% endblock %}

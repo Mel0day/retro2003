@@ -1,0 +1,53 @@
+# 与根目录 docker-compose.yml 叠加使用，在服务器上运行应用 + Cloudflare Tunnel 连接器。
+# 服务器 .env 里写 COMPOSE_FILE=docker-compose.yml:deploy/cloudflare/compose.tunnel.yml，
+# 之后直接 docker compose up -d --build 就会带上本文件。
+# .tunnel.env 只放一行 TUNNEL_TOKEN=...（chmod 600，不进仓库）。
+name: taobao2003
+
+# 固定网段和地址：服务器 .env 的 TRUST_PROXY 只信任隧道连接器 172.20.0.3。
+# 宿主机（以及 host 网络的其他容器）仍能连到网桥上的 172.20.0.2:3004，
+# 但来源是网关 172.20.0.1，不被信任，伪造的 X-Forwarded-For 不会生效。
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
+services:
+  taobao2003:
+    # 不向宿主机发布端口，只经隧道访问
+    ports: !reset []
+    networks:
+      default:
+        ipv4_address: 172.20.0.2
+    mem_limit: 512m
+    memswap_limit: 512m
+    cpus: 1.0
+
+  tunnel:
+    # 固定版本，升级时手动改这里再 docker compose up -d tunnel
+    image: cloudflare/cloudflared:2026.9.1
+    container_name: taobao2003-tunnel
+    restart: unless-stopped
+    # 与应用同在默认网络；Workers VPC 服务按容器名 taobao2003:3003 访问。
+    # 镜像 entrypoint 已带 --no-autoupdate；指标/pprof 端口只在容器内部监听。
+    command: tunnel --metrics 127.0.0.1:20241 run
+    env_file: .tunnel.env
+    networks:
+      default:
+        ipv4_address: 172.20.0.3
+    mem_limit: 256m
+    memswap_limit: 256m
+    depends_on:
+      - taobao2003
+    healthcheck:
+      test: ["CMD", "cloudflared", "tunnel", "--metrics", "127.0.0.1:20241", "ready"]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

@@ -1,0 +1,20 @@
+<div class="box mymenu"><h3>我是买家</h3>
+  <a href="/my/bought" class="row{% if side == 'bought' %} on{% endif %}">已买到的宝贝</a>
+  <a href="/cart" class="row">我的购物车</a>
+  <a href="/my/favorites" class="row{% if side == 'favorites' %} on{% endif %}">收藏夹</a>
+  <a href="/my/address" class="row{% if side == 'address' %} on{% endif %}">收货地址</a>
+</div>
+<div class="box mymenu"><h3>我是卖家</h3>
+  <a href="/sell" class="row{% if side == 'sell' %} on{% endif %}">我要卖</a>
+  <a href="/my/items" class="row{% if side == 'items' %} on{% endif %}">出售中的宝贝</a>
+  <a href="/my/items?tab=warehouse" class="row{% if side == 'warehouse' %} on{% endif %}">仓库中的宝贝</a>
+  <a href="/my/sold" class="row{% if side == 'sold' %} on{% endif %}">已卖出的宝贝</a>
+  <a href="/my/questions" class="row{% if side == 'questions' %} on{% endif %}">宝贝留言</a>
+  <a href="/shop/{{ user.id }}" class="row">我的店铺</a>
+</div>
+<div class="box mymenu"><h3>我的账户</h3>
+  <a href="/my" class="row{% if side == 'home' %} on{% endif %}">我的淘宝首页</a>
+  <a href="/my/alipay" class="row{% if side == 'alipay' %} on{% endif %}">支付宝账户</a>
+  <a href="/my/rates" class="row{% if side == 'rates' %} on{% endif %}">信用评价</a>
+  <a href="/my/profile" class="row{% if side == 'profile' %} on{% endif %}">个人资料 / 密码</a>
+</div>

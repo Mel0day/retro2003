@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1000">
+<meta name="robots" content="noindex">
+<title>{{ title }} - 管理后台 - {{ site.site_name }}</title>
+<link rel="stylesheet" href="/static/css/fonts.css?v={{ assetVersion }}">
+<link rel="stylesheet" href="/static/css/site.css?v={{ assetVersion }}">
+<link rel="stylesheet" href="/static/css/admin.css?v={{ assetVersion }}">
+{% block head %}{% endblock %}
+</head>
+<body data-csrf="{{ csrf }}">
+<div class="wrap admin-wrap">
+  <div class="hd" style="grid-template-columns:1fr auto">
+    <div class="hd-brand"><a href="/admin" class="logo" style="font-size:24px">{{ site.site_name }}</a><span class="slogan">·&nbsp;&nbsp;管理后台 Control Panel</span></div>
+    <div class="dark">您好，<b>{{ user.username }}</b>（{% if isAdmin %}站长{% else %}版主{% endif %}） [<a href="/" target="_blank">网站首页</a>] [<a href="/logout" data-post-link>退出</a>]</div>
+  </div>
+  <div class="cols2l" style="grid-template-columns:150px 1fr">
+    <div class="stack">
+      {% for g in adminMenu %}
+      <div class="box menu">
+        <div class="box-hd">▪ {{ g.group }}</div>
+        {% for item in g.items %}{% if not item.admin or isAdmin %}<a href="{{ item.url }}"{% if adminNav == item.key %} class="on"{% endif %}>» {{ item.label }}</a>{% endif %}{% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+    <div class="stack">
+      {% if flash %}<div class="admin-flash{% if flashError %} err{% endif %}">{{ flash }}</div>{% endif %}
+      {% block body %}{% endblock %}
+    </div>
+  </div>
+  <div class="ft"><div class="copy">{{ site.site_name }} 管理后台 · Powered by xhs2003</div></div>
+</div>
+<script src="/static/js/site.js?v={{ assetVersion }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

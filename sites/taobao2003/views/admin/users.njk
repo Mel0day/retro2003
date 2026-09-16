@@ -1,0 +1,10 @@
+{% extends "admin/layout.njk" %}
+{% block body %}
+<form method="get" action="/admin/users" class="bar">会员名 <input name="q" value="{{ q }}" class="txt"> <button type="submit" class="btn">查找</button> &nbsp; 共 {{ total }} 位</form>
+<table class="t"><tr><th>ID</th><th>会员名</th><th>角色</th><th>支付宝余额</th><th>买/卖/在售</th><th>注册</th><th>最近登录</th><th>状态</th><th>操作</th></tr>
+  {% for u in users %}<tr><td>{{ u.id }}</td><td><a href="/shop/{{ u.id }}" target="_blank">{{ u.username }}</a></td><td>{{ '小二' if u.role == 'admin' else '会员' }}</td><td>￥{{ u.balance_cents | yuan }}</td><td>{{ u.bought }} / {{ u.sold }} / {{ u.onsale }}</td><td>{{ u.created_at | date }}</td><td>{% if u.last_login_at %}{{ u.last_login_at | dt }}<br><span class="gray">{{ u.last_ip }}</span>{% else %}—{% endif %}</td>
+    <td>{% if u.banned %}<span class="red">已冻结</span>{% if u.ban_reason %}<br><span class="gray">{{ u.ban_reason }}</span>{% endif %}{% else %}<span class="green">正常</span>{% endif %}</td>
+    <td>{% if u.role != 'admin' %}<form method="post" action="/admin/users/{{ u.id }}/ban"{% if not u.banned %} data-confirm="确定冻结 {{ u.username }} 吗？冻结后立即下线，不能登录，在售宝贝对买家隐藏。"{% endif %}><input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="q" value="{{ q }}"><input type="hidden" name="ban" value="{{ 0 if u.banned else 1 }}">{% if not u.banned %}<input name="reason" class="txt w100" maxlength="60" placeholder="冻结原因"> {% endif %}<button type="submit" class="btn{% if not u.banned %} btn-red{% endif %}">{{ '解冻' if u.banned else '冻结' }}</button></form>{% endif %}</td></tr>{% endfor %}
+</table>
+{% include "admin/_pager.njk" %}
+{% endblock %}

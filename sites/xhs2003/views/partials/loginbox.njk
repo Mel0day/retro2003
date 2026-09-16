@@ -1,0 +1,40 @@
+{% from "macros.njk" import captcha, avatar %}
+{% if user %}
+<div class="box red">
+  <div class="box-hd">会员信息</div>
+  <div class="box-bd pink" style="padding:6px">
+    <div class="flex" style="align-items:flex-start">
+      {{ avatar(user, 40) }}
+      <div class="grow" style="line-height:1.5">
+        <a href="/u/{{ user.id }}" class="b">{{ user.username }}</a><br>
+        <span class="stars">{{ member.stars }}</span> <span class="gray6">{{ member.name }}</span><br>
+        <span class="gray6">积分：<b>{{ user.points }}</b></span>
+      </div>
+    </div>
+    <div class="gray6 mt4">笔记 <b>{{ user.note_count }}</b> 篇 · 收藏 <b>{{ member.favorites }}</b> 篇</div>
+    <div class="mt4" style="display:grid;grid-template-columns:1fr 1fr;gap:0 4px">
+      <a href="/notes/new">» 发表笔记</a><a href="/my">» 控制面板</a>
+      <a href="/pm"{% if unread %} class="red b"{% endif %}>» 短消息{% if unread %}({{ unread }}){% endif %}</a><a href="/my/favorites">» 我的收藏</a>
+      <a href="/album/my">» 我的相册</a><a href="/logout" data-post-link>» 退出登录</a>
+    </div>
+    {% if isMod %}<div class="center mt4"><a href="/admin" class="red">[ 进入管理后台 ]</a></div>{% endif %}
+  </div>
+</div>
+{% else %}
+<div class="box red">
+  <div class="box-hd">会员登录</div>
+  <form method="post" action="/login" class="box-bd pink" style="padding:6px;display:flex;flex-direction:column;gap:4px">
+    <input type="hidden" name="_csrf" value="{{ csrf }}">
+    <input type="hidden" name="next" value="{{ url }}">
+    <div class="form-row">用户名<input class="ipt" name="username" required maxlength="16" style="flex:1;width:0" autocomplete="username"></div>
+    <div class="form-row">密　码<input class="ipt" type="password" name="password" required maxlength="32" style="flex:1;width:0" autocomplete="current-password"></div>
+    {% if site.captcha_login == '1' %}<div class="form-row">验证码<input class="ipt w48" name="captcha" required maxlength="4" autocomplete="off">{{ captcha('login') }}</div>{% endif %}
+    <label class="form-row nowrap" style="gap:2px"><input type="checkbox" name="remember" value="1" class="chk">记住我（两周内免登录）</label>
+    <div style="display:flex;gap:6px;justify-content:center;margin-top:2px">
+      <button class="btn" type="submit">登 录</button>
+      <a class="btn" href="/register">注 册</a>
+    </div>
+    <div class="center"><a href="/forgot">忘记密码?</a> · <a href="/register" class="red">免费注册新会员</a></div>
+  </form>
+</div>
+{% endif %}

@@ -1,0 +1,25 @@
+{% extends "admin/layout.njk" %}
+{% block body %}
+<div class="box">
+  <div class="box-hd"><span>▪ 单页管理</span><a href="/admin/pages/new">+ 新增单页</a></div>
+  <div class="box-bd gray small">单页通过 /page/标识 访问。页脚链接使用 about（关于我们）、ads（广告服务）、contact（联系站长）、jobs（诚聘版主）、disclaimer（免责声明），注册页使用 terms（服务条款），删除后对应链接会显示 404。</div>
+  <table class="tbl" style="border:0">
+    <tr><th>排序</th><th>标识</th><th>标题</th><th>字数</th><th>更新时间</th><th>操作</th></tr>
+    {% for p in list %}
+    <tr>
+      <td class="num">{{ p.sort }}</td>
+      <td class="nowrap verdana"><a href="/page/{{ p.slug }}" target="_blank">/page/{{ p.slug }}</a></td>
+      <td>{{ p.title }}</td>
+      <td class="num">{{ p.len }}</td>
+      <td class="num gray">{{ p.updated_at | dt }}</td>
+      <td class="acts">
+        <a class="btn sm" href="/admin/pages/{{ p.slug }}/edit">编辑</a>
+        <form method="post" action="/admin/pages/{{ p.slug }}/delete" class="inline-form" data-confirm="{% if p.slug in ['about', 'ads', 'contact', 'jobs', 'disclaimer', 'terms'] %}「{{ p.title }}」是页脚或注册页引用的内置页，删除后链接会失效。{% endif %}确定删除单页「{{ p.title }}」？"><input type="hidden" name="_csrf" value="{{ csrf }}"><button class="btn sm" type="submit">删除</button></form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6" class="box-empty">还没有单页</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

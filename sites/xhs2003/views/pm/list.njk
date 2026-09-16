@@ -1,0 +1,35 @@
+{% extends "user/panel.njk" %}
+{% from "macros.njk" import pager as pagerLinks %}
+{% block panel %}
+<div class="box red">
+  <div class="box-hd"><span>短消息 · {% if box == 'inbox' %}收件箱{% else %}发件箱{% endif %}</span><span class="nb">共 {{ pager.total }} 条{% if box == 'inbox' and inboxUnread %}，未读 {{ inboxUnread }} 条{% endif %}</span></div>
+  <div class="tabs">
+    <a href="/pm"{% if box == 'inbox' %} class="on"{% endif %}>收件箱{% if inboxUnread %}({{ inboxUnread }}){% endif %}</a>
+    <a href="/pm/outbox"{% if box == 'outbox' %} class="on"{% endif %}>发件箱</a>
+    <a href="/pm/new">写短消息</a>
+  </div>
+  <form method="post" action="/pm/delete" data-confirm="确定删除选中的短消息吗？">
+    <input type="hidden" name="_csrf" value="{{ csrf }}">
+    <input type="hidden" name="box" value="{{ box }}">
+    <table class="tbl" style="border:0">
+      <tr><th style="width:24px"><input type="checkbox" class="chk" data-check-all title="全选"></th><th style="width:40px">状态</th><th>标题</th><th>{% if box == 'inbox' %}发件人{% else %}收件人{% endif %}</th><th>时间</th></tr>
+      {% for m in list %}
+      <tr>
+        <td class="center"><input type="checkbox" class="chk" name="ids" value="{{ m.id }}"></td>
+        <td class="num">{% if box == 'inbox' %}{% if m.read_at %}<span class="gray">已读</span>{% else %}<b class="red">未读</b>{% endif %}{% else %}{% if m.read_at %}<span class="gray">已读</span>{% else %}<span class="gray6">未读</span>{% endif %}{% endif %}</td>
+        <td class="t"><div class="ellipsis"><a href="/pm/{{ m.id }}"{% if box == 'inbox' and not m.read_at %} class="b"{% endif %}>{{ m.title }}</a></div></td>
+        <td class="nowrap">{% if box == 'inbox' %}{% if m.from_id %}<a href="/u/{{ m.from_id }}">{{ m.from_name }}</a>{% else %}<span class="green">系统消息</span>{% endif %}{% else %}<a href="/u/{{ m.to_id }}">{{ m.to_name }}</a>{% endif %}</td>
+        <td class="num gray">{{ m.created_at | dt }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="box-empty">{% if box == 'inbox' %}收件箱是空的{% else %}还没有发过短消息{% endif %}</td></tr>
+      {% endfor %}
+    </table>
+    <div class="flex-between" style="padding:4px 8px">
+      <span>{% if list.length %}<button class="btn sm" type="submit">删除选中</button>{% endif %} <a class="btn sm" href="/pm/new">写短消息</a></span>
+      {{ pagerLinks(pager) }}
+    </div>
+  </form>
+</div>
+{% endblock %}
+{% block scripts %}<script src="/static/js/pm.js?v={{ assetVersion }}"></script>{% endblock %}

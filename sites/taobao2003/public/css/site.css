@@ -1,0 +1,209 @@
+/* 淘宝网 2003：778px 橙色主题，样式照搬原型 design/03 淘宝.dc.html。
+   规则：写 font-size 必须同时写对应的点阵字体族 var(--f-song-N)，否则点阵会被缩放发虚。 */
+body{margin:0;background:#fff;font-family:var(--f-song-12);font-size:12px;color:#333}
+a{color:#0033cc;text-decoration:underline}a:hover{color:#ff6600}
+a.plain{color:#333;text-decoration:none}a.plain:hover{color:#ff6600;text-decoration:underline}
+p{margin:0 0 6px}
+img{border:0}
+input,select,textarea,button{font-family:var(--f-song-12);font-size:12px}
+.txt{border:1px solid #999;padding:2px;background:#fff;color:#333}
+textarea.txt{line-height:1.6}
+form.inline{display:inline}
+.linkbtn{border:0;background:none;padding:0;margin:0;color:#0033cc;text-decoration:underline;cursor:pointer;white-space:nowrap}
+.linkbtn:hover{color:#ff6600}
+.full{width:100%}
+.half{width:50%;vertical-align:top}
+.gray{color:#888}.orange{color:#f60}.red{color:#c00}.green{color:#1a8a1a}
+.strike{color:#999;text-decoration:line-through}
+.nowrap{white-space:nowrap}
+.brk{word-break:break-all;overflow-wrap:anywhere}
+.center{margin-left:auto;margin-right:auto}
+.lh18{line-height:1.8}.lh19{line-height:1.9}.lh2{line-height:2}
+.mt4{margin-top:4px}.mt6{margin-top:6px}.mt8{margin-top:8px}.mt10{margin-top:10px}.mb6{margin-bottom:6px}.mb8{margin-bottom:8px}.m8{margin:8px}
+.pr8{padding-right:8px}
+.pad{padding:8px}
+.w60{width:60px}.w80{width:80px}.w100{width:100px}.w120{width:120px}.w160{width:160px}.w170{width:170px}.w200{width:200px}.w300{width:300px}.w400{width:400px}.w600{width:600px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+@keyframes marq{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+/* 页框 */
+.wrap{width:778px;margin:0 auto;border-left:1px solid #ddd;border-right:1px solid #ddd}
+.frame{width:100%;border-collapse:collapse;table-layout:fixed}
+.topbar{background:#f2f2f2;padding:3px 8px;color:#666;border-bottom:1px solid #ddd;display:flex;justify-content:space-between}
+.topbar .sell{color:#c40;font-weight:bold}
+.uname{color:#f60;font-weight:bold;text-decoration:none}
+.header{padding:10px 12px}
+.logocell{width:200px}
+.logolink{text-decoration:none}
+.logo{font:bold 34px/1 'Microsoft YaHei','PingFang SC',sans-serif;background:linear-gradient(#ffb05c,#ff5000);-webkit-background-clip:text;background-clip:text;color:transparent}
+.slogan{color:#f60;font-weight:bold;margin-top:2px}
+.searchcell{vertical-align:middle}
+.search{border:2px solid #f60;display:flex;align-items:stretch;margin:0}
+.search select{border:0;border-right:1px solid #f9c;padding:0 4px;background:#fff8f0}
+.search input{flex:1;border:0;font-size:13px;font-family:var(--f-song-13);padding:4px 6px;outline:none;min-width:0}
+.search button{border:0;background:linear-gradient(#ff9a3c,#ff5000);color:#fff;font-weight:bold;padding:0 18px;cursor:pointer;font-size:13px;font-family:var(--f-song-13)}
+.hot{color:#666;margin-top:4px}
+.online{width:160px;text-align:right;vertical-align:top;color:#666}
+.online b{font:bold 20px 'Courier New',monospace;color:#f60}
+.nav{background:linear-gradient(#ff8a3c,#f60);padding:0;display:flex;font-weight:bold}
+.nav a{color:#fff;text-decoration:none;padding:6px 18px}
+.nav a.on,.nav a:hover{background:#c40;color:#fff}
+.marquee{background:#fff8e6;padding:3px 8px;border-bottom:1px solid #fc9;overflow:hidden;white-space:nowrap}
+.marquee div{display:inline-block;animation:marq 22s linear infinite;color:#c30}
+.crumb{padding:8px 12px;color:#666;border-bottom:1px dotted #ccc}
+.content{padding:10px 12px;vertical-align:top}
+.footer{border-top:2px solid #f60;background:#f5f5f5;padding:10px;text-align:center;color:#666;line-height:1.9}
+.counter{background:#000;color:#3f3;font-family:'Courier New',monospace;padding:0 4px}
+
+/* 按钮：浅橙（加入购物车）/ 深橙（立刻购买）/ 蓝（支付宝） */
+.btn{display:inline-block;padding:2px 8px;text-decoration:none;color:#c40;font-weight:bold;background:linear-gradient(#fff,#ffe0b0 50%,#ffc070 51%,#ffd090);border:1px solid #e80;border-radius:4px;cursor:pointer;line-height:normal;white-space:nowrap}
+.btn:hover{color:#c40}
+.btn-big{padding:6px 22px;border-radius:5px}
+.btn-orange,.btn-orange:hover{color:#fff;background:linear-gradient(#ff9a3c,#ff5000 50%,#e04000 51%,#ff7020);border:1px solid #c40;text-shadow:1px 1px 0 #a30}
+.btn-blue,.btn-blue:hover{color:#fff;background:linear-gradient(#5aa9ff,#1a6fd0 50%,#0f5cb8 51%,#3a86e0);border:1px solid #0a4a9a}
+.btn.disabled{opacity:.5;cursor:default}
+.btn-login{padding:2px 16px}
+
+/* 左栏 */
+.side{width:150px;vertical-align:top;padding-right:10px}
+.main{vertical-align:top}
+.box{border:1px solid #fc9}
+.box+.box{margin-top:10px}
+.box h3{background:#ffe8cc;padding:4px 8px;font-weight:bold;color:#c40;margin:0;font-size:12px;font-family:var(--f-song-12)}
+.box a.row{display:block;padding:4px 10px;border-bottom:1px dotted #fc9}
+.box a.row:last-child{border-bottom:0}
+.box a.row.on{background:#ffe8cc}
+.box .line{padding:4px 8px;border-bottom:1px dotted #ccc;display:flex;justify-content:space-between;gap:8px}
+.sellbox .btn{margin-top:6px}
+.ad{border:1px solid #fc9;margin-top:10px;padding:8px;text-align:center;background:repeating-linear-gradient(45deg,#fff3e0,#fff3e0 4px,#fff 4px,#fff 8px);color:#999;font-family:var(--f-sans-11);font-size:11px;height:90px;display:flex;align-items:center;justify-content:center;white-space:pre-line;text-decoration:none;box-sizing:content-box;overflow:hidden;word-break:break-all}
+a.ad:hover{color:#f60}
+.ad+.box{margin-top:10px}
+
+/* 列表 */
+.bar{background:#f5f5f5;border:1px solid #ddd;padding:4px 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.grid{width:100%;border-collapse:collapse;margin-top:6px;table-layout:fixed}
+.grid tr.h{background:#ffe8cc;color:#c40}
+.grid tr.p{border-bottom:1px dotted #ccc}
+.grid td{vertical-align:middle}
+.c-pic{width:70px}.c-price{width:78px}.c-sold{width:52px}.c-seller{width:92px}.c-op{width:84px}.c-op2{width:50px}.c-op3{width:96px}.c-qty{width:110px}
+.c-who{width:90px}.c-who2{width:80px}.c-time{width:80px}.c-time2{width:120px}.c-time3{width:112px}.c-status{width:80px}.c-tel{width:110px}
+.ttl{font-weight:bold}
+.desc{color:#888;margin-top:3px}
+.tag{color:#f60;margin-top:2px}
+.thumb{width:60px;height:60px;border:1px solid #ccc;background:repeating-linear-gradient(45deg,#f5f5f5,#f5f5f5 3px,#fff 3px,#fff 6px);display:flex;align-items:center;justify-content:center;color:#aaa;font-size:10px;font-family:var(--f-sans-10);text-decoration:none;overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb.t40{width:40px;height:40px}
+.price{color:#f60;font-weight:bold}
+.soldout{color:#999;border:1px solid #ccc;background:#f5f5f5;padding:2px 8px;white-space:nowrap}
+.stars{color:#f90}
+.new{color:#f00;font-weight:bold;animation:blink 1s step-end infinite;font-family:var(--f-sans-11);font-size:11px}
+.hl{color:#f60}
+.empty{padding:30px;text-align:center;color:#999}
+.empty-s{padding:12px;text-align:center;color:#999}
+.pager{margin-top:8px;text-align:center}
+.pager a,.pager b,.pager span{margin:0 3px}
+.err{border:1px solid #c00;background:#fff0f0;color:#c00;padding:6px 8px;margin-bottom:8px}
+.note{border:1px solid #fc9;background:#fff8e6;color:#c40;padding:6px 8px;margin-bottom:8px}
+.okbox{border:1px solid #9c9;background:#f0fff0;color:#1a8a1a;padding:6px 8px;margin-bottom:8px}
+
+/* 信用图标：像素心、钻、冠 */
+.credit{white-space:nowrap}
+.lv i{display:inline-block;width:11px;height:10px;margin-right:1px;vertical-align:-1px;background:url(/static/img/heart.svg) no-repeat}
+.lv-diamond i{background-image:url(/static/img/diamond.svg)}
+.lv-crown i{width:13px;background-image:url(/static/img/crown.svg)}
+
+/* 详情 */
+.gallery{width:260px;vertical-align:top}
+.iteminfo{vertical-align:top;padding-left:10px}
+.bigpic{width:240px;height:240px;border:1px solid #ccc;background:repeating-linear-gradient(45deg,#f5f5f5,#f5f5f5 5px,#fff 5px,#fff 10px);display:flex;align-items:center;justify-content:center;color:#aaa;font-family:var(--f-sans-12);overflow:hidden}
+.bigpic img{max-width:100%;max-height:100%;display:block}
+.thumbs{display:flex;gap:6px;margin-top:6px}
+.thumbs div{width:52px;height:52px;border:1px solid #ccc;background:#f5f5f5;overflow:hidden;cursor:pointer}
+.thumbs div img{width:100%;height:100%;object-fit:cover;display:block}
+.thumbs div.on{border-color:#f60}
+.itemname{font-size:16px;font-family:var(--f-song-16);margin:0 0 6px;color:#c40}
+.infobox{width:100%;background:#fff8e6;border:1px solid #fc9}
+.infobox td.k{width:64px;color:#666}
+.bigprice{font:bold 22px Arial,sans-serif;color:#f60}
+.bigprice.sm{font-size:18px}
+.alipaytag{display:inline-block;background:#1a6fd0;color:#fff;font-weight:bold;padding:0 4px}
+.qtycell{display:inline-flex;gap:4px;align-items:center;margin:0}
+.qbtn{width:20px;padding:0;height:18px;line-height:16px}
+.defbtn{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.qtyinput{width:36px;text-align:center;border:1px solid #999;font-family:var(--f-sans-12);padding:1px}
+.actions{display:flex;gap:10px;margin-top:10px;align-items:center;flex-wrap:wrap}
+.tip{color:#1a8a1a}
+.sellerbox{margin-top:12px;border:1px solid #ddd;padding:8px;background:#fafafa}
+.tabs{margin-top:14px;border-top:2px solid #f60;margin-bottom:0}
+.tabs.nomargin{margin-top:0;margin-bottom:6px}
+.tab{display:inline-block;padding:3px 14px;color:#666;text-decoration:none}
+.tab.on{background:#f60;color:#fff;font-weight:bold}
+.detailtext{padding:10px;line-height:1.9;border:1px solid #eee;border-top:0}
+.detailimg{max-width:100%;display:block;margin:6px 0}
+.sectionh{margin:12px 0 4px;color:#c40;font-size:12px;font-family:var(--f-song-12)}
+.reviews{width:100%;border-collapse:collapse;border:1px solid #ddd;table-layout:fixed}
+.reviews tr+tr{border-top:1px dotted #ccc}
+.reviews tr.h{background:#f5f5f5}
+.g1{color:#1a8a1a}.g0{color:#f90}.g-1{color:#c00}
+.replyline{color:#1a8a1a;margin-top:2px}
+.reviewform{margin-top:8px;padding:8px;background:#fff8e6;border:1px solid #fc9}
+.qbox{border:1px solid #ddd}
+.qa{padding:6px 8px;border-bottom:1px dotted #ddd;line-height:1.7}
+.qform{padding:8px;background:#fafafa}
+
+/* 购物车 / 订单 */
+.steps{display:flex;margin-bottom:10px;font-weight:bold}
+.steps span{padding:4px 14px}
+.steps .s1{background:#f60;color:#fff}
+.steps .s2{background:#ffe8cc;color:#c40}
+.steps .s3{background:#f5f5f5;color:#999}
+.carttable{width:100%;border-collapse:collapse;border:1px solid #fc9;table-layout:fixed}
+.carttable.noborder{border:0}
+.carttable tr.h{background:#ffe8cc;color:#c40;font-weight:bold}
+.carttable tr.p{border-bottom:1px dotted #ccc}
+.carttable tr.p.bad{background:#fafafa;color:#999}
+.carttable tr.seller td{background:#f5f5f5;border-top:1px solid #fc9}
+.carttable table td{vertical-align:top}
+.cartsum{margin-top:10px;text-align:right;background:#fff8e6;border:1px solid #fc9;padding:10px}
+.bigtotal{font:bold 20px Arial,sans-serif;color:#f60}
+.shipline{background:#fffdf5;line-height:2}
+.groupsum{text-align:right}
+.paybox{margin-top:10px;text-align:right;background:#fff8e6;border:1px solid #fc9;padding:10px}
+.form td.k,.kv td.k{width:84px;text-align:right;color:#666;white-space:nowrap;vertical-align:top;padding-top:6px}
+.kv{width:100%}
+.successbox{text-align:center;padding:24px;border:1px solid #9c9;background:#f0fff0}
+.successtitle{font-size:16px;font-family:var(--f-song-16);font-weight:bold;color:#1a8a1a;margin-bottom:8px}
+.detailarea{width:440px;height:160px}
+.introarea{width:400px;height:80px}
+.keepimgs{display:flex;gap:8px;margin-bottom:6px}
+.keepimg{text-align:center}
+.keepimg img{width:80px;height:80px;object-fit:cover;border:1px solid #ccc}
+
+/* 登录 / 注册 */
+.loginbox{margin:20px auto;border:1px solid #f60;background:#fff8e6;width:340px}
+.loginbox.wide{width:620px}
+.loginbox td.h{background:#f60;color:#fff;font-weight:bold}
+.loginbox td.k{width:80px;text-align:right}
+.regtip{margin:20px 10px}
+
+/* 店铺 */
+.shophead{width:100%;border:1px solid #fc9;background:#fff8e6}
+.shopname{font-size:16px;font-family:var(--f-song-16);font-weight:bold;color:#c40;margin-bottom:4px}
+.shopintro{margin-top:6px;padding-top:6px;border-top:1px dotted #fc9;line-height:1.8}
+.ratesum{width:230px;vertical-align:top}
+.mini{border-collapse:collapse;width:100%;background:#fff;border:1px solid #fc9;text-align:center}
+.mini tr.h{background:#ffe8cc;color:#c40}
+
+/* 说明页 */
+.para{margin:0 0 6px}
+.links{margin:0;padding-left:20px}
+
+/* 提示页 */
+.msgbox{width:420px;margin:30px auto;border:1px solid #f60;background:#fff}
+.msgbox.bad{border-color:#c00}
+.msgbox .h{background:#f60;color:#fff;font-weight:bold;padding:3px 8px}
+.msgbox.bad .h{background:#c00}
+.msgbox .bd{padding:16px 20px;line-height:1.9;text-align:center}
+.msgbox .ic{font-size:16px;font-family:var(--f-song-16);font-weight:bold;line-height:1.4;color:#1a8a1a}
+.msgbox.bad .ic{color:#c00}

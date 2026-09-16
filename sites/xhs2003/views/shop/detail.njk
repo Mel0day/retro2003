@@ -1,0 +1,88 @@
+{% extends "layout.njk" %}
+{% from "macros.njk" import rankList, sideAd %}
+{% block head %}<link rel="stylesheet" href="/static/css/shop.css?v={{ assetVersion }}">{% endblock %}
+{% block body %}
+<div class="cols2">
+  <div class="stack">
+    <div class="box red">
+      <div class="box-hd"><span>商品详情</span>{% if isAdmin %}<a href="/admin/products/{{ product.id }}/edit">[编辑商品]</a>{% endif %}</div>
+      {% if product.status != 'on' %}<div class="note-hidden">该商品已下架，仅站长可见</div>{% endif %}
+      <div class="goods-top">
+        <div class="goods-img">{% if product.image %}<img src="{{ product.image }}" alt="{{ product.name }}">{% else %}<span class="noimg">暂无图片</span>{% endif %}</div>
+        <div class="goods-info">
+          <h1>{{ product.name }}{% if product.featured %}<span class="goods-badge">推荐</span>{% endif %}</h1>
+          <table>
+            <tr><th>本站价：</th><td><span class="price-big">¥{{ product.price_cents | yuan }}</span></td></tr>
+            {% if product.market_price_cents > product.price_cents %}
+            <tr><th>市场价：</th><td><s>¥{{ product.market_price_cents | yuan }}</s> <span class="red">为您节省 ¥{{ (product.market_price_cents - product.price_cents) | yuan }}</span></td></tr>
+            {% endif %}
+            <tr><th>分　类：</th><td>{% if product.category %}<a href="/shop?category={{ product.category | urlencode }}">{{ product.category }}</a>{% else %}未分类{% endif %}</td></tr>
+            <tr><th>库　存：</th><td>{% if product.stock > 0 %}<b class="green">{{ product.stock }}</b> 件{% else %}<span class="soldout">已售罄</span>{% endif %}</td></tr>
+            <tr><th>已　售：</th><td><b>{{ product.sales }}</b> 件</td></tr>
+            <tr><th>配　送：</th><td class="gray6">全国包邮（偏远地区除外），3-7 天送达</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="order-form" id="order">
+        <b>我要购买</b>
+        {% if error %}<div class="field-err" style="padding:4px 8px;background:#fee;border:1px solid #c99;margin:4px 0">✘ {{ error }}</div>{% endif %}
+        {% if product.status != 'on' %}
+        <div class="center gray">商品已下架，暂不能购买。</div>
+        {% elif product.stock <= 0 %}
+        <div class="center gray">该商品已经卖完了，看看<a href="/shop">其他商品</a>吧。</div>
+        {% elif not user %}
+        <div class="center" style="padding:6px">购买商品需要先 <a href="/login?next={{ ('/shop/' + product.id) | urlencode }}">登录</a>，还没有账号？<a href="/register" class="red">免费注册</a></div>
+        {% else %}
+        <form method="post" action="/shop/{{ product.id }}/order">
+          <input type="hidden" name="_csrf" value="{{ csrf }}">
+          <table class="ftable mt4">
+            <tr><th><span class="red">*</span> 购买数量：</th><td><input class="ipt w48" type="number" name="qty" value="{{ form.qty }}" min="1" max="{% if product.stock < 99 %}{{ product.stock }}{% else %}99{% endif %}" required> 件 <span class="tip">库存 {{ product.stock }} 件，每单最多 99 件</span></td></tr>
+            <tr><th><span class="red">*</span> 收货人：</th><td><input class="ipt w120" name="receiver" value="{{ form.receiver }}" required maxlength="20"></td></tr>
+            <tr><th><span class="red">*</span> 联系电话：</th><td><input class="ipt w200" name="phone" value="{{ form.phone }}" required maxlength="20" placeholder="手机或固定电话"></td></tr>
+            <tr><th><span class="red">*</span> 收货地址：</th><td><input class="ipt w400" name="address" value="{{ form.address }}" required maxlength="120" placeholder="省 / 市 / 区 / 街道 / 门牌号 / 邮编"></td></tr>
+            <tr><th><span class="red">*</span> 付款方式：</th><td>
+              {% for key, label in payments %}<label class="nowrap"><input type="radio" name="payment" value="{{ key }}" class="chk"{% if form.payment == key %} checked{% endif %}> {{ label }}</label>&nbsp;&nbsp;{% endfor %}
+            </td></tr>
+            <tr><th>备　注：</th><td><input class="ipt w400" name="remark" value="{{ form.remark }}" maxlength="200" placeholder="选填，例如颜色、尺码、送货时间"></td></tr>
+            <tr><th></th><td><button class="btn" type="submit" style="font-weight:bold">提交订单</button> <span class="tip">单价 ¥{{ product.price_cents | yuan }}，提交后可在「我的订单」查看</span></td></tr>
+          </table>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="box">
+      <div class="box-hd">▪ 商品介绍</div>
+      <div class="note-body" style="font-size:12px;font-family:var(--f-song-12);line-height:1.8">{{ product.description | ubb }}</div>
+    </div>
+
+    {% if related.length %}
+    <div class="box">
+      <div class="box-hd">▪ 同类商品</div>
+      <div class="goods-grid">
+        {% for p in related %}
+        <div class="goods-card">
+          <a class="pic-img" href="/shop/{{ p.id }}">{% if p.image %}<img src="{{ p.image }}" alt="{{ p.name }}" loading="lazy">{% else %}<span class="noimg">暂无图片</span>{% endif %}</a>
+          <a class="goods-name" href="/shop/{{ p.id }}" title="{{ p.name }}">{{ p.name }}</a>
+          <div class="goods-price"><b class="price">¥{{ p.price_cents | yuan }}</b></div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="stack">
+    <div class="box">
+      <div class="box-hd">▪ 热销排行</div>
+      {{ rankList(hot, '暂无商品') }}
+    </div>
+    <div class="box">
+      <div class="box-hd">▪ 付款方式</div>
+      <div class="shop-notice"><b>货到付款</b>：送货上门再付钱<br><b>邮局汇款</b>：3 天内汇款<br><b>银行转账</b>：3 天内转账</div>
+    </div>
+    {{ sideAd() }}
+  </div>
+</div>
+{% endblock %}

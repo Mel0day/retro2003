@@ -1,0 +1,40 @@
+{% extends "layout.njk" %}
+{% import "macros.njk" as m with context %}
+{% block body %}
+<table cellpadding="0" cellspacing="0" class="full"><tr>
+  <td class="side">
+    <div class="box"><h3>宝贝分类</h3>
+      {% for c in cats %}<a href="{{ c.url }}" class="row{% if c.active %} on{% endif %}">{{ c.label }} ({{ c.n }})</a>{% endfor %}
+    </div>
+    <div class="box"><h3>价格区间</h3>
+      {% for b in bands %}<a href="{{ b.url }}" class="row{% if b.active %} on{% endif %}">{{ b.label }}</a>{% endfor %}
+    </div>
+    {% if adUrl %}<a href="{{ adUrl }}" class="ad" rel="nofollow">{{ adText }}</a>{% else %}<div class="ad">{{ adText }}</div>{% endif %}
+    <div class="box sellbox"><h3>我要卖</h3>
+      <div class="pad">在淘宝开店<b class="orange">完全免费</b>，发布宝贝只要一分钟。<br><a href="/sell" class="btn">免费发布宝贝</a></div>
+    </div>
+  </td>
+  <td class="main">
+    <div class="bar">
+      <span>共找到 <b class="orange">{{ total }}</b> 件宝贝{% if q %} &nbsp; 关键词：“{{ q }}”{% endif %}</span>
+      <span>排序：{% for s in sorts %}{% if not loop.first %} | {% endif %}{% if s.active %}<b>{{ s.label }}</b>{% else %}<a href="{{ s.url }}">{{ s.label }}</a>{% endif %}{% endfor %}</span>
+    </div>
+    <table class="grid" cellpadding="6" cellspacing="0">
+      <tr class="h"><td class="c-pic">图片</td><td>宝贝名称</td><td class="c-price">价格</td><td class="c-sold">已售</td><td class="c-seller">卖家</td><td class="c-op">操作</td></tr>
+      {% for p in results %}
+      {% set cr = credit(p.seller_id) %}
+      <tr class="p">
+        <td>{{ m.thumb(p) }}</td>
+        <td class="brk"><a href="/item/{{ p.id }}" class="ttl">{{ p.title | highlight(q) }}</a>{% if p.isNew %} <span class="new">new!</span>{% endif %}<div class="desc">{{ p.descr | highlight(q) }}</div>{% if p.tag %}<div class="tag">{{ p.tag }}</div>{% endif %}</td>
+        <td class="price">￥{{ p.price_cents | yuan }}</td>
+        <td>{{ p.sold }}</td>
+        <td class="brk"><a href="/shop/{{ p.seller_id }}" class="plain">{{ p.seller_name }}</a><div class="stars" title="信用 {{ cr.score }} 分，好评率 {{ cr.rate }}%">{{ cr.stars }}</div></td>
+        <td>{% if p.stock > 0 and (not user or user.id != p.seller_id) %}<form method="post" action="/cart/add">{{ m.csrfField() }}<input type="hidden" name="item_id" value="{{ p.id }}"><button type="submit" class="btn">加入购物车</button></form>{% elif p.stock <= 0 %}<span class="soldout">已售完</span>{% else %}<span class="gray">我的宝贝</span>{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% if not results.length %}<div class="empty">没有找到{% if q %}与“{{ q }}”{% endif %}相关的宝贝，换个关键词试试？{% if q %}<br>也可以 <a href="/sell">自己发布一件</a>，说不定有人正在找。{% endif %}</div>{% endif %}
+    {{ m.pagerBar(pager) }}
+  </td>
+</tr></table>
+{% endblock %}

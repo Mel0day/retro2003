@@ -1,0 +1,41 @@
+{% extends "layout.njk" %}
+{% import "macros.njk" as m with context %}
+{% block body %}
+<div class="steps">{% if data.source == 'cart' %}<span class="s2">1 我的购物车</span>{% endif %}<span class="s1">{{ '2' if data.source == 'cart' else '1' }} 确认订单</span><span class="s3">{{ '3' if data.source == 'cart' else '2' }} 支付宝付款</span><span class="s3">{{ '4' if data.source == 'cart' else '3' }} 确认收货</span></div>
+{% if err %}<div class="err">{{ err }}</div>{% endif %}
+{% if data.skipped and data.skipped.length %}<div class="note">购物车里有 {{ data.skipped.length }} 件宝贝暂时不能购买，本次不结算：{% for s in data.skipped %}「{{ s.title | cut(16) }}」{{ s.problem }}{% if not loop.last %}；{% endif %}{% endfor %}</div>{% endif %}
+<form method="post" action="/checkout" id="checkout">
+{{ m.csrfField() }}
+<input type="hidden" name="source" value="{{ data.source }}">
+{% if data.source == 'buy' %}<input type="hidden" name="item" value="{{ data.itemId }}"><input type="hidden" name="qty" value="{{ data.qty }}">{% endif %}
+<input type="hidden" name="expect_cents" value="{{ grand }}" id="expect">
+<div class="box"><h3>1. 确认收货地址</h3>
+  <table cellpadding="4" class="form">
+    {% if addresses.length %}<tr><td class="k">地址簿：</td><td><select id="addrbook" class="txt w300"><option value="">— 选择常用地址 —</option>{% for a in addresses %}<option value="{{ a.id }}" data-receiver="{{ a.receiver }}" data-address="{{ a.address }}" data-tel="{{ a.tel }}">{{ a.receiver }} {{ a.address | cut(20) }}</option>{% endfor %}</select></td></tr>{% endif %}
+    <tr><td class="k">收货人：</td><td><input name="receiver" value="{{ addr.receiver }}" maxlength="20" class="txt w160"> <span class="gray">真实姓名</span></td></tr>
+    <tr><td class="k">地　址：</td><td><input name="address" value="{{ addr.address }}" maxlength="120" class="txt w400"> <span class="gray">省市区街道门牌号</span></td></tr>
+    <tr><td class="k">电　话：</td><td><input name="tel" value="{{ addr.tel }}" maxlength="20" class="txt w160"> <span class="gray">手机或带区号的固定电话</span></td></tr>
+  </table>
+</div>
+<div class="box mt10"><h3>2. 确认订单信息</h3>
+  {% for g in groups %}
+  <table class="carttable noborder" cellpadding="6" cellspacing="0">
+    <tr class="seller"><td colspan="4">卖家：<a href="/shop/{{ g.seller_id }}" target="_blank">{{ g.seller_name }}</a></td></tr>
+    <tr class="h"><td>宝贝</td><td class="c-price">单价</td><td class="c-sold">数量</td><td class="c-price">小计</td></tr>
+    {% for l in g.lines %}<tr class="p"><td class="brk"><a href="/item/{{ l.id }}" target="_blank">{{ l.title }}</a></td><td>￥{{ l.price_cents | yuan }}</td><td>{{ l.qty }}</td><td class="orange">￥{{ l.sub_cents | yuan }}</td></tr>{% endfor %}
+    <tr><td colspan="4" class="shipline">
+      配送方式：{% for key, s in SHIP %}<label><input type="radio" name="ship_{{ g.seller_id }}" value="{{ key }}" data-fee="{{ s.fee }}" data-group="{{ g.seller_id }}"{% if g.ship == key %} checked{% endif %}> {{ s.label }} ￥{{ s.fee | yuan }}</label> {% endfor %}
+      &nbsp; 给卖家留言：<input name="note_{{ g.seller_id }}" value="{{ g.note }}" maxlength="100" class="txt w200" placeholder="选填，如尺码、颜色">
+      <div class="groupsum">宝贝 ￥{{ g.goods | yuan }} + 运费 <span class="fee" data-group="{{ g.seller_id }}">￥{{ g.fee | yuan }}</span> = <b class="orange gtotal" data-group="{{ g.seller_id }}" data-goods="{{ g.goods }}">￥{{ g.total | yuan }}</b></div>
+    </td></tr>
+  </table>
+  {% endfor %}
+</div>
+<div class="paybox">
+  <div>应付总额：<b class="bigtotal" id="grand">￥{{ grand | yuan }}</b>{% if groups.length > 1 %} <span class="gray">（{{ groups.length }} 张订单）</span>{% endif %}</div>
+  <div class="mt4">支付宝账户余额：<b>￥{{ balance | yuan }}</b>{% if balance < grand %} <span class="red">余额不足</span>{% endif %} &nbsp; <a href="/page/alipay" target="_blank">什么是支付宝？</a></div>
+  <div class="mt8"><button type="submit" class="btn btn-big btn-blue">使用支付宝付款</button></div>
+  <div class="gray mt4">付款后货款由支付宝暂存，您确认收货后才会打给卖家。</div>
+</div>
+</form>
+{% endblock %}

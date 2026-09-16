@@ -1,0 +1,25 @@
+{% extends "user/panel.njk" %}
+{% block head %}<link rel="stylesheet" href="/static/css/album.css?v={{ assetVersion }}">{% endblock %}
+{% block panel %}
+<div class="box red">
+  <div class="box-hd"><span>我的相册</span><a href="/album/user/{{ user.id }}">[查看我的相册主页]</a></div>
+  <div class="box-bd pink">
+    空间使用：<span class="quota{% if quota.percent < 80 %} ok{% endif %}"><i style="width:{{ quota.percent }}%"></i></span>
+    已用 <b>{{ quota.used | size }}</b> / 共 <b>{{ quota.total | size }}</b>（{{ quota.percent }}%）
+  </div>
+  {% set emptyText = '还没有相册，在下面新建一个吧！' %}
+  {% include "album/_grid.njk" %}
+</div>
+
+<div class="box">
+  <div class="box-hd">▪ 新建相册</div>
+  <form method="post" action="/album/create" style="padding:6px 8px">
+    <input type="hidden" name="_csrf" value="{{ csrf }}">
+    <table class="ftable">
+      <tr><th><span class="red">*</span> 相册名称：</th><td><input class="ipt w200" name="title" required maxlength="30" placeholder="例如：2003 秋天的西湖"></td></tr>
+      <tr><th>相册描述：</th><td><textarea class="ta" name="description" rows="3" maxlength="200" placeholder="选填，200 字以内"></textarea></td></tr>
+      <tr><th></th><td><button class="btn" type="submit">创建相册</button> <span class="tip">创建后可以在相册页面上传照片</span></td></tr>
+    </table>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "admin/layout.njk" %}
+{% macro adPreview(ad) %}
+{% if ad.slot == 'header' %}
+  <div class="banner {{ ad.style }}"{% if ad.style == 'solid' %} style="background:{{ ad.bg }}"{% endif %}>
+    {% if ad.style == 'image' and ad.image %}<img src="{{ ad.image }}" alt="{{ ad.title }}">
+    {% else %}
+      {% if ad.style == 'rainbow' %}<div class="banner-bg"></div>{% endif %}
+      <div class="banner-in">
+        <div class="banner-txt"><span class="banner-title">{{ ad.title }}</span>{% if ad.subtitle %}<span class="banner-sub">{{ ad.subtitle }}</span>{% endif %}</div>
+        {% if ad.cta %}<span class="banner-cta">{{ ad.cta }}</span>{% endif %}
+      </div>
+    {% endif %}
+  </div>
+{% else %}
+  <div style="width:160px">
+  {% if ad.style == 'image' and ad.image %}<div class="adslot" style="border-style:solid"><img src="{{ ad.image }}" alt="{{ ad.title }}"></div>
+  {% else %}<div class="adslot solid" style="background:{{ ad.bg }}"><span class="ad-t">{{ ad.title }}</span>{% if ad.subtitle %}<span>{{ ad.subtitle }}</span>{% endif %}{% if ad.cta %}<span class="ad-cta">{{ ad.cta }}</span>{% endif %}</div>{% endif %}
+  </div>
+{% endif %}
+{% endmacro %}
+{% block body %}
+<div class="box">
+  <div class="box-hd"><span>▪ 广告管理</span><span class="nb"><a href="/admin/ads/new?slot=header">+ 添加 468×60 横幅</a> · <a href="/admin/ads/new?slot=sidebar">+ 添加 160×100 侧栏广告</a></span></div>
+  <div class="box-bd gray small">同一广告位有多条启用的广告时，每次打开页面随机显示一条。侧栏广告位没有启用的广告时显示「160×100 广告位 虚位以待」。</div>
+  <table class="tbl" style="border:0">
+    <tr><th>广告位</th><th>前台预览</th><th>链接 / 排序</th><th>状态</th><th>操作</th></tr>
+    {% for ad in list %}
+    <tr>
+      <td class="num">{% if ad.slot == 'header' %}顶部横幅<br><span class="gray small">468×60</span>{% else %}内页侧栏<br><span class="gray small">160×100</span>{% endif %}</td>
+      <td style="padding:6px">{{ adPreview(ad) }}</td>
+      <td style="max-width:160px;word-break:break-all"><span class="gray6">{{ ad.link or '（无链接）' }}</span><br><span class="gray small">排序 {{ ad.sort }} · {% if ad.style == 'rainbow' %}彩虹动画{% elif ad.style == 'image' %}图片{% else %}纯色{% endif %}</span></td>
+      <td class="num">{% if ad.active %}<span class="green">启用</span>{% else %}<span class="gray">停用</span>{% endif %}</td>
+      <td class="acts">
+        <a class="btn sm" href="/admin/ads/{{ ad.id }}/edit">编辑</a>
+        <form method="post" action="/admin/ads/{{ ad.id }}/toggle" class="inline-form"><input type="hidden" name="_csrf" value="{{ csrf }}"><button class="btn sm" type="submit">{{ '停用' if ad.active else '启用' }}</button></form>
+        <form method="post" action="/admin/ads/{{ ad.id }}/delete" class="inline-form" data-confirm="确定删除广告「{{ ad.title }}」？"><input type="hidden" name="_csrf" value="{{ csrf }}"><button class="btn sm" type="submit">删除</button></form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="box-empty">还没有广告，前台顶部会显示站名横幅</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

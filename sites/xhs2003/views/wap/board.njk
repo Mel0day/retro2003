@@ -1,0 +1,13 @@
+{% extends "wap/layout.njk" %}
+{% from "wap/macros.njk" import pager as pg %}
+{% block body %}
+<div class="crumb"><a href="/wap">首页</a> &gt; <a href="/wap/forum">论坛</a> &gt; {{ board.name }}</div>
+<div class="small"><b>[1]</b> <a href="/wap/forum/board/{{ board.id }}/new" accesskey="1">发新帖</a></div>
+{% for t in threads %}
+<div class="item line">{% if t.sticky %}<span class="red">[顶]</span>{% endif %}{% if t.digest %}<span class="red">[精]</span>{% endif %}{% if t.is_poll %}<span class="green">[投票]</span>{% endif %}{% if t.locked %}<span class="gray8">[锁]</span>{% endif %} <a href="/wap/forum/thread/{{ t.id }}">{{ t.title }}</a> <span class="tiny gray8">{{ t.username }} ({{ t.reply_count }})</span></div>
+{% else %}
+<div class="gray small">本版还没有主题。</div>
+{% endfor %}
+{{ pg(pager) }}
+{% endblock %}
+{% block bottom %}<div class="small"><b>[0]</b> <a href="/wap" accesskey="0">首页</a></div>{% endblock %}

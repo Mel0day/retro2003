@@ -1,0 +1,82 @@
+{% extends "layout.njk" %}
+{% from "macros.njk" import pager as pagerLinks, avatar %}
+{% block body %}
+<div class="cols2l">
+  <div class="stack">
+    {% include "partials/searchbox.njk" %}
+    <div class="box">
+      <div class="box-hd">▪ 热门标签</div>
+      <div class="tagcloud">{% for t in tags %}<a href="/tags/{{ t.name | urlencode }}"{% if t.style %} style="{{ t.style }}"{% endif %}>{{ t.name }}</a>{% else %}<span class="gray">暂无</span>{% endfor %}</div>
+    </div>
+    <div class="box">
+      <div class="box-hd">▪ 搜索小贴士</div>
+      <div class="box-bd gray6">关键词越短越容易找到；可以切换「笔记 / 用户 / 商品 / 帖子」分类搜索。</div>
+    </div>
+  </div>
+
+  <div class="stack">
+    <div class="box">
+      <div class="box-hd"><span>▪ 站内搜索{% if q %}：<span class="red">{{ q }}</span>{% endif %}</span>{% if pager %}<span class="nb">找到 {{ total }} 条结果</span>{% endif %}</div>
+      <div class="tabs" style="padding-top:4px">
+        {% for k, label in types %}<a href="/search?{{ {q: q, type: k} | qs }}"{% if searchType == k %} class="on"{% endif %}>{{ label }}</a>{% endfor %}
+      </div>
+      {% if error %}
+      <div class="box-empty red">{{ error }}</div>
+      {% elif empty %}
+      <div class="box-empty">
+        <form method="get" action="/search" class="flex" style="justify-content:center">
+          <input type="hidden" name="type" value="{{ searchType }}">
+          <input class="ipt w300" name="q" maxlength="50" placeholder="请输入要搜索的关键词" required autofocus>
+          <button class="btn" type="submit">搜 索</button>
+        </form>
+      </div>
+      {% elif not results.length %}
+      <div class="box-empty">没有找到与「<b class="red">{{ q }}</b>」相关的{{ types[searchType] }}，换个关键词试试吧。</div>
+      {% elif searchType == 'note' %}
+        {% for n in results %}
+        <div style="padding:6px 10px;border-bottom:1px dotted #ccc">
+          <div><span class="red verdana tiny">{% if n.has_image %}[图]{% else %}[文]{% endif %}</span> <a href="/notes/{{ n.id }}" class="b" style="font-size:13px;font-family:var(--f-song-13)">{{ n.title | highlight(q) }}</a></div>
+          <div class="gray6" style="margin:2px 0">{{ n.summary | highlight(q) }}</div>
+          <div class="gray small">频道：<a href="/notes?channel={{ n.channel_slug }}">{{ n.channel_name }}</a> · 作者：<a href="/u/{{ n.user_id }}">{{ n.username }}</a> · {{ n.created_at | dt }} · 点击 {{ n.hits }} · 回复 {{ n.comment_count }}</div>
+        </div>
+        {% endfor %}
+      {% elif searchType == 'user' %}
+        <table class="tbl" style="border:0">
+          <tr><th style="width:30px"></th><th>用户名</th><th>等级</th><th>笔记/帖子</th><th>积分</th><th>来自</th><th>注册时间</th></tr>
+          {% for u in results %}
+          <tr>
+            <td>{{ avatar(u, 24) }}</td>
+            <td class="t"><a href="/u/{{ u.id }}" class="b">{{ u.username | highlight(q) }}</a>{% if u.banned %} <span class="gray small">[已封禁]</span>{% endif %}</td>
+            <td class="nowrap"><span class="stars">{{ u.level.stars }}</span> {{ u.level.name }}</td>
+            <td class="num">{{ u.note_count }}/{{ u.post_count }}</td>
+            <td class="num">{{ u.points }}</td>
+            <td class="nowrap">{{ u.location or '保密' }}</td>
+            <td class="num gray">{{ u.created_at | date }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      {% elif searchType == 'goods' %}
+        {% for p in results %}
+        <div class="flex" style="padding:6px 10px;border-bottom:1px dotted #ccc;align-items:flex-start;gap:10px">
+          <a href="/shop/{{ p.id }}" class="pic-img h72" style="width:72px;flex-shrink:0">{% if p.image %}<img src="{{ p.image }}" alt="{{ p.name }}">{% else %}<span class="noimg">无图</span>{% endif %}</a>
+          <div class="grow">
+            <div><a href="/shop/{{ p.id }}" class="b" style="font-size:13px;font-family:var(--f-song-13)">{{ p.name | highlight(q) }}</a> <span class="gray small">[{{ p.category }}]</span></div>
+            <div class="gray6" style="margin:2px 0">{{ p.summary | highlight(q) }}</div>
+            <div><b class="price">¥{{ p.price_cents | yuan }}</b>{% if p.market_price_cents > p.price_cents %} <s class="gray small">¥{{ p.market_price_cents | yuan }}</s>{% endif %} <span class="gray small">· 已售 {{ p.sales }} 件 · 库存 {{ p.stock }}</span></div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        {% for t in results %}
+        <div style="padding:6px 10px;border-bottom:1px dotted #ccc">
+          <div>{% if t.is_poll %}<span class="small" style="color:#036">[投票]</span> {% endif %}<a href="/forum/thread/{{ t.id }}" class="b" style="font-size:13px;font-family:var(--f-song-13)">{{ t.title | highlight(q) }}</a>{% if t.digest %} <span class="small" style="color:#e60">[精华]</span>{% endif %}</div>
+          <div class="gray6" style="margin:2px 0">{{ t.summary | highlight(q) }}</div>
+          <div class="gray small">版块：<a href="/forum/board/{{ t.board_id }}">{{ t.board_name }}</a> · 作者：<a href="/u/{{ t.user_id }}">{{ t.username }}</a> · {{ t.created_at | dt }} · 回复 {{ t.reply_count }} · 查看 {{ t.hits }}</div>
+        </div>
+        {% endfor %}
+      {% endif %}
+      {{ pagerLinks(pager) }}
+    </div>
+  </div>
+</div>
+{% endblock %}

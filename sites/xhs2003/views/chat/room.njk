@@ -1,0 +1,56 @@
+{% extends "layout.njk" %}
+{% block head %}<link rel="stylesheet" href="/static/css/chat.css?v={{ assetVersion }}">{% endblock %}
+{% block body %}
+<div class="col1" id="chat-app" data-slug="{{ room.slug }}" data-tz="{{ tz }}" data-me="{{ user.username if user else '' }}" data-last-id="{{ messages[messages.length - 1].id if messages.length else 0 }}">
+  <div class="box red">
+    <div class="box-hd"><span>★ {{ room.name }} <span class="nb">— {{ room.topic }}</span></span><span class="nb" id="chat-status">正在连接…</span></div>
+    <div class="tabs">
+      {% for r in rooms %}<a href="/chat/{{ r.slug }}"{% if r.id == room.id %} class="on"{% endif %}>{{ r.name }}</a>{% endfor %}
+      <a href="/chat" style="margin-left:auto">« 返回聊天室列表</a>
+    </div>
+    <div class="chat-wrap" style="padding:6px">
+      <div class="box" style="display:flex;flex-direction:column">
+        <div class="chat-log" id="chat-log" aria-live="polite">
+          {% for m in messages %}
+          <div class="chat-line{% if m.kind == 'system' %} sys{% endif %}" data-id="{{ m.id }}">
+            <span class="time">[{{ m.created_at | clock }}]</span>
+            {% if m.kind == 'system' %}<span>【系统】{{ m.content }}</span>
+            {% else %}<span style="color:{{ m.color }}">{% if m.user_id %}<a href="/u/{{ m.user_id }}" class="chat-name" style="color:{{ m.color }}">{{ m.username }}</a>{% else %}<b>{{ m.username }}</b>{% endif %}
+              {% if m.action %}{{ m.action }}{% endif %}{% if m.to_name %} 对 <b>{{ m.to_name }}</b>{% endif %} 说：{{ m.content }}</span>{% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        {% if user %}
+        <form class="chat-bar" id="chat-form" autocomplete="off">
+          <div class="flex" style="flex-wrap:wrap">
+            <span><b>{{ user.username }}</b></span>
+            <select class="sel" name="action" title="动作">{% for a in actions %}<option value="{{ a }}">{{ a or '（动作）' }}</option>{% endfor %}</select>
+            <span>对</span>
+            <select class="sel" name="to" id="chat-to" title="说话对象"><option value="">所有人</option></select>
+            <span>说：</span>
+            <select class="sel" name="color" id="chat-color" title="字体颜色">{% for c in colors %}<option value="{{ c.value }}" style="color:{{ c.value }}">{{ c.name }}</option>{% endfor %}</select>
+            <label class="nowrap"><input type="checkbox" class="chk" id="chat-autoscroll" checked> 自动滚屏</label>
+          </div>
+          <div class="flex">
+            <input class="ipt grow" name="content" id="chat-input" maxlength="200" placeholder="说点什么吧，回车发送（最多 200 字）" style="height:20px">
+            <button class="btn" type="submit">发 送</button>
+            <button class="btn" type="button" id="chat-clear" title="只清空自己屏幕上的记录">清屏</button>
+          </div>
+          <div class="gray small" id="chat-tip"></div>
+        </form>
+        {% else %}
+        <div class="chat-bar center"><div>游客只能旁观哦，请先 <a href="/login?next={{ url | urlencode }}">登录</a> 或 <a href="/register">注册</a> 后再发言。</div></div>
+        {% endif %}
+      </div>
+      <div class="box chat-online">
+        <div class="box-hd"><span>▪ 在线名单 (<span id="online-count">{{ presence.members.length + presence.guests }}</span>)</span></div>
+        <div class="online-list" id="online-list">
+          {% for m in presence.members %}<div data-name="{{ m.name }}" title="对 {{ m.name }} 说">👤 {{ m.name }}</div>{% endfor %}
+          <div class="gray" data-guests>游客 {{ presence.guests }} 人</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="/static/js/chat.js?v={{ assetVersion }}"></script>{% endblock %}

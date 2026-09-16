@@ -1,0 +1,12 @@
+{% extends "wap/layout.njk" %}
+{% from "wap/macros.njk" import pager as pg %}
+{% block body %}
+<div class="crumb"><a href="/wap">首页</a> &gt; {% if channel %}<a href="/wap/channels">频道</a> &gt; {{ channel.name }}{% else %}最新笔记 · <a href="/wap/channels">按频道看</a>{% endif %}</div>
+{% for n in list %}
+<div class="item line"><span class="red tiny">{% if n.has_image %}[图]{% else %}[文]{% endif %}</span> <a href="/wap/note/{{ n.id }}">{{ n.title }}</a>{% if n.isNew %} <span class="new">NEW</span>{% endif %} <span class="tiny gray8">{{ n.username }} {{ n.created_at | md }}</span></div>
+{% else %}
+<div class="gray">这里还没有笔记。</div>
+{% endfor %}
+{{ pg(pager) }}
+{% endblock %}
+{% block bottom %}<div class="small"><b>[0]</b> <a href="/wap" accesskey="0">首页</a></div>{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "user/panel.njk" %}
+{% from "macros.njk" import pager as pagerLinks %}
+{% block panel %}
+<div class="box red">
+  <div class="box-hd"><span>我的笔记</span><span class="nb">共 {{ pager.total }} 篇</span></div>
+  <table class="tbl" style="border:0">
+    <tr><th style="width:30px"></th><th>标题</th><th>频道</th><th>点击/回复</th><th>顶/花</th><th>发表时间</th><th>操作</th></tr>
+    {% for n in list %}
+    <tr>
+      <td class="num red">{% if n.has_image %}[图]{% else %}[文]{% endif %}</td>
+      <td class="t"><div class="ellipsis"><a href="/notes/{{ n.id }}" title="{{ n.title }}">{{ n.title }}</a>{% if n.featured %} <span class="red b small">[荐]</span>{% endif %}{% if n.status != 'published' %} <span class="gray small">[已隐藏]</span>{% endif %}</div></td>
+      <td class="nowrap gray6">{{ n.channel_name }}</td>
+      <td class="num">{{ n.hits }}/{{ n.comment_count }}</td>
+      <td class="num">{{ n.likes }}/{{ n.flowers }}</td>
+      <td class="num gray">{{ n.created_at | dt }}</td>
+      <td class="nowrap"><a href="/notes/{{ n.id }}/edit">[编辑]</a> <a href="/notes/{{ n.id }}/delete" data-post-link data-confirm="确定删除《{{ n.title }}》吗？删除后不能恢复！">[删除]</a></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="box-empty">你还没有发表过笔记，<a href="/notes/new">现在就写一篇</a>吧！</td></tr>
+    {% endfor %}
+  </table>
+  {{ pagerLinks(pager) }}
+</div>
+{% endblock %}

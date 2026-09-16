@@ -1,0 +1,38 @@
+{% extends "user/panel.njk" %}
+{% from "macros.njk" import avatar %}
+{% block panel %}
+<div class="box red">
+  <div class="box-hd"><span>我的好友</span><span class="nb">共 {{ friends.length }} 位</span></div>
+  <table class="tbl" style="border:0">
+    <tr><th style="width:44px">头像</th><th>用户名</th><th>等级</th><th>来自</th><th>状态</th><th>添加时间</th><th>操作</th></tr>
+    {% for f in friends %}
+    <tr>
+      <td class="center"><a href="/u/{{ f.id }}">{{ avatar(f, 24) }}</a></td>
+      <td class="t"><a href="/u/{{ f.id }}" class="b">{{ f.username }}</a>{% if f.mutual %} <span class="green small">[互为好友]</span>{% endif %}</td>
+      <td class="nowrap gray6">{{ f.levelName }}</td>
+      <td class="nowrap gray6">{{ f.location or '保密' }}</td>
+      <td class="nowrap">{% if f.last_seen_at and f.last_seen_at >= onlineCutoff %}<span class="green">● 在线</span>{% else %}<span class="gray">○ 离线</span>{% endif %}</td>
+      <td class="num gray">{{ f.since | date }}</td>
+      <td class="nowrap"><a href="/pm/new?to={{ f.username | urlencode }}">[短消息]</a>
+        <form method="post" action="/my/friends/{{ f.id }}/delete" class="inline-form" data-confirm="确定把 {{ f.username }} 从好友中删除吗？" style="display:inline"><input type="hidden" name="_csrf" value="{{ csrf }}"><button class="btn sm" type="submit">删除</button></form></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="box-empty">还没有好友。在别人的个人主页或笔记作者资料里点「加好友」就可以啦。</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% if fans.length %}
+<div class="box">
+  <div class="box-hd">▪ 加了我、但我还没加的人</div>
+  <div class="pics col5">
+    {% for f in fans %}
+    <div class="pic">
+      <a href="/u/{{ f.id }}" style="display:block">{{ avatar(f, 40) }}</a>
+      <a href="/u/{{ f.id }}">{{ f.username }}</a>
+      <button type="button" class="btn sm" data-action="/api/friends/{{ f.id }}">[加好友]</button>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+{% endblock %}

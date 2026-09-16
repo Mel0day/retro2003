@@ -1,0 +1,23 @@
+{% extends "wap/layout.njk" %}
+{% block body %}
+{% if featured %}
+<div class="rec">
+  <a class="thumb" href="/wap/note/{{ featured.id }}"><img src="{{ featured.cover }}" alt=""></a>
+  <div class="rec-txt"><b class="red">今日推荐</b><br><a href="/wap/note/{{ featured.id }}">{{ featured.title }}</a><br><span class="gray xs">{{ featured.username }} · 点击 {{ featured.hits }}</span></div>
+</div>
+{% endif %}
+<div id="menu" class="menu">
+<div class="blk"><b>[1]</b> <a href="/wap/notes" accesskey="1">最新笔记</a>{% if hasNew %} <span class="new">NEW</span>{% endif %}</div>
+<div class="blk"><b>[2]</b> {% for c in channels %}<a href="/wap/notes?channel={{ c.slug }}"{% if loop.first %} accesskey="2"{% endif %}>{{ c.short }}</a> {% endfor %}</div>
+<div class="blk"><b>[3]</b> <a href="/wap/forum" accesskey="3">论坛</a> · <a href="/wap/chat">聊天室</a> · <a href="/wap/album">相册</a></div>
+<div class="blk"><b>[4]</b> <a href="/wap/shop" accesskey="4">好物推荐</a> · <a href="/wap/my">我的{{ site.site_name }}</a></div>
+</div>
+<div class="blk sep"><b>热门：</b></div>
+{% for h in hot %}
+<div class="line">· <a href="/wap/note/{{ h.id }}">{{ h.title }}</a> <span class="tiny gray8">({{ h.hits }})</span></div>
+{% endfor %}
+{% endblock %}
+{% block bottom %}
+<div class="xs gray">{% if user %}<b>[0]</b> <a href="/wap/my" accesskey="0">{{ user.username }}</a> | <a href="/wap/pm">短消息{% if unread %}({{ unread }}){% endif %}</a> | <a href="/wap/logout">退出</a> | <a href="/?pc=1">电脑版</a>
+{% else %}<b>[0]</b> <a href="/wap/login" accesskey="0">登录</a> | <a href="/wap/register">注册</a> | <a href="/?pc=1">电脑版</a>{% endif %}</div>
+{% endblock %}

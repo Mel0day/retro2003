@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>{{ note.title }} - 打印版 - {{ site.site_name }}</title>
+<link rel="stylesheet" href="/static/css/fonts.css?v={{ assetVersion }}">
+<link rel="stylesheet" href="/static/css/site.css?v={{ assetVersion }}">
+</head>
+<body style="background:#fff" data-csrf="{{ csrf }}">
+<div class="wrap" style="border:0;width:680px">
+  <div class="note-head">
+    <h1 class="note-title">{{ note.title }}</h1>
+    <div class="note-meta"><span>作者：{{ author.username }}</span><span>发表于：{{ note.created_at | dt }}</span><span>频道：{{ note.channel_name }}</span></div>
+  </div>
+  <div class="note-body">{{ note.content | ubb }}</div>
+  <div class="ft" style="background:none">
+    本文来自 {{ site.site_name }} · 原文地址：/notes/{{ note.id }}
+    <div class="no-print mt4"><button class="btn" data-print>打印本页</button> <a class="btn" href="/notes/{{ note.id }}">返回原文</a></div>
+  </div>
+</div>
+<script src="/static/js/site.js?v={{ assetVersion }}"></script>
+</body>
+</html>

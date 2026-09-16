@@ -1,0 +1,13 @@
+{% if albums.length %}
+<div class="album-grid">
+  {% for a in albums %}
+  <div class="album-card">
+    <a class="pic-img" href="/album/{{ a.id }}">{% if a.cover %}<img src="{{ a.cover }}" alt="{{ a.title }}" loading="lazy">{% else %}<span class="noimg">暂无封面</span>{% endif %}</a>
+    <a class="title" href="/album/{{ a.id }}" title="{{ a.title }}">{{ a.title }}</a>
+    <span class="meta">{{ a.photo_count }} 张 · 更新于 {{ a.updated_at | date }}</span>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="box-empty">{{ emptyText or '还没有相册' }}</div>
+{% endif %}

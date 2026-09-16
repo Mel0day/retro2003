@@ -1,0 +1,22 @@
+{
+  "name": "retro2003",
+  "version": "1.0.0",
+  "private": true,
+  "description": "用 2003 年的互联网形态复刻今天的主流产品：小红书 2003、淘宝网 2003",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "setup": "npm --prefix sites/xhs2003 install && npm --prefix sites/taobao2003 install",
+    "dev:xhs": "SEED_DEMO=true ADMIN_USERNAME=站长 ADMIN_PASSWORD=${ADMIN_PASSWORD:-retro2003-demo-admin} npm --prefix sites/xhs2003 run dev",
+    "dev:taobao": "SEED_DEMO=true ADMIN_USERNAME=淘宝小二 ADMIN_PASSWORD=${ADMIN_PASSWORD:-retro2003-demo-admin} npm --prefix sites/taobao2003 run dev",
+    "start:xhs": "SEED_DEMO=true ADMIN_USERNAME=站长 ADMIN_PASSWORD=${ADMIN_PASSWORD:-retro2003-demo-admin} npm --prefix sites/xhs2003 start",
+    "start:taobao": "SEED_DEMO=true ADMIN_USERNAME=淘宝小二 ADMIN_PASSWORD=${ADMIN_PASSWORD:-retro2003-demo-admin} npm --prefix sites/taobao2003 start",
+    "test": "npm --prefix sites/xhs2003 test && npm --prefix sites/taobao2003 test",
+    "test:e2e": "npm --prefix sites/xhs2003 run test:e2e && npm --prefix sites/taobao2003 run test:e2e",
+    "up": "docker compose up -d --build",
+    "down": "docker compose down"
+  },
+  "license": "MIT"
+}

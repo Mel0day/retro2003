@@ -1,0 +1,22 @@
+{% extends "layout.njk" %}
+{% block body %}
+<div class="col1">
+  <div class="box red" style="width:520px;margin:10px auto">
+    <div class="box-hd">举报不良信息</div>
+    <form method="post" action="/report" class="box-bd pink" style="padding:10px 16px">
+      <input type="hidden" name="_csrf" value="{{ csrf }}">
+      <input type="hidden" name="type" value="{{ type }}">
+      <input type="hidden" name="id" value="{{ target.id }}">
+      <input type="hidden" name="back" value="{{ back }}">
+      <p>举报对象：<b>{{ target.title }}</b></p>
+      <div class="mt6">举报理由：
+        {% for c in ['广告垃圾', '色情低俗', '人身攻击', '违法信息', '抄袭侵权', '其他'] %}
+        <label class="nowrap"><input type="radio" name="category" value="{{ c }}" class="chk"{% if loop.first %} checked{% endif %}> {{ c }}</label>
+        {% endfor %}
+      </div>
+      <textarea class="ta mt6" name="reason" rows="4" maxlength="400" placeholder="补充说明（选填）"></textarea>
+      <div class="center mt6"><button class="btn" type="submit">提交举报</button> <a class="btn" href="{{ back }}">取 消</a></div>
+    </form>
+  </div>
+</div>
+{% endblock %}

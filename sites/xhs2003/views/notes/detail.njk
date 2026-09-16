@@ -1,0 +1,141 @@
+{% extends "layout.njk" %}
+{% from "macros.njk" import avatar, pager as pagerLinks, captcha, rankList, sideAd, emots %}
+{% block body %}
+<div class="cols2">
+  <div class="stack">
+    <div class="box red">
+      {% if note.status != 'published' %}<div class="note-hidden">该笔记已被隐藏，仅作者和管理员可见</div>{% endif %}
+      <div class="note-head">
+        <h1 class="note-title">{{ note.title }}</h1>
+        <div class="note-meta">
+          <span>作者：<a href="/u/{{ author.id }}">{{ author.username }}</a></span>
+          <span>发表于：{{ note.created_at | dt }}</span>
+          <span>点击：<b class="red">{{ note.hits }}</b></span>
+          <span>回复：<b class="red">{{ note.comment_count }}</b></span>
+          <span>频道：<a href="/notes?channel={{ note.channel_slug }}">{{ note.channel_name }}</a></span>
+        </div>
+      </div>
+      <div class="note-tools no-print">
+        <button type="button" class="link" data-action="/api/notes/{{ note.id }}/favorite" data-count-key="fav">【{% if state.favorited %}已收藏{% else %}收藏本文{% endif %}】</button>
+        <a href="/notes/{{ note.id }}/print" target="_blank">【打印】</a>
+        <a href="/report?type=note&id={{ note.id }}&back={{ ('/notes/' + note.id) | urlencode }}">【举报】</a>
+        <span>字体：<a href="#" data-fontsize="fs-l" style="font-size:14px;font-family:var(--f-song-14)">大</a> <a href="#" data-fontsize="">中</a> <a href="#" data-fontsize="fs-s" style="font-size:10px;font-family:var(--f-song-10)">小</a></span>
+        {% if canManage %}
+        <span>| <a href="/notes/{{ note.id }}/edit">[编辑]</a> <a href="/notes/{{ note.id }}/delete" data-post-link data-confirm="确定要删除这篇笔记吗？删除后不能恢复！">[删除]</a></span>
+        {% endif %}
+      </div>
+
+      <div class="note-body">
+        {{ note.content | ubb }}
+        {% if note.edited_at %}<p class="note-edited" style="text-indent:0">[ 本帖最后由 {{ note.edited_by }} 于 {{ note.edited_at | dt }} 编辑 ]</p>{% endif %}
+      </div>
+
+      <div class="note-actions no-print">
+        <button class="btn" type="button" data-action="/api/notes/{{ note.id }}/like" data-count-key="likes" style="padding:1px 10px">顶一下 (<span data-count="likes">{{ note.likes }}</span>)</button>
+        <button class="btn" type="button" data-action="/api/notes/{{ note.id }}/favorite" data-count-key="fav" style="padding:1px 10px">{% if state.favorited %}已收藏{% else %}收藏{% endif %}</button>
+        <button class="btn" type="button" data-action="/api/notes/{{ note.id }}/flower" data-count-key="flowers" style="padding:1px 10px">送花 (<span data-count="flowers">{{ note.flowers }}</span>)</button>
+      </div>
+    </div>
+
+    <div class="prevnext no-print">
+      <span>上一篇：{% if prev %}<a href="/notes/{{ prev.id }}">{{ prev.title }}</a>{% else %}没有了{% endif %}</span>
+      <span>下一篇：{% if next %}<a href="/notes/{{ next.id }}">{{ next.title }}</a>{% else %}没有了{% endif %}</span>
+    </div>
+
+    <div class="box no-print" id="comments">
+      <div class="box-hd"><span>▪ 网友留言 ({{ note.comment_count }})</span>{{ pagerLinks(pager) }}</div>
+      {% for c in comments %}
+      <div class="cmt" id="floor-{{ c.floor }}">
+        <div class="cmt-side">
+          {% if c.user_id %}{{ avatar(c, 60) }}<a href="/u/{{ c.user_id }}" class="b">{{ c.username }}</a>
+          {% else %}<span class="avatar s60" style="background:#999">{{ c.guest_name | initial }}</span><b>{{ c.guest_name }}</b>{% endif %}
+          <div class="gray small">{{ c.level }}</div>
+        </div>
+        <div class="cmt-main">
+          <div class="cmt-meta">
+            <span>{{ c.floor }} 楼{% if c.status == 'pending' %} <span class="cmt-pending">[待审核]</span>{% endif %}</span>
+            <span>发表于 {{ c.created_at | dt }}
+              <a href="#reply-content" data-reply="{{ c.floor }} 楼 {{ c.displayName }}">[回复]</a>
+              <a href="#reply-content" data-quote="cmt-{{ c.id }}" data-name="{{ c.displayName }}">[引用]</a>
+              {% if isMod or (user and c.user_id == user.id) %}<button type="button" class="link" data-action="/api/comments/{{ c.id }}/delete" data-ask="确定删除这条留言？">[删除]</button>{% endif %}
+              {% if c.status == 'pending' and isMod %}<button type="button" class="link" data-action="/api/comments/{{ c.id }}/approve">[通过]</button>{% endif %}
+            </span>
+          </div>
+          <div class="cmt-text ubb-plain" id="cmt-{{ c.id }}" data-raw="{{ c.content }}">{{ c.content | ubb('comment') }}</div>
+          {% if c.signature %}<div class="sig">{{ c.signature }}</div>{% endif %}
+        </div>
+      </div>
+      {% else %}
+      <div class="box-empty">还没有人留言，快来抢沙发吧！</div>
+      {% endfor %}
+      {% if pager.pages > 1 %}<div style="border-bottom:1px solid #ddd">{{ pagerLinks(pager) }}</div>{% endif %}
+
+      {% if note.status == 'published' %}
+      <form class="cmt-form" method="post" action="/notes/{{ note.id }}/comments">
+        <input type="hidden" name="_csrf" value="{{ csrf }}">
+        <b>发表留言</b>
+        {% if user %}
+        <div class="form-row">昵称：<b>{{ user.username }}</b></div>
+        {% elif site.allow_guest_comment == '1' %}
+        <div class="form-row">昵称：<input class="ipt w120" name="nickname" required maxlength="16"> <span class="gray">（游客请填写昵称，会员请先<a href="/login?next={{ ('/notes/' + note.id) | urlencode }}">登录</a>）</span></div>
+        {% endif %}
+        {% if user or site.allow_guest_comment == '1' %}
+        {{ emots() }}
+        <textarea class="ta" id="reply-content" name="content" rows="4" required maxlength="2000" style="resize:none"></textarea>
+        <div class="form-row" style="gap:6px">
+          {% if not user %}验证码：<input class="ipt w48" name="captcha" required maxlength="4" autocomplete="off">{{ captcha('comment') }}{% endif %}
+          <span class="gray small">支持 [b]粗体[/b] [quote]引用[/quote] 等 UBB 代码</span>
+          <button class="btn" type="submit" style="margin-left:auto">提 交</button>
+          <button class="btn" type="reset">重 填</button>
+        </div>
+        <span class="gray small">* 请文明发言{% if (not user and site.comment_review_guest == '1') or (user and site.comment_review_member == '1') %}，留言审核后显示{% endif %}。禁止广告、人身攻击。</span>
+        {% else %}
+        <div class="center">本站暂不允许游客留言，请先 <a href="/login?next={{ ('/notes/' + note.id) | urlencode }}">登录</a> 或 <a href="/register">注册</a>。</div>
+        {% endif %}
+      </form>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="stack no-print">
+    <div class="box red">
+      <div class="box-hd">作者资料</div>
+      <div class="ucard">
+        {{ avatar(author, 80) }}
+        <a href="/u/{{ author.id }}" class="b" style="font-size:13px;font-family:var(--f-song-13)">{{ author.username }}</a>
+        <div class="ucard-info">
+          <div>等级：<span class="stars">{{ authorLevel.stars }}</span> {{ authorLevel.name }}</div>
+          <div>笔记：<b>{{ author.note_count }}</b> 篇 · 积分：<b>{{ author.points }}</b></div>
+          <div>注册：{{ author.created_at | date }}</div>
+          <div>来自：{{ author.location or '保密' }}</div>
+        </div>
+        <div class="ucard-acts">
+          <div class="flex" style="gap:4px"><a href="/pm/new?to={{ author.username | urlencode }}">[短消息]</a>{% if not user or user.id != author.id %}<button type="button" class="link" data-action="/api/friends/{{ author.id }}">[{% if state.friend %}已是好友{% else %}加好友{% endif %}]</button>{% endif %}</div>
+          <a href="/u/{{ author.id }}">[TA的笔记]</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="box">
+      <div class="box-hd">▪ 本文标签</div>
+      <div class="tagcloud">
+        {% for t in tags %}<a href="/tags/{{ t.name | urlencode }}"{% if loop.first %} class="red b"{% endif %}>{{ t.name }}</a>{% else %}<span class="gray">无</span>{% endfor %}
+      </div>
+    </div>
+
+    <div class="box">
+      <div class="box-hd">▪ 相关笔记</div>
+      {% for r in related %}
+      <div class="row" style="display:block" ><a href="/notes/{{ r.id }}" class="ellipsis" style="display:block" title="{{ r.title }}">· {{ r.title }}</a></div>
+      {% else %}<div class="box-empty">暂无</div>{% endfor %}
+    </div>
+
+    <div class="box">
+      <div class="box-hd">▪ {{ note.channel_name.slice(0, 2) }}频道热门</div>
+      {{ rankList(channelHot) }}
+    </div>
+
+    {{ sideAd() }}
+  </div>
+</div>
+{% endblock %}

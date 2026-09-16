@@ -1,0 +1,21 @@
+{% extends "layout.njk" %}
+{% from "macros.njk" import captcha %}
+{% block body %}
+<div class="col1" style="padding:20px 0 30px">
+  <div class="box red" style="width:420px;margin:0 auto">
+    <div class="box-hd">会员登录</div>
+    <form method="post" action="/login" class="box-bd pink" style="padding:12px 20px">
+      <input type="hidden" name="_csrf" value="{{ csrf }}">
+      <input type="hidden" name="next" value="{{ next }}">
+      {% if error %}<div class="field-err center" style="margin-bottom:6px">✘ {{ error }}</div>{% endif %}
+      <table class="ftable">
+        <tr><th>用户名：</th><td><input class="ipt w200" name="username" value="{{ username or '' }}" required maxlength="16" autocomplete="username" autofocus></td></tr>
+        <tr><th>密　码：</th><td><input class="ipt w200" type="password" name="password" required maxlength="32" autocomplete="current-password"></td></tr>
+        {% if site.captcha_login == '1' %}<tr><th>验证码：</th><td><input class="ipt w48" name="captcha" required maxlength="4" autocomplete="off"> {{ captcha('login') }} <span class="gray small">看不清？点图片换一张</span></td></tr>{% endif %}
+        <tr><th></th><td><label><input type="checkbox" name="remember" value="1" class="chk"> 记住我（两周内免登录）</label></td></tr>
+        <tr><th></th><td><button class="btn" type="submit">登 录</button> <a class="btn" href="/register">注 册</a> <a href="/forgot">忘记密码?</a></td></tr>
+      </table>
+    </form>
+  </div>
+</div>
+{% endblock %}

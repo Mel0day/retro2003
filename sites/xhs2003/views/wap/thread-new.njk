@@ -1,0 +1,11 @@
+{% extends "wap/layout.njk" %}
+{% block body %}
+<div class="crumb"><a href="/wap">首页</a> &gt; <a href="/wap/forum/board/{{ board.id }}">{{ board.name }}</a> &gt; 发新帖</div>
+{% if error %}<div class="err">✘ {{ error }}</div>{% endif %}
+<form class="form" method="post" action="/wap/forum/board/{{ board.id }}/new">
+  <input type="hidden" name="_csrf" value="{{ csrf }}">
+  <label>标题：<br><input class="ipt full" name="title" value="{{ form.title }}" maxlength="60" required></label>
+  <label>内容：<br><textarea class="ta" name="content" rows="6" required>{{ form.content }}</textarea></label>
+  <div><button class="btn" type="submit">发表</button></div>
+</form>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "wap/layout.njk" %}
+{% from "wap/macros.njk" import captcha %}
+{% block body %}
+<div class="crumb"><a href="/wap">首页</a> &gt; 注册新会员</div>
+{% if error %}<div class="err">✘ {{ error }}</div>{% endif %}
+<form class="form" method="post" action="/wap/register">
+  <input type="hidden" name="_csrf" value="{{ csrf }}">
+  <label>用户名：<span class="xs gray">2-16 位</span><br><input class="ipt full" name="username" value="{{ form.username }}" maxlength="16" required></label>
+  <label>密码：<span class="xs gray">6-32 位</span><br><input class="ipt full" type="password" name="password" minlength="6" maxlength="32" required></label>
+  <label>确认密码：<br><input class="ipt full" type="password" name="password2" minlength="6" maxlength="32" required></label>
+  <label>密码提示问题：<br><input class="ipt full" name="question" value="{{ form.question }}" maxlength="50" required placeholder="例如：我的小学叫什么？"></label>
+  <label>答案：<br><input class="ipt full" name="answer" maxlength="50" required autocomplete="off"></label>
+  <label>验证码：<input class="ipt w48" name="captcha" maxlength="4" autocomplete="off" required> {{ captcha() }}</label>
+  <div><button class="btn" type="submit">提交注册</button></div>
+</form>
+{% endblock %}
+{% block bottom %}<div class="small"><b>[1]</b> <a href="/wap/login" accesskey="1">已有账号登录</a> <b>[0]</b> <a href="/wap" accesskey="0">首页</a></div>{% endblock %}

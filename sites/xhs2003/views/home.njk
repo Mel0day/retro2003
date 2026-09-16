@@ -1,0 +1,106 @@
+{% extends "layout.njk" %}
+{% from "macros.njk" import rankList %}
+{% block body %}
+<div class="cols3">
+  <div class="stack">
+    {% include "partials/loginbox.njk" %}
+
+    <div class="box">
+      <div class="box-hd">▪ 频道导航</div>
+      {% for c in channels %}
+      <div class="row ccc"><a href="/notes?channel={{ c.slug }}">» {{ c.name }}</a><span class="count">({{ c.note_count }})</span></div>
+      {% endfor %}
+    </div>
+
+    {% include "partials/searchbox.njk" %}
+
+    <div class="box">
+      <div class="box-hd">▪ 友情链接</div>
+      <div style="padding:4px 8px;display:flex;flex-wrap:wrap;gap:2px 8px">
+        {% for l in links %}<a href="{{ l.url }}" target="_blank" rel="noopener">{{ l.name }}</a>{% else %}<span class="gray">暂无</span>{% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="stack">
+    <div class="box red">
+      <div class="box-hd"><span>★ 今日推荐笔记</span><a href="/notes?sort=featured">更多&gt;&gt;</a></div>
+      {% if featured.length %}
+      <div class="pics">
+        {% for f in featured %}
+        <div class="pic">
+          <a class="pic-img" href="/notes/{{ f.id }}"><img src="{{ f.cover }}" alt="{{ f.title }}" loading="lazy"></a>
+          <a href="/notes/{{ f.id }}" title="{{ f.title }}">{{ f.title }}</a>
+          <span class="pic-meta">by {{ f.username }} · 点击 {{ f.hits }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}<div class="box-empty">还没有推荐笔记，<a href="/notes/new">快来发表第一篇</a>吧！</div>{% endif %}
+    </div>
+
+    <div class="box">
+      <div class="box-hd"><span>▪ 最新笔记</span><a href="/notes">更多&gt;&gt;</a></div>
+      <div class="news">
+        {% for n in latest %}
+        <div class="news-row">
+          <span class="news-tag">{% if n.has_image %}[图]{% else %}[文]{% endif %}</span>
+          <a class="news-title" href="/notes/{{ n.id }}" title="{{ n.title }}">{{ n.title }}</a>
+          {% if n.isNew %}<span class="new">NEW</span>{% endif %}
+          <span class="news-user">{{ n.username }}</span>
+          <span class="news-date">{{ n.created_at | md }}</span>
+        </div>
+        {% else %}<div class="box-empty">暂无笔记</div>{% endfor %}
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="box">
+        <div class="box-hd"><span>▪ 好物推荐</span><a href="/shop">更多&gt;&gt;</a></div>
+        {% for g in goods %}
+        <div class="row"><a href="/shop/{{ g.id }}">· {{ g.name }}</a><b class="price">¥{{ g.price_cents | yuan }}</b></div>
+        {% else %}<div class="box-empty">暂无商品</div>{% endfor %}
+      </div>
+      <div class="box">
+        <div class="box-hd"><span>▪ 论坛热帖</span><a href="/forum">更多&gt;&gt;</a></div>
+        {% for p in threads %}
+        <div class="row"><a href="/forum/thread/{{ p.id }}" title="{{ p.title }}">· {% if p.is_poll %}[投票] {% endif %}{{ p.title }}</a><span class="count">[{{ p.reply_count }}]</span></div>
+        {% else %}<div class="box-empty">暂无帖子</div>{% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="stack">
+    <div class="box">
+      <div class="box-hd">▪ 热门标签</div>
+      <div class="tagcloud">
+        {% for t in tags %}<a href="/tags/{{ t.name | urlencode }}"{% if t.style %} style="{{ t.style }}"{% endif %}>{{ t.name }}</a>{% else %}<span class="gray">暂无标签</span>{% endfor %}
+      </div>
+    </div>
+
+    <div class="box">
+      <div class="box-hd">▪ 人气排行 TOP10</div>
+      {{ rankList(ranking) }}
+    </div>
+
+    <div class="box">
+      <div class="box-hd">▪ 站长公告</div>
+      <div class="box-bd dark">{{ site.webmaster_notice }}</div>
+    </div>
+
+    {% if site.show_counter == '1' %}
+    <div class="counter">
+      <span>您是本站第</span>
+      <div class="digits">{% for d in counter %}<span class="digit">{{ d }}</span>{% endfor %}</div>
+      <span>位访客</span>
+      <span class="gray6 small">当前在线：<b class="green">{{ online }}</b> 人</span>
+    </div>
+    {% endif %}
+
+    <div class="badges">
+      <span class="badge80" style="background:#333">IE 5.0+</span>
+      <span class="badge80" style="background:#036">800×600</span>
+      <span class="badge80" style="background:#c00">FLASH 6</span>
+    </div>
+  </div>
+</div>
+{% endblock %}

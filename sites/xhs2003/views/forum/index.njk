@@ -1,0 +1,45 @@
+{% extends "layout.njk" %}
+{% block head %}<link rel="stylesheet" href="/static/css/forum.css?v={{ assetVersion }}">{% endblock %}
+{% block body %}
+<div class="col1">
+  <div class="forum-stats">
+    <span>今日发帖：<b>{{ stats.today }}</b> · 主题：<b>{{ stats.threads }}</b> · 帖子：<b>{{ stats.posts }}</b> · 会员：<b>{{ stats.members }}</b>{% if stats.newest %} · 欢迎新会员 <a href="/u/{{ stats.newest.id }}">{{ stats.newest.username }}</a>{% endif %}</span>
+    <span>{% if user %}<a href="/my/posts">我的帖子</a>{% else %}<a href="/login?next=/forum">登录</a> 后才能发帖{% endif %} · <a href="/search?type=thread">搜索帖子</a></span>
+  </div>
+
+  {% for cat in categories %}
+  <table class="tbl ftbl">
+    <tr class="tbl-cat"><td colspan="5">▪ {{ cat.name }}</td></tr>
+    <tr><th style="width:30px"></th><th>版块</th><th>主题</th><th>帖子</th><th>最后发表</th></tr>
+    {% for b in cat.boards %}
+    <tr>
+      <td class="num"><span class="bicon{% if b.last_post_at and b.last_post_at >= todayStart %} on{% endif %}" title="{% if b.last_post_at and b.last_post_at >= todayStart %}今日有新帖{% else %}今日无新帖{% endif %}">{% if b.last_post_at and b.last_post_at >= todayStart %}新{% else %}旧{% endif %}</span></td>
+      <td class="bname"><a href="/forum/board/{{ b.id }}" class="b">{{ b.name }}</a>{% if b.description %}<div class="desc">{{ b.description }}</div>{% endif %}</td>
+      <td class="num">{{ b.thread_count }}</td>
+      <td class="num">{{ b.post_count }}</td>
+      <td class="last">{% if b.last_tid %}<a href="/forum/thread/{{ b.last_tid }}" title="{{ b.last_title }}">{{ b.last_title }}</a><span class="gray">{{ b.last_post_at | dt }}</span>{% if b.last_username %} by <a href="/u/{{ b.last_uid }}" style="display:inline">{{ b.last_username }}</a>{% endif %}{% else %}<span class="gray">暂无</span>{% endif %}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="box-empty">该分区下暂无版块</td></tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <div class="box"><div class="box-empty">论坛还没有开设版块。</div></div>
+  {% endfor %}
+
+  <div class="grid2">
+    <div class="box">
+      <div class="box-hd">▪ 论坛热帖</div>
+      {% for t in hot %}
+      <div class="row"><a href="/forum/thread/{{ t.id }}" title="{{ t.title }}">· {% if t.is_poll %}[投票] {% endif %}{{ t.title }}</a><span class="count">[{{ t.reply_count }}]</span></div>
+      {% else %}<div class="box-empty">暂无帖子</div>{% endfor %}
+    </div>
+    <div class="box">
+      <div class="box-hd">▪ 最新回复</div>
+      {% for t in latest %}
+      <div class="row"><a href="/forum/thread/{{ t.id }}" title="{{ t.title }}">· {% if t.is_poll %}[投票] {% endif %}{{ t.title }}</a><span class="count">{{ t.last_username }} {{ t.last_post_at | md }}</span></div>
+      {% else %}<div class="box-empty">暂无帖子</div>{% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

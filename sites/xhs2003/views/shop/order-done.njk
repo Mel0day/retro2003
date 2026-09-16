@@ -1,0 +1,14 @@
+{% extends "layout.njk" %}
+{% block head %}<link rel="stylesheet" href="/static/css/shop.css?v={{ assetVersion }}">{% endblock %}
+{% block body %}
+<div class="msgbox ok" style="width:520px">
+  <div class="box-hd">下单成功</div>
+  <div class="msgbox-bd">
+    <div class="icon">✔</div>
+    <div>订单提交成功！您的订单号：<b class="red verdana" style="font-size:14px;font-family:var(--f-sans-14)">{{ order.order_no }}</b></div>
+    <div>商品：{{ order.product_name }} × {{ order.qty }}　应付金额：<b class="price-big" style="font-size:14px;font-family:var(--f-song-14)">¥{{ order.total_cents | yuan }}</b></div>
+    <div class="pay-tip" style="text-align:left"><b>{{ paymentLabel }}</b>：{{ tip }}</div>
+    <div class="mt8"><a class="btn" href="/my/orders/{{ order.order_no }}">查看订单详情</a> <a class="btn" href="/shop">继续购物</a></div>
+  </div>
+</div>
+{% endblock %}

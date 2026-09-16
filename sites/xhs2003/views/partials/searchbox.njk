@@ -1,0 +1,15 @@
+<div class="box">
+  <div class="box-hd">▪ 站内搜索</div>
+  <form method="get" action="/search" style="padding:6px;display:flex;flex-direction:column;gap:4px">
+    <input class="ipt" name="q" value="{{ q or '' }}" maxlength="50" required>
+    <div style="display:flex;gap:4px;align-items:center">
+      <select class="sel" name="type" style="flex:1">
+        <option value="note"{% if searchType == 'note' %} selected{% endif %}>笔记</option>
+        <option value="user"{% if searchType == 'user' %} selected{% endif %}>用户</option>
+        <option value="goods"{% if searchType == 'goods' %} selected{% endif %}>商品</option>
+        <option value="thread"{% if searchType == 'thread' %} selected{% endif %}>帖子</option>
+      </select>
+      <button class="btn" type="submit" style="padding:1px 8px">搜索</button>
+    </div>
+  </form>
+</div>

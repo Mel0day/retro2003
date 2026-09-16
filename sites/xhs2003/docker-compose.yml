@@ -1,0 +1,26 @@
+services:
+  xhs2003:
+    build:
+      context: .
+      args:
+        NPM_REGISTRY: ${NPM_REGISTRY:-https://registry.npmjs.org}
+    image: xhs2003:latest
+    container_name: xhs2003
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      DATA_DIR: /data
+    ports:
+      # 前面有 Nginx 时建议改成 "127.0.0.1:3003:3003"，只让本机访问
+      - "${XHS_PORT:-3003}:3003"
+    volumes:
+      - xhs-data:/data
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  xhs-data:

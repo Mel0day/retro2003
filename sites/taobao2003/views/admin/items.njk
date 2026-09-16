@@ -1,0 +1,10 @@
+{% extends "admin/layout.njk" %}
+{% block body %}
+<form method="get" action="/admin/items" class="bar">标题/卖家 <input name="q" value="{{ q }}" class="txt"> <select name="filter" class="txt"><option value="">全部</option>{% for k, l in [['onsale','出售中'],['warehouse','仓库中'],['blocked','被小二下架'],['deleted','已删除']] %}<option value="{{ k }}"{% if filter == k %} selected{% endif %}>{{ l }}</option>{% endfor %}</select> <button type="submit" class="btn">查找</button> &nbsp; 共 {{ total }} 件</form>
+<table class="t"><tr><th>ID</th><th>宝贝</th><th>卖家</th><th>价格</th><th>库存/已售</th><th>状态</th><th>操作</th></tr>
+  {% for it in items %}<tr><td>{{ it.id }}</td><td class="brk"><a href="/item/{{ it.id }}" target="_blank">{{ it.title }}</a><br><span class="gray">{{ it.cat }} · {{ it.listed_at | date }}</span></td><td>{{ it.seller_name }}</td><td>￥{{ it.price_cents | yuan }}</td><td>{{ it.stock }} / {{ it.sold }}</td>
+    <td>{% if it.status == 'onsale' %}出售中{% elif it.status == 'warehouse' %}仓库中{% else %}已删除{% endif %}{% if it.blocked %}<br><span class="red">小二下架：{{ it.block_reason }}</span>{% endif %}</td>
+    <td>{% if it.status != 'deleted' %}<form method="post" action="/admin/items/{{ it.id }}/block"><input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="back" value="{{ back }}">{% if it.blocked %}<input type="hidden" name="block" value="0"><button type="submit" class="btn">恢复</button>{% else %}<input type="hidden" name="block" value="1"><input name="reason" class="txt w100" maxlength="60" placeholder="下架原因"> <button type="submit" class="btn btn-red">强制下架</button>{% endif %}</form>{% endif %}</td></tr>{% endfor %}
+</table>
+{% include "admin/_pager.njk" %}
+{% endblock %}

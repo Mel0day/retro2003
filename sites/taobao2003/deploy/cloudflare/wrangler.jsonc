@@ -1,0 +1,26 @@
+{
+  // taobao-2003.dshmod.com 入口。部署：npx wrangler deploy -c deploy/cloudflare/wrangler.jsonc
+  "$schema": "https://unpkg.com/wrangler/config-schema.json",
+  "name": "taobao2003-gateway",
+  "main": "./worker.js",
+  "compatibility_date": "2026-08-01",
+  // 只走自定义域名，不暴露 workers.dev 入口
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    {
+      "pattern": "taobao-2003.dshmod.com",
+      "custom_domain": true
+    }
+  ],
+  "vpc_services": [
+    {
+      // wrangler vpc service create taobao2003-origin --type http --tunnel-id <隧道 ID> --hostname taobao2003 --http-port 3004
+      "binding": "ORIGIN",
+      "service_id": "<VPC 服务 ID>"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}

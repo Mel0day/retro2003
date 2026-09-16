@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#e8e8e8;font-family:"宋体",SimSun,Tahoma,Verdana,sans-serif;font-size:12px;color:#000}
+a{color:#000080;text-decoration:none}a:hover{color:#ff0000;text-decoration:underline}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+@keyframes rainbow{from{background-position:0 0}to{background-position:400% 0}}
+</style>
+</helmet>
+<div style="width:778px;margin:8px auto;background:#fff;border:1px solid #999;font-family:'宋体',SimSun,Tahoma,Verdana,sans-serif;font-size:12px;line-height:1.6">
+
+  <div style="display:grid;grid-template-columns:1fr 468px;align-items:center;padding:6px 8px;background:linear-gradient(#fff,#ffe6e6);border-bottom:1px solid #c00">
+    <div style="display:flex;align-items:baseline;gap:8px">
+      <span style="font-family:Impact,'黑体',SimHei,sans-serif;font-size:30px;color:#c00;letter-spacing:2px;text-shadow:2px 2px 0 #f9c;font-weight:bold">小红书</span>
+      <span style="font-family:Verdana,sans-serif;font-size:11px;color:#666">·  标记我的生活  ·  Since 2003</span>
+    </div>
+    <a href="#" style="display:block;width:468px;height:60px;border:1px solid #000;overflow:hidden;position:relative;background:#3333ff">
+      {{ adBg }}
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;padding:0 12px">
+        <div style="display:flex;flex-direction:column;line-height:1.1">
+          <span style="font-family:Impact,'黑体',SimHei,sans-serif;font-size:24px;color:#fff;text-shadow:2px 2px 0 #000,-1px -1px 0 #000;letter-spacing:1px">震撼！全场 5 折起</span>
+          <span style="font-family:'宋体',SimSun,sans-serif;font-size:12px;color:#ff0;text-shadow:1px 1px 0 #000">Nokia 3310 · Discman · MP3 · 数码相机 限时抢购</span>
+        </div>
+        {{ adBlink }}
+      </div>
+    </a>
+  </div>
+
+  <div style="display:flex;gap:0;background:linear-gradient(#fefefe,#d6d6d6);border-top:1px solid #fff;border-bottom:1px solid #888;padding:3px 8px;font-weight:bold">
+    <a href="#" style="padding:0 10px;color:#c00">首 页</a><span style="color:#888">|</span>
+    <a href="#" style="padding:0 10px">笔 记</a><span style="color:#888">|</span>
+    <a href="#" style="padding:0 10px">购 物</a><span style="color:#888">|</span>
+    <a href="#" style="padding:0 10px">论 坛</a><span style="color:#888">|</span>
+    <a href="#" style="padding:0 10px">相 册</a><span style="color:#888">|</span>
+    <a href="#" style="padding:0 10px">排行榜</a><span style="color:#888">|</span>
+    <a href="#" style="padding:0 10px">聊天室</a><span style="color:#888">|</span>
+    <a href="#" style="padding:0 10px">帮 助</a>
+    <span style="margin-left:auto;color:#333;font-weight:normal">{{ today }}  设为首页 · 加入收藏</span>
+  </div>
+
+  <sc-if value="{{ showMarquee }}" hint-placeholder-val="{{ true }}">
+  <div style="display:flex;align-items:center;gap:8px;padding:3px 8px;background:#fffbe6;border-bottom:1px solid #e0d8a8;color:#a00;overflow:hidden">
+    <b>[公告]</b>
+    <div style="flex:1;overflow:hidden;white-space:nowrap;min-width:0">{{ marquee }}</div>
+  </div>
+  </sc-if>
+
+  <div style="display:grid;grid-template-columns:168px 1fr 178px;gap:6px;padding:6px">
+
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="border:1px solid #c00">
+        <div style="background:linear-gradient(#e33,#a00);color:#fff;font-weight:bold;padding:2px 6px">会员登录</div>
+        <div style="padding:6px;display:flex;flex-direction:column;gap:4px;background:#fff8f8">
+          <div style="display:flex;align-items:center;gap:4px">用户名<input value="" placeholder="" style="flex:1;width:0;height:18px;border:1px solid #7f9db9;font-size:12px;font-family:inherit"></div>
+          <div style="display:flex;align-items:center;gap:4px">密　码<input type="password" value="" style="flex:1;width:0;height:18px;border:1px solid #7f9db9;font-size:12px"></div>
+          <div style="display:flex;align-items:center;gap:4px">验证码<input value="" style="width:48px;height:18px;border:1px solid #7f9db9;font-size:12px"><span style="font-family:'Courier New',monospace;font-weight:bold;font-style:italic;background:#dde;padding:0 4px;letter-spacing:2px;color:#336">7K3Q</span></div>
+          <label style="display:flex;align-items:center;gap:2px;white-space:nowrap"><input type="checkbox" style="margin:0">记住我（两周内免登录）</label>
+          <div style="display:flex;gap:6px;justify-content:center;margin-top:2px">
+            <button style="font-size:12px;font-family:inherit;white-space:nowrap;padding:1px 12px;background:#ece9d8;border:1px solid;border-color:#fff #444 #444 #fff;cursor:pointer">登 录</button>
+            <button style="font-size:12px;font-family:inherit;white-space:nowrap;padding:1px 12px;background:#ece9d8;border:1px solid;border-color:#fff #444 #444 #fff;cursor:pointer">注 册</button>
+          </div>
+          <div style="text-align:center"><a href="#">忘记密码?</a> · <a href="#" style="color:#c00">免费注册新会员</a></div>
+        </div>
+      </div>
+
+      <div style="border:1px solid #999">
+        <div style="background:linear-gradient(#f4f4f4,#c8c8c8);font-weight:bold;padding:2px 6px;border-bottom:1px solid #999">▪ 频道导航</div>
+        <sc-for list="{{ channels }}" as="c" hint-placeholder-count="10">
+          <div style="display:flex;justify-content:space-between;padding:2px 8px;border-bottom:1px dotted #ccc"><a href="#">» {{ c.name }}</a><span style="color:#888;font-family:Verdana,sans-serif;font-size:10px">({{ c.count }})</span></div>
+        </sc-for>
+      </div>
+
+      <div style="border:1px solid #999">
+        <div style="background:linear-gradient(#f4f4f4,#c8c8c8);font-weight:bold;padding:2px 6px;border-bottom:1px solid #999">▪ 站内搜索</div>
+        <div style="padding:6px;display:flex;flex-direction:column;gap:4px">
+          <input value="" style="height:18px;border:1px solid #7f9db9;font-size:12px;font-family:inherit">
+          <div style="display:flex;gap:4px;align-items:center">
+            <select style="font-size:12px;font-family:inherit;flex:1"><option>笔记</option><option>用户</option><option>商品</option></select>
+            <button style="font-size:12px;font-family:inherit;padding:1px 8px;background:#ece9d8;border:1px solid;border-color:#fff #444 #444 #fff;cursor:pointer">搜索</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="border:1px solid #999">
+        <div style="background:linear-gradient(#f4f4f4,#c8c8c8);font-weight:bold;padding:2px 6px;border-bottom:1px solid #999">▪ 友情链接</div>
+        <div style="padding:4px 8px;display:flex;flex-wrap:wrap;gap:2px 8px"><a href="#">网易</a><a href="#">搜狐</a><a href="#">新浪</a><a href="#">榕树下</a><a href="#">西祠胡同</a><a href="#">天涯社区</a><a href="#">猫扑</a><a href="#">中华网</a></div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+      <div style="border:1px solid #c00">
+        <div style="display:flex;justify-content:space-between;background:linear-gradient(#e33,#a00);color:#fff;font-weight:bold;padding:2px 6px"><span>★ 今日推荐笔记</span><a href="#" style="color:#fff;font-weight:normal">更多&gt;&gt;</a></div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px">
+          <sc-for list="{{ featured }}" as="f" hint-placeholder-count="6">
+            <div style="display:flex;flex-direction:column;gap:3px;text-align:center">
+              <div style="height:96px;border:1px solid #888;padding:2px;background:#fff"><img src="{{ f.img }}" alt="{{ f.title }}" style="display:block;width:100%;height:100%;object-fit:cover;filter:saturate(0.85) contrast(0.95)"></div>
+              <a href="{{ f.href }}" style="color:#000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.title }}</a>
+              <span style="color:#888;font-size:11px;font-family:Verdana,sans-serif">by {{ f.user }} · 点击 {{ f.hits }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="border:1px solid #999">
+        <div style="display:flex;justify-content:space-between;background:linear-gradient(#f4f4f4,#c8c8c8);font-weight:bold;padding:2px 6px;border-bottom:1px solid #999"><span>▪ 最新笔记</span><a href="#" style="font-weight:normal">更多&gt;&gt;</a></div>
+        <div style="padding:4px 8px">
+          <sc-for list="{{ latest }}" as="n" hint-placeholder-count="12">
+            <div style="display:flex;gap:6px;align-items:center;padding:1px 0;border-bottom:1px dotted #ddd">
+              <span style="color:#c00;font-family:Verdana,sans-serif;font-size:10px;width:22px">{{ n.tag }}</span>
+              <a href="#" style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ n.title }}</a>
+              <sc-if value="{{ n.isNew }}" hint-placeholder-val="{{ false }}">{{ newBadge }}</sc-if>
+              <span style="color:#666;width:70px;text-align:right">{{ n.user }}</span>
+              <span style="color:#888;font-family:Verdana,sans-serif;font-size:10px;width:36px;text-align:right">{{ n.date }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+        <div style="border:1px solid #999">
+          <div style="background:linear-gradient(#f4f4f4,#c8c8c8);font-weight:bold;padding:2px 6px;border-bottom:1px solid #999">▪ 好物推荐</div>
+          <sc-for list="{{ goods }}" as="g" hint-placeholder-count="5">
+            <div style="display:flex;justify-content:space-between;padding:2px 8px;border-bottom:1px dotted #ddd"><a href="#">· {{ g.name }}</a><b style="color:#c00;font-family:Verdana,sans-serif;font-size:11px">¥{{ g.price }}</b></div>
+          </sc-for>
+        </div>
+        <div style="border:1px solid #999">
+          <div style="background:linear-gradient(#f4f4f4,#c8c8c8);font-weight:bold;padding:2px 6px;border-bottom:1px solid #999">▪ 论坛热帖</div>
+          <sc-for list="{{ forum }}" as="p" hint-placeholder-count="5">
+            <div style="display:flex;justify-content:space-between;padding:2px 8px;border-bottom:1px dotted #ddd"><a href="#" style="min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">· {{ p.title }}</a><span style="color:#888;font-family:Verdana,sans-serif;font-size:10px">[{{ p.replies }}]</span></div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="border:1px solid #999">
+        <div style="background:linear-gradient(#f4f4f4,#c8c8c8);font-weight:bold;padding:2px 6px;border-bottom:1px solid #999">▪ 热门标签</div>
+        <div style="padding:6px 8px;display:flex;flex-wrap:wrap;gap:3px 8px;line-height:1.5">
+          <a href="#" style="font-size:16px;color:#c00;font-weight:bold">穿搭</a><a href="#">护肤</a><a href="#" style="font-size:14px;color:#060">美食</a><a href="#">旅行</a><a href="#" style="font-size:13px;color:#630">彩妆</a><a href="#">健身</a><a href="#" style="font-size:15px;color:#009">数码</a><a href="#">家居</a><a href="#">读书</a><a href="#" style="color:#909;font-size:13px">摄影</a><a href="#">宠物</a><a href="#">学习</a>
+        </div>
+      </div>
+
+      <div style="border:1px solid #999">
+        <div style="background:linear-gradient(#f4f4f4,#c8c8c8);font-weight:bold;padding:2px 6px;border-bottom:1px solid #999">▪ 人气排行 TOP10</div>
+        <sc-for list="{{ ranking }}" as="r" hint-placeholder-count="10">
+          <div style="display:flex;gap:5px;align-items:center;padding:1px 8px;border-bottom:1px dotted #ddd">
+            <span style="width:14px;height:14px;line-height:14px;text-align:center;font-family:Verdana,sans-serif;font-size:10px;font-weight:bold;color:#fff;background:{{ r.bg }}">{{ r.rank }}</span>
+            <a href="#" style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.title }}</a>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="border:1px solid #999">
+        <div style="background:linear-gradient(#f4f4f4,#c8c8c8);font-weight:bold;padding:2px 6px;border-bottom:1px solid #999">▪ 站长公告</div>
+        <div style="padding:6px 8px;color:#333">服务器已升级至 100M 光纤，感谢大家支持！近期论坛灌水严重，请文明发言。相册空间每人 20MB，上传图片请勿超过 200KB。</div>
+      </div>
+
+      <sc-if value="{{ showCounter }}" hint-placeholder-val="{{ true }}">
+      <div style="border:1px solid #999;padding:6px;display:flex;flex-direction:column;align-items:center;gap:4px;background:#f8f8f8">
+        <span>您是本站第</span>
+        <div style="display:flex;gap:1px">
+          <sc-for list="{{ counterDigits }}" as="d" hint-placeholder-count="8">
+            <span style="width:14px;height:20px;line-height:20px;text-align:center;background:#000;color:#0f0;font-family:'Courier New',monospace;font-weight:bold;font-size:14px">{{ d }}</span>
+          </sc-for>
+        </div>
+        <span>位访客</span>
+        <span style="color:#666;font-size:11px">当前在线：<b style="color:#060">1,247</b> 人</span>
+      </div>
+      </sc-if>
+
+      <div style="display:flex;justify-content:center;gap:4px;flex-wrap:wrap">
+        <span style="width:80px;height:15px;font-size:9px;line-height:15px;text-align:center;background:#333;color:#fff;font-family:Verdana,sans-serif;border:1px solid #000">IE 5.0+</span>
+        <span style="width:80px;height:15px;font-size:9px;line-height:15px;text-align:center;background:#036;color:#fff;font-family:Verdana,sans-serif;border:1px solid #000">800×600</span>
+        <span style="width:80px;height:15px;font-size:9px;line-height:15px;text-align:center;background:#c00;color:#fff;font-family:Verdana,sans-serif;border:1px solid #000">FLASH 6</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="border-top:1px solid #888;background:linear-gradient(#d6d6d6,#f4f4f4);padding:6px;text-align:center;color:#333;line-height:1.7">
+    <div><a href="#">关于我们</a> | <a href="#">广告服务</a> | <a href="#">联系站长</a> | <a href="#">诚聘版主</a> | <a href="#">免责声明</a> | <a href="#">网站地图</a></div>
+    <div>本站建议使用 IE 5.0 以上浏览器、800×600 分辨率浏览 · 站长信箱：webmaster@xhs2003.net</div>
+    <div style="color:#666;font-family:Verdana,sans-serif;font-size:11px">Copyright © 2003 小红书社区 版权所有 · 京ICP备03012345号</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showMarquee&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;显示&quot;},&quot;showCounter&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;显示&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const d = new Date();
+    const wk = "日一二三四五六"[d.getDay()];
+    const newBadge = React.createElement("span", {style:{color:"#f00",fontFamily:"Verdana,sans-serif",fontSize:"9px",fontWeight:"bold",animation:"blink 1s step-end infinite"}}, "NEW");
+    const adBlink = React.createElement("span", {style:{background:"#ff0",color:"#f00",fontFamily:"Impact,'黑体',SimHei,sans-serif",fontSize:"18px",padding:"4px 10px",border:"2px solid #f00",transform:"rotate(-6deg)",animation:"blink .6s step-end infinite",whiteSpace:"nowrap"}}, "点击进入>>");
+    const bgs = ["#c00","#e60","#c90"];
+    return {
+      today: `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 星期${wk}`,
+      showMarquee: this.props.showMarquee ?? true,
+      showCounter: this.props.showCounter ?? true,
+      marquee: React.createElement("span", {style:{display:"inline-block",paddingLeft:"100%",animation:"scroll 28s linear infinite"}}, "★ 热烈庆祝小红书社区开通两周年！★ 新增「相册」频道，每位会员免费赠送 20MB 空间 ★ 第三届网友穿搭大赛火热投票中 ★ 请勿在论坛发布广告信息，违者封号"),
+      newBadge, adBlink,
+      adBg: React.createElement("div", {style:{position:"absolute",inset:0,background:"linear-gradient(90deg,#ff00cc,#3333ff,#00ffcc,#ffff00,#ff0000,#ff00cc)",backgroundSize:"400% 100%",animation:"rainbow 3s linear infinite"}}),
+      channels: [["穿搭搭配",3821],["美妆护肤",2960],["美食厨房",2214],["旅游攻略",1873],["数码玩家",1502],["家居装饰",987],["读书笔记",764],["健身运动",651],["宠物之家",540],["校园生活",1290]].map(([name,count])=>({name,count})),
+      featured: [
+        ["秋季通勤穿搭 5 套", "小鹿乱撞", 8213, "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400&q=70"],
+        ["自制珍珠奶茶全过程", "阿May", 6520, "https://images.unsplash.com/photo-1558857563-b371033873b8?w=400&q=70"],
+        ["西塘两日游攻略", "背包客小张", 5107, "https://images.unsplash.com/photo-1537531383496-f4749b8032cf?w=400&q=70"],
+        ["平价好用洗面奶测评", "vivian", 4933, "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&q=70"],
+        ["我的 20 平出租屋改造", "Lemon树", 4470, "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&q=70"],
+        ["MP3 选购指南（附对比）", "数码迷", 3892, "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400&q=70"],
+      ].map(([title,user,hits,img])=>({title,user,hits,img,href:title.startsWith("西塘")?"笔记详情 2003.dc.html":"#"})),
+      latest: [
+        ["[图]","冬天到了 分享我的三件羊毛围巾","毛线球",true,"12-03"],
+        ["[图]","宿舍也能做的电饭锅蛋糕","小厨娘",true,"12-03"],
+        ["[文]","第一次用胶片机 感受和心得","胶片少年",true,"12-03"],
+        ["[图]","上海南京路小店淘货记","淘淘",false,"12-02"],
+        ["[文]","考研倒计时 30 天 我的作息表","Sunny",false,"12-02"],
+        ["[图]","新买的 Nokia 3310 开箱","数码迷",false,"12-02"],
+        ["[文]","学生党护肤 每月不到 50 元","vivian",false,"12-01"],
+        ["[图]","周末去拍的银杏 大家看看","摄影小白",false,"12-01"],
+        ["[文]","读《挪威的森林》有感","书虫",false,"11-30"],
+        ["[图]","养了两个月的小仓鼠","仓鼠妈妈",false,"11-30"],
+        ["[文]","健身房新手 求指点","阿力",false,"11-29"],
+        ["[图]","自己缝的帆布包 有点丑","手作猫",false,"11-29"],
+      ].map(([tag,title,user,isNew,date])=>({tag,title,user,isNew,date})),
+      goods: [["雅芳小黑裙淡香水",68],["无印良品笔记本 A5",12],["飘柔洗发水 400ml",19.9],["Discman 随身听",399],["三枪纯棉秋衣",45]].map(([name,price])=>({name,price})),
+      forum: [["大家都在用什么 QQ 秀？",231],["晒晒你的 MSN 签名",188],["求推荐好听的英文歌",157],["[投票] 最想去的旅行地",142],["征集 版主 各频道",96]].map(([title,replies])=>({title,replies})),
+      ranking: ["秋季通勤穿搭 5 套","自制珍珠奶茶全过程","西塘两日游攻略","平价好用洗面奶测评","我的 20 平出租屋改造","MP3 选购指南","冬天的三件羊毛围巾","电饭锅蛋糕","胶片机初体验","南京路淘货记"].map((title,i)=>({rank:i+1,title,bg:bgs[Math.min(i,2)]})),
+      counterDigits: "00318472".split(""),
+    };
+  }
+}
+</script>
+</body>
+</html>

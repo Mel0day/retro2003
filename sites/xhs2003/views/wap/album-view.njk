@@ -1,0 +1,10 @@
+{% extends "wap/layout.njk" %}
+{% block body %}
+<div class="crumb"><a href="/wap">首页</a> &gt; <a href="/wap/album">相册</a> &gt; {{ album.title }}</div>
+<div class="title">{{ album.title }}</div>
+<div class="meta">{{ album.username }} · {{ album.photo_count }} 张{% if album.description %} · {{ album.description }}{% endif %}</div>
+{% for ph in photos %}
+<div class="rec item"><a class="thumb" href="/wap/album/photo/{{ ph.id }}"><img src="/uploads/{{ ph.path }}" alt="" loading="lazy"></a><div class="rec-txt small"><a href="/wap/album/photo/{{ ph.id }}">{{ ph.caption or '无题' }}</a><br><span class="tiny gray8">{{ ph.size | size }}</span></div></div>
+{% else %}<div class="gray small">相册是空的。</div>{% endfor %}
+{% endblock %}
+{% block bottom %}<div class="small"><b>[0]</b> <a href="/wap" accesskey="0">首页</a></div>{% endblock %}

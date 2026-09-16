@@ -1,0 +1,11 @@
+/* 管理后台补充样式 */
+.admin-wrap{width:980px}
+.admin-flash{padding:4px 10px;border:1px solid #369;background:#f4f8ff;color:#036}
+.admin-flash.err{border-color:#c99;background:#fee;color:#c00}
+.admin-toolbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:6px 8px;background:#f8f8f8;border-bottom:1px solid #ddd}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px}
+.stat{border:1px solid #ccc;background:#fcfcfc;padding:6px 8px;text-align:center}
+.stat b{display:block;font-family:var(--f-sans-big);font-size:20px;color:#c00}
+.tbl td.acts{white-space:nowrap}
+.tbl td.acts form{display:inline}
+.inline-form{display:inline}

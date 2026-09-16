@@ -1,0 +1,32 @@
+{% extends "user/panel.njk" %}
+{% from "macros.njk" import pager as pagerLinks %}
+{% block panel %}
+<div class="box red">
+  <div class="box-hd"><span>我发表的主题</span><a href="/forum">去论坛发帖&gt;&gt;</a></div>
+  <table class="tbl" style="border:0">
+    <tr><th>主题</th><th>版块</th><th>回复/点击</th><th>发表时间</th></tr>
+    {% for t in threads %}
+    <tr>
+      <td class="t"><div class="ellipsis">{% if t.sticky %}<span class="red small">[顶]</span> {% endif %}{% if t.digest %}<span class="red small">[精]</span> {% endif %}{% if t.is_poll %}<span class="red">[投票]</span> {% endif %}<a href="/forum/thread/{{ t.id }}">{{ t.title }}</a>{% if t.status != 'published' %} <span class="gray small">[已删除]</span>{% endif %}</div></td>
+      <td class="nowrap"><a href="/forum/board/{{ t.board_id }}" class="gray6">{{ t.board_name }}</a></td>
+      <td class="num">{{ t.reply_count }}/{{ t.hits }}</td>
+      <td class="num gray">{{ t.created_at | dt }}</td>
+    </tr>
+    {% else %}<tr><td colspan="4" class="box-empty">还没有发表过主题</td></tr>{% endfor %}
+  </table>
+</div>
+<div class="box">
+  <div class="box-hd"><span>▪ 我的回复</span><span class="nb">共 {{ pager.total }} 条</span></div>
+  <table class="tbl" style="border:0">
+    <tr><th>回复内容</th><th>所在主题</th><th>时间</th></tr>
+    {% for p in replies %}
+    <tr>
+      <td class="t"><div class="ellipsis"><a href="/forum/thread/{{ p.thread_id }}?floor={{ p.floor }}#floor-{{ p.floor }}">{{ p.content | cut(50) }}</a>{% if p.status != 'published' %} <span class="gray small">[已删除]</span>{% endif %}</div></td>
+      <td class="nowrap" style="max-width:200px"><div class="ellipsis gray6" style="max-width:200px">{{ p.title }}</div></td>
+      <td class="num gray">{{ p.created_at | dt }}</td>
+    </tr>
+    {% else %}<tr><td colspan="3" class="box-empty">还没有回复过帖子</td></tr>{% endfor %}
+  </table>
+  {{ pagerLinks(pager) }}
+</div>
+{% endblock %}

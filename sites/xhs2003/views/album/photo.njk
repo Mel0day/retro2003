@@ -1,0 +1,37 @@
+{% extends "layout.njk" %}
+{% block head %}<link rel="stylesheet" href="/static/css/album.css?v={{ assetVersion }}">{% endblock %}
+{% block body %}
+<div class="col1">
+  <div class="box red">
+    <div class="box-hd"><span>{{ photo.album_title }}（第 {{ index }} / {{ total }} 张）</span><a href="/album/{{ photo.album_id }}">返回相册 &gt;&gt;</a></div>
+    <div class="photo-nav">
+      <span>{% if prev %}<a href="/album/photo/{{ prev.id }}">&lt;&lt; 上一张</a>{% else %}<span class="gray">已是第一张</span>{% endif %}</span>
+      <span class="gray6">上传者：<a href="/album/user/{{ photo.owner_id }}">{{ photo.username }}</a> · 大小：{{ photo.size | size }} · 上传于 {{ photo.created_at | dt }} · 浏览 <b class="red">{{ photo.hits }}</b> 次</span>
+      <span>{% if next %}<a href="/album/photo/{{ next.id }}">下一张 &gt;&gt;</a>{% else %}<span class="gray">已是最后一张</span>{% endif %}</span>
+    </div>
+    <div class="photo-view">
+      <a href="{% if next %}/album/photo/{{ next.id }}{% else %}/uploads/{{ photo.path }}{% endif %}" title="{% if next %}点击看下一张{% else %}点击看原图{% endif %}"><img src="/uploads/{{ photo.path }}" alt="{{ photo.caption }}"></a>
+      <div class="caption">{{ photo.caption or '无题' }}</div>
+      <div class="gray small mt4"><a href="/uploads/{{ photo.path }}" target="_blank">[查看原图]</a> <a href="/report?type=photo&id={{ photo.id }}&back={{ ('/album/photo/' + photo.id) | urlencode }}">[举报]</a>{% if isCover %} <span class="red">[相册封面]</span>{% endif %}</div>
+    </div>
+    {% if strip.length > 1 %}
+    <div class="photo-strip">
+      {% for s in strip %}<a href="/album/photo/{{ s.id }}"{% if s.id == photo.id %} class="on"{% endif %}><img src="/uploads/{{ s.path }}" alt="" loading="lazy"></a>{% endfor %}
+    </div>
+    {% endif %}
+    {% if canManage %}
+    <div class="upload-box">
+      <form method="post" action="/album/photo/{{ photo.id }}/edit" class="form-row">
+        <input type="hidden" name="_csrf" value="{{ csrf }}">
+        照片说明：<input class="ipt w300" name="caption" value="{{ photo.caption }}" maxlength="60">
+        <button class="btn" type="submit">保存</button>
+      </form>
+      <div class="form-row">
+        {% if not isCover %}<form method="post" action="/album/photo/{{ photo.id }}/cover" class="inline-form"><input type="hidden" name="_csrf" value="{{ csrf }}"><button class="btn" type="submit">设为封面</button></form>{% endif %}
+        <form method="post" action="/album/photo/{{ photo.id }}/delete" class="inline-form" data-confirm="确定删除这张照片吗？"><input type="hidden" name="_csrf" value="{{ csrf }}"><button class="btn" type="submit">删除照片</button></form>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

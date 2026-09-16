@@ -1,0 +1,17 @@
+{% extends "user/panel.njk" %}
+{% block panel %}
+<div class="box red">
+  <div class="box-hd"><span>查看短消息</span><a href="{% if isReceiver %}/pm{% else %}/pm/outbox{% endif %}">返回{% if isReceiver %}收件箱{% else %}发件箱{% endif %}&gt;&gt;</a></div>
+  <table class="ftable">
+    <tr><th>标　题：</th><td><b>{{ m.title }}</b></td></tr>
+    <tr><th>发件人：</th><td>{% if m.from_id %}<a href="/u/{{ m.from_id }}">{{ m.from_name }}</a>{% else %}<span class="green b">系统消息</span>{% endif %}</td></tr>
+    <tr><th>收件人：</th><td><a href="/u/{{ m.to_id }}">{{ m.to_name }}</a></td></tr>
+    <tr><th>时　间：</th><td>{{ m.created_at | dt }}{% if not isReceiver %} · {% if m.read_at %}对方已于 {{ m.read_at | dt }} 阅读{% else %}对方尚未阅读{% endif %}{% endif %}</td></tr>
+  </table>
+  <div class="note-body ubb-plain" style="font-size:13px;font-family:var(--f-song-13);line-height:1.8;min-height:80px;border-top:1px dotted #c99">{{ m.body | ubb('post') }}</div>
+  <div class="note-actions">
+    {% if isReceiver and m.from_id %}<a class="btn" href="/pm/new?reply={{ m.id }}">回 复</a>{% endif %}
+    <form method="post" action="/pm/{{ m.id }}/delete" class="inline-form" data-confirm="确定删除这条短消息吗？"><input type="hidden" name="_csrf" value="{{ csrf }}"><button class="btn" type="submit">删 除</button></form>
+  </div>
+</div>
+{% endblock %}

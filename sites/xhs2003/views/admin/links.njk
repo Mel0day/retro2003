@@ -1,0 +1,28 @@
+{% extends "admin/layout.njk" %}
+{% block body %}
+<div class="box">
+  <div class="box-hd"><span>▪ 友情链接</span><span class="nb">共 {{ list.length }} 个 · 显示在首页左栏</span></div>
+  <table class="tbl" style="border:0">
+    <tr><th>排序</th><th>网站名称</th><th>网址</th><th>操作</th></tr>
+    {% for l in list %}
+    <tr>
+      <td class="num"><input class="ipt" style="width:36px" name="sort" value="{{ l.sort }}" form="ln-{{ l.id }}"></td>
+      <td><input class="ipt w120" name="name" value="{{ l.name }}" required maxlength="20" form="ln-{{ l.id }}"></td>
+      <td><input class="ipt w300" name="url" value="{{ l.url }}" required maxlength="500" form="ln-{{ l.id }}"> <a href="{{ l.url }}" target="_blank" rel="noopener" class="small">[访问]</a></td>
+      <td class="acts">
+        <form method="post" action="/admin/links/{{ l.id }}" id="ln-{{ l.id }}" class="inline-form"><input type="hidden" name="_csrf" value="{{ csrf }}"><button class="btn sm" type="submit">保存</button></form>
+        <form method="post" action="/admin/links/{{ l.id }}/delete" class="inline-form" data-confirm="确定删除「{{ l.name }}」？"><input type="hidden" name="_csrf" value="{{ csrf }}"><button class="btn sm" type="submit">删除</button></form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" class="box-empty">还没有友情链接</td></tr>
+    {% endfor %}
+    <tr style="background:#fffbe6">
+      <td class="num"><input class="ipt" style="width:36px" name="sort" value="{{ list.length }}" form="ln-new"></td>
+      <td><input class="ipt w120" name="name" required maxlength="20" placeholder="网站名称" form="ln-new"></td>
+      <td><input class="ipt w300" name="url" required maxlength="500" placeholder="https://" form="ln-new"></td>
+      <td class="acts"><form method="post" action="/admin/links" id="ln-new" class="inline-form"><input type="hidden" name="_csrf" value="{{ csrf }}"><button class="btn sm" type="submit">添加</button></form></td>
+    </tr>
+  </table>
+</div>
+{% endblock %}

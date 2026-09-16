@@ -1,0 +1,22 @@
+{% extends "my/layout.njk" %}
+{% import "macros.njk" as m with context %}
+{% block main %}
+<div class="tabs nomargin"><a href="/my/items" class="tab{% if tab == 'onsale' %} on{% endif %}">出售中的宝贝({{ counts.onsale or 0 }})</a><a href="/my/items?tab=warehouse" class="tab{% if tab == 'warehouse' %} on{% endif %}">仓库中的宝贝({{ counts.warehouse or 0 }})</a> &nbsp; <a href="/sell" class="btn">+ 发布新宝贝</a></div>
+<table class="carttable" cellpadding="6" cellspacing="0">
+  <tr class="h"><td class="c-pic">图片</td><td>宝贝标题</td><td class="c-price">价格</td><td class="c-sold">库存</td><td class="c-sold">已售</td><td class="c-op3">操作</td></tr>
+  {% for it in items %}
+  <tr class="p">
+    <td>{{ m.thumb(it) }}</td>
+    <td class="brk"><a href="/item/{{ it.id }}">{{ it.title }}</a><div class="gray">{{ it.cat }} · 上架 {{ it.listed_at | date }} · 浏览 {{ it.views }}</div>{% if it.blocked %}<div class="red">已被淘宝小二下架：{{ it.block_reason }}</div>{% endif %}</td>
+    <td class="orange">￥{{ it.price_cents | yuan }}</td><td>{{ it.stock }}{% if it.stock == 0 %}<div class="red">缺货</div>{% endif %}</td><td>{{ it.sold }}</td>
+    <td>
+      <a href="/my/items/{{ it.id }}/edit">编辑</a>
+      {% if tab == 'onsale' %}<form method="post" action="/my/items/{{ it.id }}/warehouse" class="inline">{{ m.csrfField() }}<button type="submit" class="linkbtn">下架</button></form>
+      {% elif not it.blocked %}<form method="post" action="/my/items/{{ it.id }}/onsale" class="inline">{{ m.csrfField() }}<input type="hidden" name="back" value="warehouse"><button type="submit" class="linkbtn">上架</button></form>{% endif %}
+      <form method="post" action="/my/items/{{ it.id }}/delete" class="inline" data-confirm="确定删除「{{ it.title }}」吗？删除后不能恢复，历史订单的交易快照仍然保留。">{{ m.csrfField() }}<input type="hidden" name="back" value="{{ tab }}"><button type="submit" class="linkbtn red">删除</button></form>
+    </td>
+  </tr>
+  {% endfor %}
+  {% if not items.length %}<tr><td colspan="6" class="empty">{% if tab == 'onsale' %}还没有出售中的宝贝，<a href="/sell">马上发布一件</a>{% else %}仓库是空的{% endif %}</td></tr>{% endif %}
+</table>
+{% endblock %}

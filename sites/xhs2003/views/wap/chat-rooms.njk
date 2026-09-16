@@ -1,0 +1,8 @@
+{% extends "wap/layout.njk" %}
+{% block body %}
+<div class="crumb"><a href="/wap">首页</a> &gt; 聊天室</div>
+{% for room in rooms %}
+<div class="item"><b>[{{ loop.index }}]</b> <a href="/wap/chat/{{ room.slug }}"{% if loop.index < 10 %} accesskey="{{ loop.index }}"{% endif %}>{{ room.name }}</a> <span class="tiny gray8">({{ room.online }} 人)</span><br><span class="xs gray">{{ room.topic }}</span></div>
+{% endfor %}
+{% endblock %}
+{% block bottom %}<div class="small"><b>[0]</b> <a href="/wap" accesskey="0">首页</a></div>{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "my/layout.njk" %}
+{% import "macros.njk" as m with context %}
+{% block main %}
+<table class="carttable" cellpadding="6" cellspacing="0">
+  <tr class="h"><td class="c-pic">图片</td><td>宝贝</td><td class="c-price">价格</td><td class="c-who">卖家</td><td class="c-op3">操作</td></tr>
+  {% for it in items %}
+  {% set gone = it.status != 'onsale' or it.blocked or it.seller_banned %}
+  <tr class="p{% if gone %} bad{% endif %}"><td>{{ m.thumb(it) }}</td>
+    <td class="brk"><a href="/item/{{ it.id }}">{{ it.title }}</a>{% if gone %}<div class="red">已下架</div>{% elif it.stock < 1 %}<div class="red">已卖完</div>{% endif %}<div class="gray">收藏于 {{ it.faved_at | date }}</div></td>
+    <td class="orange">￥{{ it.price_cents | yuan }}</td><td class="brk"><a href="/shop/{{ it.seller_id }}">{{ it.seller_name }}</a></td>
+    <td>{% if not gone and it.stock > 0 %}<form method="post" action="/cart/add" class="inline">{{ m.csrfField() }}<input type="hidden" name="item_id" value="{{ it.id }}"><button type="submit" class="btn">加入购物车</button></form>{% endif %}
+      <form method="post" action="/item/{{ it.id }}/favorite" class="inline">{{ m.csrfField() }}<input type="hidden" name="remove" value="1"><input type="hidden" name="back" value="favorites"><button type="submit" class="linkbtn red">删除</button></form></td></tr>
+  {% endfor %}
+  {% if not items.length %}<tr><td colspan="5" class="empty">收藏夹是空的。在宝贝详情页点「收藏宝贝」就能放到这里。</td></tr>{% endif %}
+</table>
+{% endblock %}

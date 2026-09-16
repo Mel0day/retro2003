@@ -1,0 +1,44 @@
+{% extends "layout.njk" %}
+{% import "macros.njk" as m with context %}
+{% block body %}
+<table class="shophead" cellpadding="8" cellspacing="0"><tr>
+  <td>
+    <div class="shopname">{{ seller.username }}的店铺</div>
+    <div class="lh19">
+      卖家信用：{{ m.creditBadge(sellerCredit) }} &nbsp; 好评率：<b>{{ sellerCredit.rate }}%</b> &nbsp; 买家信用：{{ m.creditBadge(buyerCredit) }}<br>
+      所在地：{{ seller.city or '未填写' }} &nbsp; 开店时间：{{ seller.created_at | date }} &nbsp; 成功交易 {{ soldCount }} 笔 &nbsp; 最近登录：{% if seller.last_login_at %}{{ seller.last_login_at | date }}{% else %}—{% endif %}
+      {% if seller.banned %}<br><span class="red">该账号已被冻结</span>{% endif %}
+    </div>
+    {% if seller.shop_intro %}<div class="shopintro brk">{{ seller.shop_intro | nl2br }}</div>{% endif %}
+  </td>
+  <td class="ratesum">
+    <table class="mini" cellpadding="3" cellspacing="0">
+      <tr class="h"><td></td><td>最近一周</td><td>最近一月</td><td>全部</td></tr>
+      <tr><td class="g1">好评</td><td>{{ recent.w_good or 0 }}</td><td>{{ recent.m_good or 0 }}</td><td>{{ recent.a_good or 0 }}</td></tr>
+      <tr><td class="g0">中评</td><td>{{ recent.w_mid or 0 }}</td><td>{{ recent.m_mid or 0 }}</td><td>{{ recent.a_mid or 0 }}</td></tr>
+      <tr><td class="g-1">差评</td><td>{{ recent.w_bad or 0 }}</td><td>{{ recent.m_bad or 0 }}</td><td>{{ recent.a_bad or 0 }}</td></tr>
+    </table>
+  </td>
+</tr></table>
+<div class="tabs"><a href="/shop/{{ seller.id }}" class="tab{% if tab == 'items' %} on{% endif %}">出售中的宝贝({{ total }})</a><a href="/shop/{{ seller.id }}?tab=rates" class="tab{% if tab == 'rates' %} on{% endif %}">信用评价({{ sellerCredit.total }})</a></div>
+{% if tab == 'items' %}
+<table class="grid" cellpadding="6" cellspacing="0">
+  <tr class="h"><td class="c-pic">图片</td><td>宝贝名称</td><td class="c-price">价格</td><td class="c-sold">已售</td><td class="c-op">操作</td></tr>
+  {% for p in items %}
+  <tr class="p"><td>{{ m.thumb(p) }}</td>
+    <td class="brk"><a href="/item/{{ p.id }}" class="ttl">{{ p.title }}</a>{% if p.isNew %} <span class="new">new!</span>{% endif %}<div class="desc">{{ p.descr }}</div>{% if p.tag %}<div class="tag">{{ p.tag }}</div>{% endif %}</td>
+    <td class="price">￥{{ p.price_cents | yuan }}</td><td>{{ p.sold }}</td>
+    <td>{% if p.stock > 0 and (not user or user.id != p.seller_id) %}<form method="post" action="/cart/add">{{ m.csrfField() }}<input type="hidden" name="item_id" value="{{ p.id }}"><button type="submit" class="btn">加入购物车</button></form>{% elif p.stock <= 0 %}<span class="soldout">已售完</span>{% else %}<a href="/my/items/{{ p.id }}/edit">编辑</a>{% endif %}</td></tr>
+  {% endfor %}
+  {% if not items.length %}<tr><td colspan="5" class="empty">该卖家暂时没有出售中的宝贝</td></tr>{% endif %}
+</table>
+{{ m.pagerBar(pager) }}
+{% else %}
+<table class="reviews" cellpadding="6" cellspacing="0">
+  <tr class="h"><td class="c-who">评价人</td><td>评价内容</td><td class="c-time2">宝贝</td><td class="c-time">时间</td></tr>
+  {% for r in ratings %}<tr><td>{{ r.from_name }}</td><td class="brk">{{ m.gradeTag(r.grade) }} {% if r.hidden %}<span class="gray">内容已被屏蔽</span>{% else %}{{ r.text }}{% endif %}{% if r.reply %}<div class="replyline">卖家解释：{{ r.reply }}</div>{% endif %}</td><td class="brk">{% if r.item_id %}<a href="/item/{{ r.item_id }}" class="plain">{{ r.item_title | cut(14) }}</a>{% endif %}</td><td class="gray">{{ r.created_at | date }}</td></tr>{% endfor %}
+  {% if not ratings.length %}<tr><td colspan="4" class="empty-s">还没有收到评价</td></tr>{% endif %}
+</table>
+<div class="gray mt4">只显示最近 50 条。</div>
+{% endif %}
+{% endblock %}

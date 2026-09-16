@@ -1,0 +1,40 @@
+{% extends "user/panel.njk" %}
+{% from "macros.njk" import avatar %}
+{% block panel %}
+<div class="box red">
+  <div class="box-hd">修改头像</div>
+  <div class="box-bd pink" style="display:flex;gap:16px;align-items:center;padding:10px">
+    <div class="center">{{ avatar(user, 100) }}<div class="gray small mt4">当前头像</div></div>
+    <div class="gray6" style="line-height:1.9">
+      头像会显示在你的笔记、留言、帖子和个人主页里。<br>
+      可以上传一张图片，也可以选择一个纯色背景 + 用户名首字的头像。
+    </div>
+  </div>
+</div>
+
+<div class="box">
+  <div class="box-hd">▪ 上传头像图片</div>
+  <form method="post" action="/my/avatar?_csrf={{ csrf }}" enctype="multipart/form-data" style="padding:8px">
+    <table class="ftable">
+      <tr><th>选择图片：</th><td><input type="file" name="avatar" accept="image/jpeg,image/png,image/gif,image/webp" required> <span class="tip">JPG / PNG / GIF，不超过 {{ maxKb }}KB，建议正方形</span></td></tr>
+      <tr><th></th><td><button class="btn" type="submit">上传头像</button></td></tr>
+    </table>
+  </form>
+</div>
+
+<div class="box">
+  <div class="box-hd">▪ 选择纯色头像</div>
+  <form method="post" action="/my/avatar/color" style="padding:8px">
+    <input type="hidden" name="_csrf" value="{{ csrf }}">
+    <div style="display:flex;flex-wrap:wrap;gap:10px">
+      {% for c in colors %}
+      <label class="center" style="cursor:pointer">
+        <span class="avatar s40" style="background:{{ c }}">{{ user.username | initial }}</span>
+        <input type="radio" name="color" value="{{ c }}" class="chk"{% if not user.avatar_path and user.avatar_color == c %} checked{% endif %} required>
+      </label>
+      {% endfor %}
+    </div>
+    <div class="mt6"><button class="btn" type="submit">使用纯色头像</button>{% if user.avatar_path %} <span class="tip">选择后会替换当前上传的图片头像</span>{% endif %}</div>
+  </form>
+</div>
+{% endblock %}

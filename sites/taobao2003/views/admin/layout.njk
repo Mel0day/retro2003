@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>{{ title }} - 淘宝小二后台</title>
+<link rel="stylesheet" href="/static/css/fonts.css?v={{ assetVersion }}">
+<link rel="stylesheet" href="/static/css/admin.css?v={{ assetVersion }}">
+</head>
+<body data-csrf="{{ csrf }}">
+<div class="top"><span>淘宝网 · 小二后台（{{ user.username }}）</span><span>
+  <a href="/admin"{% if path == '/admin' or path == '/admin/' %} class="on"{% endif %}>首页统计</a>
+  <a href="/admin/users"{% if path.startsWith('/admin/users') %} class="on"{% endif %}>会员</a>
+  <a href="/admin/items"{% if path.startsWith('/admin/items') %} class="on"{% endif %}>宝贝</a>
+  <a href="/admin/orders"{% if path.startsWith('/admin/orders') %} class="on"{% endif %}>交易</a>
+  <a href="/admin/ratings"{% if path.startsWith('/admin/ratings') %} class="on"{% endif %}>评价与留言</a>
+  <a href="/admin/settings"{% if path.startsWith('/admin/settings') %} class="on"{% endif %}>设置</a>
+  <a href="/">回到前台</a></span></div>
+<div class="main">
+<h2>{{ title }}</h2>
+{% block body %}{% endblock %}
+</div>
+<script src="/static/js/site.js?v={{ assetVersion }}"></script>
+</body>
+</html>

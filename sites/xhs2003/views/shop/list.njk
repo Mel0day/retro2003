@@ -1,0 +1,57 @@
+{% extends "layout.njk" %}
+{% from "macros.njk" import pager as pagerLinks, rankList, sideAd %}
+{% block head %}<link rel="stylesheet" href="/static/css/shop.css?v={{ assetVersion }}">{% endblock %}
+{% block body %}
+<div class="cols2l">
+  <div class="stack">
+    <div class="box red">
+      <div class="box-hd">商品分类</div>
+      <div class="row ccc"><a href="/shop"{% if not category %} class="red b"{% endif %}>» 全部商品</a><span class="count">({{ allCount }})</span></div>
+      {% for c in categories %}
+      <div class="row ccc"><a href="/shop?category={{ c.name | urlencode }}"{% if category == c.name %} class="red b"{% endif %}>» {{ c.name }}</a><span class="count">({{ c.count }})</span></div>
+      {% endfor %}
+    </div>
+    <div class="box">
+      <div class="box-hd">▪ 销量排行</div>
+      {{ rankList(hot, '暂无商品') }}
+    </div>
+    <div class="box">
+      <div class="box-hd">▪ 购物须知</div>
+      <ol class="shop-notice" style="padding-left:20px;margin:0">
+        <li>本站支持货到付款、邮局汇款、银行转账。</li>
+        <li>下单后站长会在 1-2 个工作日内确认。</li>
+        <li>发货后可在「我的订单」查看快递单号。</li>
+        <li>待确认的订单可以自行取消。</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="stack">
+    <div class="box">
+      <div class="box-hd"><span>▪ {{ category or '全部商品' }}</span><span class="nb">共 {{ pager.total }} 件商品</span></div>
+      <div class="tabs">
+        <a href="/shop?{{ sortBase }}"{% if sort == 'default' %} class="on"{% endif %}>默认</a>
+        <a href="/shop?{{ sortBase }}sort=sales"{% if sort == 'sales' %} class="on"{% endif %}>销量</a>
+        <a href="/shop?{{ sortBase }}sort=new"{% if sort == 'new' %} class="on"{% endif %}>新品</a>
+        <a href="/shop?{{ sortBase }}sort=price_asc"{% if sort == 'price_asc' %} class="on"{% endif %}>价格↑</a>
+        <a href="/shop?{{ sortBase }}sort=price_desc"{% if sort == 'price_desc' %} class="on"{% endif %}>价格↓</a>
+      </div>
+      {% if products.length %}
+      <div class="goods-grid">
+        {% for p in products %}
+        <div class="goods-card">
+          <a class="pic-img" href="/shop/{{ p.id }}">{% if p.image %}<img src="{{ p.image }}" alt="{{ p.name }}" loading="lazy">{% else %}<span class="noimg">暂无图片</span>{% endif %}</a>
+          <a class="goods-name" href="/shop/{{ p.id }}" title="{{ p.name }}">{{ p.name }}</a>
+          <div class="goods-price"><b class="price">¥{{ p.price_cents | yuan }}</b>{% if p.market_price_cents > p.price_cents %} <s>¥{{ p.market_price_cents | yuan }}</s>{% endif %}</div>
+          <div class="goods-sold">{% if p.stock <= 0 %}<span class="soldout">已售罄</span> · {% endif %}已售 {{ p.sales }} 件</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="box-empty">这个分类下还没有商品。</div>
+      {% endif %}
+      {{ pagerLinks(pager) }}
+    </div>
+  </div>
+</div>
+{% endblock %}

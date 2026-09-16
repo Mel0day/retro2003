@@ -1,0 +1,15 @@
+/* 聊天室补充样式 */
+.chat-log .chat-line{padding:1px 0}
+.chat-log .chat-line.sys{color:#080}
+.chat-log .chat-line.mine{background:#fffbe6}
+.chat-log .chat-line.to-me{background:#fff0f0}
+.chat-log .chat-name{font-weight:bold}
+.online-list div[data-name].on{color:#c00;font-weight:bold}
+#chat-status.ok{color:#060}
+#chat-status.err{color:#c00}
+.box.red>.box-hd #chat-status.ok{color:#cfc}
+.box.red>.box-hd #chat-status.err{color:#ff0}
+
+/* 右栏在线名单不参与行高计算，高度跟随左侧聊天区，内容多了自己滚动 */
+.chat-online{position:relative;min-height:200px}
+.chat-online .online-list{position:absolute;top:21px;left:0;right:0;bottom:0;height:auto}

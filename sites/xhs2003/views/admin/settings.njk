@@ -1,0 +1,30 @@
+{% extends "admin/layout.njk" %}
+{% block body %}
+<div class="box red">
+  <div class="box-hd"><span>站点设置</span><span class="nb">保存后立即生效</span></div>
+  <form method="post" action="/admin/settings" style="padding:8px">
+    <input type="hidden" name="_csrf" value="{{ csrf }}">
+    <table class="ftable">
+      {% for f in fields %}
+      <tr>
+        <th>{{ f.label }}：</th>
+        <td>
+          {% if f.type == 'bool' %}
+            <label><input type="checkbox" class="chk" name="{{ f.key }}" value="1"{% if values[f.key] == '1' %} checked{% endif %}> 开启</label>
+          {% elif f.type == 'textarea' %}
+            <textarea class="ta" name="{{ f.key }}" rows="3" maxlength="2000">{{ values[f.key] }}</textarea>
+          {% elif f.type == 'number' %}
+            <input class="ipt w80" name="{{ f.key }}" value="{{ values[f.key] }}" inputmode="numeric" pattern="\d{1,12}" required>
+            {% if f.key == 'counter_base' %}<span class="tip">首页计数器显示 = 基数 + 真实访客数（当前真实访客 {{ values.visitor_count }}）</span>{% endif %}
+          {% else %}
+            <input class="ipt w300" name="{{ f.key }}" value="{{ values[f.key] }}" maxlength="200">
+            {% if f.key == 'icp' %}<span class="tip">例如：京ICP备xxxxxxxx号，请填写真实备案号</span>{% endif %}
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+      <tr><th></th><td><button class="btn" type="submit" style="font-weight:bold">保存设置</button></td></tr>
+    </table>
+  </form>
+</div>
+{% endblock %}

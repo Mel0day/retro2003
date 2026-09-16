@@ -1,0 +1,17 @@
+{% extends "admin/layout.njk" %}
+{% block body %}
+<div class="box">
+  <div class="box-hd"><span>▪ 编辑版块：{{ board.name }}</span><a href="/admin/forum">返回版块列表</a></div>
+  <form method="post" action="/admin/forum/board/{{ board.id }}" style="padding:8px">
+    <input type="hidden" name="_csrf" value="{{ csrf }}">
+    <table class="ftable">
+      <tr><th>所属分区：</th><td><select class="sel" name="category_id" required>{% for c in categories %}<option value="{{ c.id }}"{% if c.id == board.category_id %} selected{% endif %}>{{ c.name }}</option>{% endfor %}</select> <span class="tip">改为其他分区即可移动版块</span></td></tr>
+      <tr><th>版块名称：</th><td><input class="ipt w300" name="name" value="{{ board.name }}" required maxlength="30"></td></tr>
+      <tr><th>简　介：</th><td><input class="ipt w400" name="description" value="{{ board.description }}" maxlength="120"></td></tr>
+      <tr><th>排　序：</th><td><input class="ipt w48" name="sort" value="{{ board.sort }}"> <span class="tip">数字小的在前</span></td></tr>
+      <tr><th>统　计：</th><td>主题 {{ board.thread_count }} · 帖子 {{ board.post_count }}</td></tr>
+      <tr><th></th><td><button class="btn" type="submit">保存</button> <a class="btn" href="/admin/forum">取消</a></td></tr>
+    </table>
+  </form>
+</div>
+{% endblock %}

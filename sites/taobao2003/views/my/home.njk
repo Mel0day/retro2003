@@ -1,0 +1,35 @@
+{% extends "my/layout.njk" %}
+{% import "macros.njk" as m with context %}
+{% block main %}
+<div class="box"><h3>{{ me.username }}，欢迎回到我的淘宝</h3>
+  <table class="kv" cellpadding="5" cellspacing="0">
+    <tr><td class="k">支付宝余额：</td><td><b class="bigprice sm">￥{{ me.balance_cents | yuan }}</b> <a href="/my/alipay">查看明细</a></td><td class="k">注册时间：</td><td>{{ me.created_at | date }}</td></tr>
+    <tr><td class="k">买家信用：</td><td>{{ m.creditBadge(buyerCredit, '/my/rates?tab=buyer') }}</td><td class="k">卖家信用：</td><td>{{ m.creditBadge(sellerCredit, '/my/rates') }} 好评率 {{ sellerCredit.rate }}%</td></tr>
+    <tr><td class="k">所在地：</td><td>{{ me.city or '未填写' }} <a href="/my/profile">修改</a></td><td class="k">上次登录：</td><td>{% if me.last_login_at %}{{ me.last_login_at | dt }}{% else %}—{% endif %}</td></tr>
+  </table>
+</div>
+<table cellpadding="0" cellspacing="0" class="full mt10"><tr>
+  <td class="half pr8">
+    <div class="box"><h3>我是买家</h3><div class="pad lh2">
+      等待卖家发货：<a href="/my/bought?status=paid"><b class="orange">{{ bought.paid or 0 }}</b></a> 笔<br>
+      卖家已发货，<b>等我确认收货</b>：<a href="/my/bought?status=shipped"><b class="orange">{{ bought.shipped or 0 }}</b></a> 笔<br>
+      交易成功：<a href="/my/bought?status=done">{{ bought.done or 0 }}</a> 笔，其中待我评价 <b class="orange">{{ toRateBuyer }}</b> 笔<br>
+      <a href="/my/bought">全部已买到的宝贝 &gt;&gt;</a>
+    </div></div>
+  </td>
+  <td class="half">
+    <div class="box"><h3>我是卖家</h3><div class="pad lh2">
+      买家已付款，<b>等我发货</b>：<a href="/my/sold?status=paid"><b class="orange">{{ sold.paid or 0 }}</b></a> 笔<br>
+      出售中的宝贝：<a href="/my/items">{{ items.onsale or 0 }}</a> 件 &nbsp; 仓库中：<a href="/my/items?tab=warehouse">{{ items.warehouse or 0 }}</a> 件<br>
+      未回复的宝贝留言：<a href="/my/questions"><b class="orange">{{ unanswered }}</b></a> 条 &nbsp; 待我评价：<b class="orange">{{ toRateSeller }}</b> 笔<br>
+      <a href="/sell" class="btn">我要卖</a> <a href="/my/sold">已卖出的宝贝 &gt;&gt;</a>
+    </div></div>
+  </td>
+</tr></table>
+<div class="box mt10"><h3>最近买到的宝贝</h3>
+  <table class="carttable noborder" cellpadding="6" cellspacing="0">
+    {% for o in recent %}<tr class="p"><td class="brk">{% for i in o.items %}{{ i.title | cut(24) }} ×{{ i.qty }}{% if not loop.last %}；{% endif %}{% endfor %}<div class="gray">{{ o.seller_name }} · {{ o.created_at | dt }}</div></td><td class="orange c-price">￥{{ o.total_cents | yuan }}</td><td class="c-status" style="color:{{ o.status | statusColor }}">{{ o.status | statusText }}</td><td class="c-op"><a href="/order/{{ o.no }}">查看</a></td></tr>{% endfor %}
+    {% if not recent.length %}<tr><td class="empty-s">还没有买过东西，<a href="/">去逛逛</a></td></tr>{% endif %}
+  </table>
+</div>
+{% endblock %}

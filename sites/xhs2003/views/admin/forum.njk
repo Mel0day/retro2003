@@ -1,0 +1,71 @@
+{% extends "admin/layout.njk" %}
+{% block body %}
+<div class="box">
+  <div class="box-hd"><span>▪ 论坛分区与版块</span><a href="/forum" target="_blank">查看论坛 &gt;&gt;</a></div>
+  <table class="tbl" style="border:0">
+    <tr><th style="width:60px">排序</th><th>名称 / 简介</th><th>主题</th><th>帖子</th><th>操作</th></tr>
+    {% for c in categories %}
+    <tr class="tbl-cat">
+      <td colspan="5" style="padding:3px 6px">
+        <form method="post" action="/admin/forum/category/{{ c.id }}" class="inline-form" style="display:inline-flex;gap:4px;align-items:center">
+          <input type="hidden" name="_csrf" value="{{ csrf }}">
+          分区：<input class="ipt w48" name="sort" value="{{ c.sort }}" title="排序，数字小的在前">
+          <input class="ipt w200" name="name" value="{{ c.name }}" required maxlength="30">
+          <button class="btn sm" type="submit">保存</button>
+        </form>
+        <form method="post" action="/admin/forum/category/{{ c.id }}/delete" class="inline-form">
+          <input type="hidden" name="_csrf" value="{{ csrf }}">
+          <button class="btn sm" type="submit"{% if not c.boards.length %} data-confirm="确定删除分区「{{ c.name }}」吗？"{% endif %}>删除分区</button>
+        </form>
+      </td>
+    </tr>
+    {% for b in c.boards %}
+    <tr>
+      <td class="num">{{ b.sort }}</td>
+      <td class="t"><a href="/forum/board/{{ b.id }}" target="_blank" class="b">{{ b.name }}</a>{% if b.description %}<div class="gray6 small ellipsis">{{ b.description }}</div>{% endif %}</td>
+      <td class="num">{{ b.thread_count }}{% if b.all_threads != b.thread_count %}<span class="gray" title="含隐藏主题">（{{ b.all_threads }}）</span>{% endif %}</td>
+      <td class="num">{{ b.post_count }}</td>
+      <td class="acts">
+        <a class="btn sm" href="/admin/forum/board/{{ b.id }}/edit">编辑 / 移动</a>
+        <form method="post" action="/admin/forum/board/{{ b.id }}/delete">
+          <input type="hidden" name="_csrf" value="{{ csrf }}">
+          <button class="btn sm" type="submit"{% if not b.all_threads %} data-confirm="确定删除版块「{{ b.name }}」吗？"{% endif %}>删除</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="box-empty">该分区下暂无版块</td></tr>
+    {% endfor %}
+    {% else %}
+    <tr><td colspan="5" class="box-empty">还没有分区，请先在下方添加。</td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+<div class="grid2">
+  <div class="box">
+    <div class="box-hd">▪ 添加分区</div>
+    <form method="post" action="/admin/forum/category" style="padding:6px">
+      <input type="hidden" name="_csrf" value="{{ csrf }}">
+      <table class="ftable">
+        <tr><th>分区名称：</th><td><input class="ipt w200" name="name" required maxlength="30"></td></tr>
+        <tr><th>排　序：</th><td><input class="ipt w48" name="sort" value="0"> <span class="tip">数字小的在前</span></td></tr>
+        <tr><th></th><td><button class="btn" type="submit">添加分区</button></td></tr>
+      </table>
+    </form>
+  </div>
+  <div class="box">
+    <div class="box-hd">▪ 添加版块</div>
+    <form method="post" action="/admin/forum/board" style="padding:6px">
+      <input type="hidden" name="_csrf" value="{{ csrf }}">
+      <table class="ftable">
+        <tr><th>所属分区：</th><td><select class="sel" name="category_id" required>{% for c in categories %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}</select></td></tr>
+        <tr><th>版块名称：</th><td><input class="ipt w200" name="name" required maxlength="30"></td></tr>
+        <tr><th>简　介：</th><td><input class="ipt w200" name="description" maxlength="120"></td></tr>
+        <tr><th>排　序：</th><td><input class="ipt w48" name="sort" value="0"></td></tr>
+        <tr><th></th><td><button class="btn" type="submit"{% if not categories.length %} disabled{% endif %}>添加版块</button></td></tr>
+      </table>
+    </form>
+  </div>
+</div>
+{% endblock %}

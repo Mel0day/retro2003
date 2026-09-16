@@ -1,0 +1,28 @@
+{% extends "layout.njk" %}
+{% from "macros.njk" import captcha %}
+{% block body %}
+<div class="col1">
+  <div class="box red">
+    <div class="box-hd">注册新会员 <span class="nb">（带 <b style="color:#ff0">*</b> 号的为必填项）</span></div>
+    <form method="post" action="/register" style="padding:8px">
+      <input type="hidden" name="_csrf" value="{{ csrf }}">
+      {% if error %}<div class="field-err" style="padding:4px 8px;background:#fee;border:1px solid #c99;margin-bottom:6px">✘ {{ error }}</div>{% endif %}
+      <table class="ftable">
+        <tr><th><span class="red">*</span> 用户名：</th><td><input class="ipt w200" name="username" value="{{ form.username }}" required maxlength="16" autocomplete="username"> <span class="tip">2-16 位中文、字母、数字或下划线，注册后不能修改</span></td></tr>
+        <tr><th><span class="red">*</span> 密　码：</th><td><input class="ipt w200" type="password" name="password" required minlength="6" maxlength="32" autocomplete="new-password"> <span class="tip">6-32 位，建议字母加数字</span></td></tr>
+        <tr><th><span class="red">*</span> 确认密码：</th><td><input class="ipt w200" type="password" name="password2" required minlength="6" maxlength="32" autocomplete="new-password"></td></tr>
+        <tr><th><span class="red">*</span> 密码提示问题：</th><td>
+          <input class="ipt w200" name="question" value="{{ form.question }}" required maxlength="50" list="questions">
+          <datalist id="questions"><option value="我的小学叫什么名字？"><option value="我最喜欢的歌手是？"><option value="我的 QQ 号码是？"><option value="我妈妈的生日是？"></datalist>
+          <span class="tip">忘记密码时用来找回</span></td></tr>
+        <tr><th><span class="red">*</span> 提示问题答案：</th><td><input class="ipt w200" name="answer" required maxlength="50" autocomplete="off"></td></tr>
+        <tr><th>性　别：</th><td><label><input type="radio" name="gender" value="male" class="chk"{% if form.gender == 'male' %} checked{% endif %}> 男</label> <label><input type="radio" name="gender" value="female" class="chk"{% if form.gender == 'female' %} checked{% endif %}> 女</label> <label><input type="radio" name="gender" value="" class="chk"{% if not form.gender %} checked{% endif %}> 保密</label></td></tr>
+        <tr><th>来　自：</th><td><input class="ipt w200" name="location" value="{{ form.location }}" maxlength="30" placeholder="例如：上海 徐汇"></td></tr>
+        <tr><th><span class="red">*</span> 验证码：</th><td><input class="ipt w48" name="captcha" required maxlength="4" autocomplete="off"> {{ captcha('register') }} <span class="tip">看不清？点图片换一张</span></td></tr>
+        <tr><th></th><td><label><input type="checkbox" name="agree" value="1" class="chk" required> 我已阅读并同意</label> <a href="/page/terms" target="_blank">《会员服务条款》</a></td></tr>
+        <tr><th></th><td><button class="btn" type="submit">提交注册</button> <button class="btn" type="reset">重 填</button></td></tr>
+      </table>
+    </form>
+  </div>
+</div>
+{% endblock %}

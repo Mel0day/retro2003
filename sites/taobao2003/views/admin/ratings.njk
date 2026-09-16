@@ -1,0 +1,15 @@
+{% extends "admin/layout.njk" %}
+{% block body %}
+<h3>信用评价（屏蔽只隐藏内容，不改变信用积分）</h3>
+<table class="t"><tr><th>时间</th><th>评价人 → 被评价人</th><th>身份</th><th>评价</th><th>订单</th><th>操作</th></tr>
+  {% for r in ratings %}<tr><td>{{ r.created_at | dt }}</td><td>{{ r.from_name }} → {{ r.to_name }}</td><td>{{ '评卖家' if r.role == 'seller' else '评买家' }}</td>
+    <td class="brk"><span class="g{{ r.grade }}">[{{ r.grade | grade }}]</span> {{ r.text }}{% if r.hidden %} <span class="red">（已屏蔽）</span>{% endif %}</td><td>{% if r.order_no %}<a href="/order/{{ r.order_no }}" target="_blank">{{ r.order_no }}</a>{% else %}<span class="gray">历史</span>{% endif %}</td>
+    <td><form method="post" action="/admin/ratings/{{ r.id }}/hide"><input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="hide" value="{{ 0 if r.hidden else 1 }}"><button type="submit" class="linkbtn">{{ '取消屏蔽' if r.hidden else '屏蔽内容' }}</button></form></td></tr>{% endfor %}
+</table>
+{% include "admin/_pager.njk" %}
+<h3>最近的宝贝留言</h3>
+<table class="t"><tr><th>时间</th><th>会员</th><th>宝贝</th><th>留言 / 回复</th><th>操作</th></tr>
+  {% for q in questions %}<tr><td>{{ q.created_at | dt }}</td><td>{{ q.asker_name }}</td><td class="brk"><a href="/item/{{ q.item_id }}" target="_blank">{{ q.item_title | cut(16) }}</a></td><td class="brk">{{ q.text }}{% if q.reply %}<br><span class="green">回复：{{ q.reply }}</span>{% endif %}{% if q.hidden %} <span class="red">（已屏蔽）</span>{% endif %}</td>
+    <td><form method="post" action="/admin/questions/{{ q.id }}/hide"><input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="hide" value="{{ 0 if q.hidden else 1 }}"><button type="submit" class="linkbtn">{{ '取消屏蔽' if q.hidden else '屏蔽' }}</button></form></td></tr>{% endfor %}
+</table>
+{% endblock %}

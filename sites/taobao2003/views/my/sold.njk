@@ -1,0 +1,5 @@
+{% extends "my/layout.njk" %}
+{% import "macros.njk" as m with context %}
+{% block main %}{% set mode = 'sold' %}{% include "my/_orderlist.njk" %}
+<div class="gray mt8">买家付款后请尽快发货。买家确认收货后，货款会自动打入您的支付宝账户；发货后买家 10 天内不确认，系统自动确认收货。</div>
+{% endblock %}

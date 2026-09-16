@@ -1,0 +1,16 @@
+{% extends "wap/layout.njk" %}
+{% block top %}{% endblock %}
+{% block body %}
+<div class="crumb"><a href="/wap">首页</a> &gt; <a href="/wap/notes?channel={{ note.channel_slug }}">{{ note.channel_name }}</a> &gt; 正文</div>
+<div class="title">{{ note.title }}</div>
+<div class="meta">{{ author.username }} · {{ note.created_at | date }} · 点击 {{ note.hits }} · 回复 {{ note.comment_count }}</div>
+<div class="content">{{ html | safe }}</div>
+{% if total > 1 %}
+<div class="small blk">{% if all %}<a href="/wap/note/{{ note.id }}">分页阅读</a> (共 {{ total }} 页)
+{% else %}{% if p > 1 %}<a href="/wap/note/{{ note.id }}{% if p > 2 %}?p={{ p - 1 }}{% endif %}">上一页</a> {% endif %}{% if p < total %}<a href="/wap/note/{{ note.id }}?p={{ p + 1 }}">下一页</a> {% endif %}({{ p }}/{{ total }}) · <a href="/wap/note/{{ note.id }}?all=1">看全文</a>{% endif %}</div>
+{% endif %}
+<div class="small blk sep"><b>[1]</b> <a href="/wap/note/{{ note.id }}/comments" accesskey="1">回复({{ note.comment_count }})</a>
+  <b>[2]</b> <form class="inline" method="post" action="/wap/note/{{ note.id }}/like"><input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="back" value="{{ self }}"><button class="lnk" type="submit" accesskey="2">顶({{ note.likes }})</button></form>
+  <b>[3]</b> <form class="inline" method="post" action="/wap/note/{{ note.id }}/favorite"><input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="back" value="{{ self }}"><button class="lnk" type="submit" accesskey="3">{% if favorited %}已收藏{% else %}收藏{% endif %}</button></form></div>
+<div class="small blk"><b>[7]</b> {% if prev %}<a href="/wap/note/{{ prev.id }}" accesskey="7">上一篇</a>{% else %}<span class="gray8">上一篇</span>{% endif %} <b>[9]</b> {% if next %}<a href="/wap/note/{{ next.id }}" accesskey="9">下一篇</a>{% else %}<span class="gray8">下一篇</span>{% endif %} <b>[0]</b> <a href="/wap" accesskey="0">首页</a></div>
+{% endblock %}

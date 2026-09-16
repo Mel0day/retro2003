@@ -1,0 +1,36 @@
+{% extends "admin/layout.njk" %}
+{% from "macros.njk" import editorBar %}
+{% block body %}
+<div class="box red">
+  <div class="box-hd"><span>{{ title }}</span><a href="/admin/products">&lt;&lt; 返回商品列表</a></div>
+  <form method="post" action="{{ action }}?_csrf={{ csrf }}" enctype="multipart/form-data" style="padding:8px">
+    {% if error %}<div class="field-err" style="padding:4px 8px;background:#fee;border:1px solid #c99;margin-bottom:6px">✘ {{ error }}</div>{% endif %}
+    <table class="ftable">
+      <tr><th><span class="red">*</span> 商品名称：</th><td><input class="ipt w400" name="name" value="{{ product.name }}" required maxlength="60"></td></tr>
+      <tr><th>分　类：</th><td><input class="ipt w200" name="category" value="{{ product.category }}" maxlength="20" list="cat-list"> <span class="tip">可选已有分类或输入新分类</span>
+        <datalist id="cat-list">{% for c in categories %}<option value="{{ c.name }}">{% endfor %}</datalist></td></tr>
+      <tr><th><span class="red">*</span> 本站价（元）：</th><td><input class="ipt w80" name="price" value="{{ product.priceInput if product.priceInput is defined else ((product.price_cents | yuan) if product.price_cents else '') }}" required> <span class="tip">例如 19.9</span></td></tr>
+      <tr><th>市场价（元）：</th><td><input class="ipt w80" name="market_price" value="{{ product.marketInput if product.marketInput is defined else ((product.market_price_cents | yuan) if product.market_price_cents else '') }}"> <span class="tip">高于本站价时前台显示删除线，留空不显示</span></td></tr>
+      <tr><th><span class="red">*</span> 库　存：</th><td><input class="ipt w80" name="stock" value="{{ product.stock }}" required>{% if editing %} <span class="tip">已售 {{ editing.sales }} 件</span>{% endif %}</td></tr>
+      <tr><th>排　序：</th><td><input class="ipt w48" name="sort" value="{{ product.sort }}"> <span class="tip">数字越小越靠前</span></td></tr>
+      <tr><th>状　态：</th><td>
+        <label><input type="radio" name="status" value="on" class="chk"{% if product.status != 'off' %} checked{% endif %}> 上架</label>
+        <label><input type="radio" name="status" value="off" class="chk"{% if product.status == 'off' %} checked{% endif %}> 下架</label>
+        　<label><input type="checkbox" name="featured" value="1" class="chk"{% if product.featured %} checked{% endif %}> 首页「好物推荐」</label>
+      </td></tr>
+      <tr><th>商品图片：</th><td>
+        {% if product.image %}<div style="margin-bottom:4px"><img src="{{ product.image }}" alt="" style="width:120px;height:120px;object-fit:cover;border:1px solid #888;padding:2px;background:#fff"></div>{% endif %}
+        <div class="form-row">上传新图片：<input type="file" name="image_file" accept="image/*"></div>
+        <div class="form-row mt4">或图片地址：<input class="ipt w300" name="image" value="{{ product.image }}" placeholder="/uploads/... 或 https://..."></div>
+        <span class="tip">建议正方形图片，上传会覆盖图片地址</span>
+      </td></tr>
+      <tr><th>商品介绍：</th><td>
+        {{ editorBar('product-desc') }}
+        <textarea class="ta" id="product-desc" name="description" rows="12" data-mode="note" data-purpose="product">{{ product.description }}</textarea>
+        <div class="editor-preview hidden" id="product-desc-preview"></div>
+      </td></tr>
+      <tr><th></th><td><button class="btn" type="submit" style="font-weight:bold">保 存</button> {% if editing %}<a href="/shop/{{ editing.id }}" target="_blank">在前台查看</a>{% endif %}</td></tr>
+    </table>
+  </form>
+</div>
+{% endblock %}

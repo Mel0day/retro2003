@@ -1,0 +1,78 @@
+{% extends "layout.njk" %}
+{% from "macros.njk" import avatar, pager as pagerLinks, sideAd %}
+{% block head %}<link rel="stylesheet" href="/static/css/album.css?v={{ assetVersion }}">{% endblock %}
+{% block body %}
+<div class="cols2">
+  <div class="stack">
+    <div class="box red">
+      <div class="box-hd"><span>{{ album.title }}</span><span class="nb">{{ album.photo_count }} 张照片 · 浏览 {{ album.hits }} 次</span></div>
+      <div class="album-head">
+        {{ avatar(album, 40) }}
+        <div class="grow">
+          <div><a href="/album/user/{{ album.user_id }}" class="b">{{ album.username }}</a> 创建于 {{ album.created_at | date }}，最后更新 {{ album.updated_at | dt }}</div>
+          <div class="desc">{{ album.description or '这个相册还没有描述。' }}</div>
+        </div>
+      </div>
+      {% if photos.length %}
+      <div class="photo-wall">
+        {% for p in photos %}
+        <div class="photo-card{% if p.isCover %} cover{% endif %}">
+          <a class="pic-img" href="/album/photo/{{ p.id }}" title="{{ p.caption }}"><img src="{{ p.url }}" alt="{{ p.caption }}" loading="lazy"></a>
+          <a class="cap" href="/album/photo/{{ p.id }}" title="{{ p.caption }}">{{ p.caption or '无题' }}</a>
+          <span class="meta">{{ p.size | size }}{% if p.isCover %} · <span class="red">封面</span>{% endif %}</span>
+          {% if canManage %}
+          <div class="photo-acts">
+            {% if not p.isCover %}<button type="button" class="link" data-action="/album/photo/{{ p.id }}/cover">[设封面]</button>{% endif %}
+            <button type="button" class="link" data-action="/album/photo/{{ p.id }}/delete" data-ask="确定删除这张照片吗？">[删除]</button>
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {{ pagerLinks(pager) }}
+      {% else %}
+      <div class="box-empty">相册里还没有照片{% if isOwner %}，在下面上传吧！{% endif %}</div>
+      {% endif %}
+
+      {% if isOwner %}
+      <form class="upload-box" id="album-upload" method="post" action="/album/{{ album.id }}/upload?_csrf={{ csrf }}" enctype="multipart/form-data" data-album="{{ album.id }}">
+        <b>上传照片</b>
+        <div class="form-row"><input type="file" name="photos" accept="image/jpeg,image/png,image/gif,image/webp" multiple required> <button class="btn" type="submit">开始上传</button> <span class="upload-progress" data-progress></span></div>
+        <div class="gray small">一次最多 10 张，支持 JPG / PNG / GIF / WEBP，单张不超过 {{ uploadMaxKb }}KB（大图会自动压缩）。
+          空间：<span class="quota{% if quota.percent < 80 %} ok{% endif %}" style="width:120px"><i style="width:{{ quota.percent }}%"></i></span> 已用 {{ quota.used | size }} / {{ quota.total | size }}</div>
+      </form>
+      {% endif %}
+    </div>
+
+    {% if canManage %}
+    <div class="box">
+      <div class="box-hd">▪ 相册设置</div>
+      <form method="post" action="/album/{{ album.id }}/edit" style="padding:6px 8px">
+        <input type="hidden" name="_csrf" value="{{ csrf }}">
+        <table class="ftable">
+          <tr><th>相册名称：</th><td><input class="ipt w200" name="title" value="{{ album.title }}" required maxlength="30"></td></tr>
+          <tr><th>相册描述：</th><td><textarea class="ta" name="description" rows="2" maxlength="200">{{ album.description }}</textarea></td></tr>
+          <tr><th></th><td><button class="btn" type="submit">保存设置</button></td></tr>
+        </table>
+      </form>
+      <form method="post" action="/album/{{ album.id }}/delete" class="right" style="padding:0 8px 6px" data-confirm="确定删除整个相册「{{ album.title }}」吗？里面的 {{ album.photo_count }} 张照片也会一起删除，不能恢复！">
+        <input type="hidden" name="_csrf" value="{{ csrf }}">
+        <button class="btn" type="submit">删除相册</button>
+      </form>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="stack">
+    <div class="box">
+      <div class="box-hd">▪ {{ album.username }} 的其他相册</div>
+      {% for o in others %}
+      <div class="row"><a href="/album/{{ o.id }}" title="{{ o.title }}">» {{ o.title }}</a><span class="count">({{ o.photo_count }})</span></div>
+      {% else %}<div class="box-empty">没有其他相册</div>{% endfor %}
+    </div>
+    <div class="center"><a class="btn" href="/album">返回相册首页</a></div>
+    {{ sideAd() }}
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}{% if isOwner %}<script src="/static/js/album.js?v={{ assetVersion }}"></script>{% endif %}{% endblock %}

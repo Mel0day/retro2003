@@ -1,0 +1,9 @@
+{% extends "wap/layout.njk" %}
+{% block body %}
+<div class="crumb"><a href="/wap">首页</a> &gt; <a href="/wap/album">相册</a> &gt; <a href="/wap/album/a/{{ photo.album_id }}">{{ photo.album_title }}</a></div>
+<div class="photo"><a href="/uploads/{{ photo.path }}"><img src="/uploads/{{ photo.path }}" alt="{{ photo.caption }}"></a></div>
+<div class="small center">{{ photo.caption }} ({{ photo.size | size }})</div>
+<div class="meta center">{{ photo.username }} · {{ photo.created_at | date }} · 浏览 {{ photo.hits }}</div>
+<div class="small"><b>[7]</b> {% if prev %}<a href="/wap/album/photo/{{ prev.id }}" accesskey="7">上一张</a>{% else %}<span class="gray8">上一张</span>{% endif %} <b>[9]</b> {% if next %}<a href="/wap/album/photo/{{ next.id }}" accesskey="9">下一张</a>{% else %}<span class="gray8">下一张</span>{% endif %}</div>
+{% endblock %}
+{% block bottom %}<div class="small"><b>[0]</b> <a href="/wap" accesskey="0">首页</a></div>{% endblock %}

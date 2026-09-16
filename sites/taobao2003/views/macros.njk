@@ -1,0 +1,18 @@
+{# 宝贝缩略图：有图显示图片，没图显示原型里的斜纹占位 #}
+{% macro thumb(item, size='60') %}<a href="/item/{{ item.id }}" class="thumb t{{ size }}">{% if item.cover %}<img src="{{ item.cover }}" alt="" loading="lazy">{% else %}{{ item.cat }}{% endif %}</a>{% endmacro %}
+
+{% macro snapThumb(oi) %}<span class="thumb t40">{% if oi.image %}<img src="{{ oi.image }}" alt="" loading="lazy">{% else %}{{ oi.cat }}{% endif %}</span>{% endmacro %}
+
+{# 信用：心/钻图标 + 分数 #}
+{% macro creditBadge(c, link='') %}<span class="credit" title="{{ c.title }}">{% if link %}<a href="{{ link }}" class="plain">{% endif %}{{ c.score }}{% if link %}</a>{% endif %}{% if c.level %} <span class="lv lv-{{ c.level.icon }}">{% for i in range(c.level.n) %}<i></i>{% endfor %}</span>{% endif %}</span>{% endmacro %}
+
+{% macro csrfField() %}<input type="hidden" name="_csrf" value="{{ csrf }}">{% endmacro %}
+
+{% macro pagerBar(pager) %}{% if pager.pages > 1 %}<div class="pager">
+  {% if pager.prev %}<a href="{{ pager.prev }}">上一页</a>{% else %}<span class="gray">上一页</span>{% endif %}
+  {% for n in pager.nums %} {% if n.current %}<b class="orange">[{{ n.n }}]</b>{% else %}<a href="{{ n.url }}">{{ n.n }}</a>{% endif %}{% endfor %}
+  {% if pager.next %}<a href="{{ pager.next }}">下一页</a>{% else %}<span class="gray">下一页</span>{% endif %}
+  <span class="gray">共 {{ pager.pages }} 页</span>
+</div>{% endif %}{% endmacro %}
+
+{% macro gradeTag(g) %}<span class="g{{ g }}">[{{ g | grade }}]</span>{% endmacro %}

@@ -1,0 +1,13 @@
+{% extends "wap/layout.njk" %}
+{% from "wap/macros.njk" import pager as pg %}
+{% block body %}
+<div class="crumb"><a href="/wap">首页</a> &gt; 相册 · 最新照片</div>
+{% for ph in photos %}
+<div class="rec item"><a class="thumb" href="/wap/album/photo/{{ ph.id }}"><img src="/uploads/{{ ph.path }}" alt="" loading="lazy"></a>
+  <div class="rec-txt small"><a href="/wap/album/photo/{{ ph.id }}">{{ ph.caption or '无题' }}</a><br><span class="xs gray">{{ ph.username }} · <a href="/wap/album/a/{{ ph.album_id }}">{{ ph.album_title }}</a></span><br><span class="tiny gray8">{{ ph.size | size }} · {{ ph.created_at | md }}</span></div></div>
+{% else %}
+<div class="gray small">还没有照片。</div>
+{% endfor %}
+{{ pg(pager) }}
+{% endblock %}
+{% block bottom %}<div class="small"><b>[0]</b> <a href="/wap" accesskey="0">首页</a></div>{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "wap/layout.njk" %}
+{% block body %}
+<div class="crumb"><a href="/wap">首页</a> &gt; 论坛</div>
+{% for g in groups %}
+<div class="h small sep">{{ g.name }}</div>
+{% for b in g.boards %}
+<div class="item">· <a href="/wap/forum/board/{{ b.id }}">{{ b.name }}</a> <span class="tiny gray8">({{ b.thread_count }}/{{ b.post_count }})</span></div>
+{% endfor %}
+{% endfor %}
+{% endblock %}
+{% block bottom %}<div class="small"><b>[0]</b> <a href="/wap" accesskey="0">首页</a></div>{% endblock %}

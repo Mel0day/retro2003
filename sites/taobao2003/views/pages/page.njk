@@ -1,0 +1,18 @@
+{% extends "layout.njk" %}
+{% block body %}
+<table cellpadding="0" cellspacing="0" class="full"><tr>
+<td class="side">
+  <div class="box"><h3>帮助与说明</h3>
+    {% for s, t in [['help','帮助中心'],['rules','信用评价规则'],['safe','安全交易'],['alipay','支付宝'],['about','关于淘宝'],['contact','联系我们'],['jobs','诚聘英才'],['sitemap','网站地图']] %}<a href="/page/{{ s }}" class="row{% if slug == s %} on{% endif %}">{{ t }}</a>{% endfor %}
+  </div>
+</td>
+<td class="main">
+<div class="box"><h3>{{ pg.title }}</h3>
+  <div class="pad lh2">
+    {% for t in pg.paras %}<p class="para">{{ t }}</p>{% endfor %}
+    {% if slug == 'contact' %}<p class="para">客服信箱：{{ site.service_email }}</p>{% endif %}
+    {% if pg.links %}<ul class="links">{% for l in pg.links %}<li><a href="{{ l[1] }}">{{ l[0] }}</a></li>{% endfor %}</ul>{% endif %}
+  </div>
+</div>
+</td></tr></table>
+{% endblock %}

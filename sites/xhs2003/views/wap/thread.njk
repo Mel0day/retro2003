@@ -1,0 +1,28 @@
+{% extends "wap/layout.njk" %}
+{% from "wap/macros.njk" import pager as pg %}
+{% block top %}{% endblock %}
+{% block body %}
+<div class="crumb"><a href="/wap">首页</a> &gt; <a href="/wap/forum">论坛</a> &gt; <a href="/wap/forum/board/{{ thread.board_id }}">{{ thread.board_name }}</a></div>
+<div class="title">{% if thread.is_poll %}[投票] {% endif %}{{ thread.title }}</div>
+<div class="meta">{{ thread.username }} · {{ thread.created_at | date }} · 点击 {{ thread.hits }} · 回复 {{ thread.reply_count }}</div>
+{% if poll and pager.current == 1 %}
+<div class="small sep bot">{% for o in poll.options %}<div>{{ o.label }} <span class="poll-bar" style="width:{{ (o.percent * 0.8) | round }}px"></span> <span class="tiny gray8">{{ o.votes }}票 {{ o.percent }}%</span>{% if poll.votedOptionId == o.id %} <span class="red xs">✔</span>{% endif %}</div>{% endfor %}<div class="xs gray">共 {{ poll.total }} 人投票 · 请用电脑版投票</div></div>
+{% endif %}
+{% for p in posts %}
+<div class="item" id="floor-{{ p.floor }}"><span class="floor">{% if p.floor == 1 %}楼主{% else %}{{ p.floor }}楼{% endif %}</span> <b>{{ p.username }}</b> <span class="tiny gray8">{{ p.created_at | dt }}</span>
+  <div class="content plain">{{ p.html | safe }}</div></div>
+{% endfor %}
+{{ pg(pager) }}
+{% if thread.locked and not canReply %}
+<div class="small gray sep">本主题已锁定，不能回复。</div>
+{% elif user %}
+<form class="form sep" method="post" action="/wap/forum/thread/{{ thread.id }}/reply">
+  <input type="hidden" name="_csrf" value="{{ csrf }}">
+  <textarea class="ta" name="content" rows="3" required></textarea>
+  <div><button class="btn" type="submit">回复</button></div>
+</form>
+{% else %}
+<div class="small sep">请先 <a href="/wap/login?next={{ ('/wap/forum/thread/' + thread.id) | urlencode }}">登录</a> 后回复</div>
+{% endif %}
+{% endblock %}
+{% block bottom %}<div class="small"><b>[0]</b> <a href="/wap" accesskey="0">首页</a></div>{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "admin/layout.njk" %}
+{% block body %}
+<div class="box red">
+  <div class="box-hd"><span>{{ title }}</span><a href="/admin/ads">&lt;&lt; 返回广告列表</a></div>
+  <form method="post" action="/admin/ads{% if ad.id %}/{{ ad.id }}{% endif %}?_csrf={{ csrf }}" enctype="multipart/form-data" style="padding:8px">
+    {% if error %}<div class="field-err" style="padding:4px 8px;background:#fee;border:1px solid #c99;margin-bottom:6px">✘ {{ error }}</div>{% endif %}
+    <table class="ftable">
+      <tr><th>广告位：</th><td>
+        <label><input type="radio" name="slot" value="header" class="chk"{% if ad.slot != 'sidebar' %} checked{% endif %}> 顶部横幅 468×60</label>
+        <label><input type="radio" name="slot" value="sidebar" class="chk"{% if ad.slot == 'sidebar' %} checked{% endif %}> 内页侧栏 160×100</label></td></tr>
+      <tr><th>样　式：</th><td>
+        <label><input type="radio" name="style" value="rainbow" class="chk"{% if ad.style == 'rainbow' %} checked{% endif %}> 彩虹动画（仅横幅）</label>
+        <label><input type="radio" name="style" value="solid" class="chk"{% if ad.style == 'solid' or not ad.style %} checked{% endif %}> 纯色背景</label>
+        <label><input type="radio" name="style" value="image" class="chk"{% if ad.style == 'image' %} checked{% endif %}> 图片</label></td></tr>
+      <tr><th><span class="red">*</span> 标　题：</th><td><input class="ipt w300" name="title" value="{{ ad.title }}" required maxlength="40"> <span class="tip">例如：震撼！全场 5 折起</span></td></tr>
+      <tr><th>副标题：</th><td><input class="ipt w300" name="subtitle" value="{{ ad.subtitle }}" maxlength="60"> <span class="tip">彩虹横幅的黄色小字</span></td></tr>
+      <tr><th>按钮文字：</th><td><input class="ipt w120" name="cta" value="{{ ad.cta }}" maxlength="12"> <span class="tip">例如：点击进入&gt;&gt;、立即报名</span></td></tr>
+      <tr><th>链接地址：</th><td><input class="ipt w400" name="link" value="{{ ad.link }}" maxlength="500" placeholder="https://… 或站内地址 /shop"></td></tr>
+      <tr><th>背景色：</th><td><input class="ipt w80" name="bg" value="{{ ad.bg or '#003366' }}" maxlength="7"> <input type="color" value="{{ ad.bg or '#003366' }}" data-color-for="bg" style="height:20px;vertical-align:middle"> <span class="tip">纯色样式使用</span></td></tr>
+      <tr><th>图　片：</th><td>
+        <input type="file" name="image_file" accept="image/*"> <span class="tip">或填写图片地址：</span>
+        <input class="ipt w300" name="image" value="{{ ad.image }}" maxlength="500" placeholder="/uploads/... 或 https://...">
+        {% if ad.image %}<div class="mt4"><img src="{{ ad.image }}" alt="" style="max-width:468px;max-height:100px;border:1px solid #999"></div>{% endif %}
+      </td></tr>
+      <tr><th>排　序：</th><td><input class="ipt" style="width:50px" name="sort" value="{{ ad.sort or 0 }}"> <label><input type="checkbox" name="active" value="1" class="chk"{% if ad.active == 1 or ad.active == '1' %} checked{% endif %}> 启用</label></td></tr>
+      <tr><th></th><td><button class="btn" type="submit" style="font-weight:bold">保存广告</button> <a href="/admin/ads">取消</a></td></tr>
+    </table>
+  </form>
+</div>
+{% endblock %}
+{% block scripts %}<script src="/static/js/admin.js?v={{ assetVersion }}"></script>{% endblock %}

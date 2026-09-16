@@ -1,0 +1,36 @@
+{# 已买到 / 已卖出 共用的订单表。mode = bought | sold #}
+{% import "macros.njk" as m with context %}
+<div class="bar">
+  <span>{% set base = '/my/' ~ mode %}
+    {% if not status %}<b>全部</b>{% else %}<a href="{{ base }}">全部</a>{% endif %}
+    {% for key, label in [['paid', '等待发货'], ['shipped', '卖家已发货'], ['done', '交易成功'], ['closed', '交易关闭']] %} | {% if status == key %}<b>{{ label }}({{ counts[key] or 0 }})</b>{% else %}<a href="{{ base }}?status={{ key }}">{{ label }}({{ counts[key] or 0 }})</a>{% endif %}{% endfor %}
+  </span>
+  <span class="gray">共 {{ pager.total }} 笔</span>
+</div>
+<table class="carttable mt6" cellpadding="6" cellspacing="0">
+  <tr class="h"><td>宝贝</td><td class="c-price">金额</td><td class="c-who">{{ '卖家' if mode == 'bought' else '买家' }}</td><td class="c-status">交易状态</td><td class="c-op3">操作</td></tr>
+  {% for o in orders %}
+  <tr class="seller"><td colspan="5">订单号：<a href="/order/{{ o.no }}">{{ o.no }}</a> &nbsp; 成交时间：{{ o.created_at | dt }}</td></tr>
+  <tr class="p">
+    <td class="brk">{% for i in o.items %}<table cellpadding="0" cellspacing="0" class="{{ 'mt4' if not loop.first }}"><tr><td class="pr8">{{ m.snapThumb(i) }}</td><td><a href="/item/{{ i.item_id }}">{{ i.title }}</a><div class="gray">￥{{ i.price_cents | yuan }} × {{ i.qty }}</div></td></tr></table>{% endfor %}</td>
+    <td><b class="orange">￥{{ o.total_cents | yuan }}</b><div class="gray">含运费 ￥{{ o.ship_fee_cents | yuan }}</div></td>
+    <td class="brk">{% if mode == 'bought' %}<a href="/shop/{{ o.seller_id }}">{{ o.seller_name }}</a>{% else %}{{ o.buyer_name }}{% endif %}</td>
+    <td style="color:{{ o.status | statusColor }}">{{ o.status | statusText }}</td>
+    <td>
+      {% if mode == 'bought' %}
+        {% if o.status == 'shipped' %}<a href="/order/{{ o.no }}" class="btn">确认收货</a>
+        {% elif o.status == 'paid' %}<a href="/order/{{ o.no }}">取消交易</a>
+        {% elif o.status == 'done' and not o.rated %}<a href="/order/{{ o.no }}#rate" class="btn">评价</a>
+        {% elif o.status == 'done' %}<span class="gray">已评价</span>{% endif %}
+      {% else %}
+        {% if o.status == 'paid' %}<a href="/order/{{ o.no }}" class="btn btn-orange">发货</a>
+        {% elif o.status == 'done' and not o.rated %}<a href="/order/{{ o.no }}#rate" class="btn">评价买家</a>
+        {% elif o.status == 'done' %}<span class="gray">已评价</span>{% endif %}
+      {% endif %}
+      <div><a href="/order/{{ o.no }}">订单详情</a></div>
+    </td>
+  </tr>
+  {% endfor %}
+  {% if not orders.length %}<tr><td colspan="5" class="empty">没有{{ '买到' if mode == 'bought' else '卖出' }}的宝贝{% if mode == 'sold' %}，<a href="/sell">发布一件宝贝</a>吧{% endif %}</td></tr>{% endif %}
+</table>
+{{ m.pagerBar(pager) }}

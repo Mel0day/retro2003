@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% if title %}{{ title }} - {% endif %}{{ site.site_name }} WAP</title>
+<link rel="stylesheet" href="/static/css/fonts.css?v={{ assetVersion }}">
+<link rel="stylesheet" href="/static/css/wap.css?v={{ assetVersion }}">
+<link rel="icon" href="/favicon.ico">
+{% block head %}{% endblock %}
+</head>
+<body>
+<div class="wap">
+  <div class="wap-body">
+    {% block top %}<div class="wap-bar"><a href="/wap" class="wap-logo">{{ site.site_name }}</a><span class="wap-ver">WAP 2.0</span></div>{% endblock %}
+    {% block body %}{% endblock %}
+    <div class="wap-end">
+      {% block bottom %}{% endblock %}
+      <div class="wap-foot">%%WAP_PAGE_KB%% · {% if footInfo %}{{ footInfo }}{% else %}在线 {{ wapOnline }}{% endif %}</div>
+    </div>
+  </div>
+  <div class="softkeys"><a href="/wap#menu">选项</a><a href="{{ backUrl or '/wap' }}">返回</a></div>
+</div>
+</body>
+</html>

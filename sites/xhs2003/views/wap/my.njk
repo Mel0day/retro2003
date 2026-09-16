@@ -1,0 +1,13 @@
+{% extends "wap/layout.njk" %}
+{% block body %}
+<div class="crumb"><a href="/wap">首页</a> &gt; 我的{{ site.site_name }}</div>
+<div class="small bot"><b>{{ user.username }}</b> <span class="red">{{ level.stars }}</span> {{ level.name }}<br>积分 <b>{{ user.points }}</b> · 笔记 <b>{{ user.note_count }}</b> 篇 · 收藏 <b>{{ favTotal }}</b> 篇</div>
+<div class="small"><b>[1]</b> <a href="/wap/pm" accesskey="1">短消息{% if unread %} <span class="red">({{ unread }} 条未读)</span>{% endif %}</a></div>
+<div class="h small sep">我的笔记</div>
+{% for n in notes %}<div class="line">· <a href="/wap/note/{{ n.id }}">{{ n.title }}</a> <span class="tiny gray8">({{ n.hits }})</span></div>{% else %}<div class="xs gray">还没有发表笔记，请用电脑版发表。</div>{% endfor %}
+{% if user.note_count > 5 %}<div class="xs"><a href="/wap/my/notes" accesskey="2">[2] 全部笔记</a></div>{% endif %}
+<div class="h small sep">我的收藏</div>
+{% for n in favorites %}<div class="line">· <a href="/wap/note/{{ n.id }}">{{ n.title }}</a></div>{% else %}<div class="xs gray">还没有收藏。</div>{% endfor %}
+{% if favTotal > 5 %}<div class="xs"><a href="/wap/my/favorites" accesskey="3">[3] 全部收藏</a></div>{% endif %}
+{% endblock %}
+{% block bottom %}<div class="small"><b>[0]</b> <a href="/wap" accesskey="0">首页</a> | <a href="/wap/logout">退出</a></div>{% endblock %}

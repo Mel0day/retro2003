@@ -1,0 +1,23 @@
+{% extends "layout.njk" %}
+{% block body %}
+<div class="col1">
+  <div class="box red">
+    <div class="box-hd"><span>★ 小红书排行榜</span><span class="nb">每次打开实时统计</span></div>
+    <div class="tabs" style="padding-top:4px">
+      {% for rg in ranges %}<a href="/rank?range={{ rg.key }}"{% if range == rg.key %} class="on"{% endif %}>{{ rg.label }}</a>{% endfor %}
+    </div>
+  </div>
+  <div class="grid2">
+    {% for b in boards %}
+    <div class="box" id="rank-{{ b.key }}">
+      <div class="box-hd"><span>▪ {{ b.title }}</span>{% if b.note %}<span class="nb gray6">{{ b.note }}</span>{% endif %}</div>
+      {% for r in b.items %}
+      <div class="rank-row"><span class="rk" style="background:{{ r.bg }}">{{ r.rank }}</span><a href="{{ r.url }}" title="{{ r.title }}">{{ r.title }}</a><span class="count">{{ r.value }} {{ r.unit }}</span></div>
+      {% else %}
+      <div class="box-empty">{% if range != 'all' %}这段时间还没有数据，<a href="/rank?range=all">看看总榜</a>{% else %}暂无数据{% endif %}</div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

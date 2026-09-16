@@ -1,0 +1,16 @@
+{% extends "my/layout.njk" %}
+{% block main %}
+<div class="box"><h3>买家给我的留言（未回复的在前）</h3>
+  {% for q in questions %}
+  <div class="qa brk"><span class="gray">{{ q.asker_name }} 问 <a href="/item/{{ q.item_id }}#questions">{{ q.item_title | cut(20) }}</a>（{{ q.created_at | dt }}）：</span>{{ q.text }}
+    {% if q.reply %}<div class="replyline">我的回复：{{ q.reply }}</div>{% endif %}
+    <form method="post" action="/my/questions/{{ q.id }}/reply" class="mt4"><input type="hidden" name="_csrf" value="{{ csrf }}"><input name="reply" maxlength="200" class="txt w400" placeholder="{{ '修改回复' if q.reply else '回复买家（公开显示在宝贝页）' }}"> <button type="submit" class="btn">{{ '修改' if q.reply else '回复' }}</button></form>
+  </div>
+  {% endfor %}
+  {% if not questions.length %}<div class="qa gray">还没有买家留言。</div>{% endif %}
+</div>
+<div class="box mt10"><h3>我问过的</h3>
+  {% for q in asked %}<div class="qa brk"><span class="gray">问 {{ q.seller_name }} 的 <a href="/item/{{ q.item_id }}#questions">{{ q.item_title | cut(20) }}</a>（{{ q.created_at | dt }}）：</span>{{ q.text }}{% if q.reply %}<div class="replyline">卖家回复：{{ q.reply }}</div>{% else %}<div class="gray">等待卖家回复</div>{% endif %}</div>{% endfor %}
+  {% if not asked.length %}<div class="qa gray">还没有问过卖家问题。</div>{% endif %}
+</div>
+{% endblock %}

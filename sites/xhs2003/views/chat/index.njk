@@ -1,0 +1,32 @@
+{% extends "layout.njk" %}
+{% block body %}
+<div class="col1">
+  <div class="box red">
+    <div class="box-hd"><span>★ 小红书聊天室</span><span class="nb">文明聊天 · 快乐交友</span></div>
+    <table class="tbl" style="border:0">
+      <tr><th>聊天室</th><th>话题</th><th>在线</th><th>24 小时发言</th><th>最后发言</th><th></th></tr>
+      {% for room in rooms %}
+      <tr>
+        <td class="nowrap"><a href="/chat/{{ room.slug }}" class="b" style="font-size:13px;font-family:var(--f-song-13)">{{ room.name }}</a></td>
+        <td class="t gray6">{{ room.topic }}</td>
+        <td class="num"><b class="green">{{ room.online.members.length + room.online.guests }}</b> 人</td>
+        <td class="num">{{ room.today }}</td>
+        <td class="t" style="max-width:220px"><div class="ellipsis gray6" style="max-width:220px">{% if room.last %}{{ room.last.username }}：{{ room.last.content }}{% else %}暂无{% endif %}</div></td>
+        <td class="nowrap"><a class="btn sm" href="/chat/{{ room.slug }}">进入 &gt;&gt;</a></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="box-empty">暂无聊天室</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="box">
+    <div class="box-hd">▪ 聊天室须知</div>
+    <div class="box-bd dark" style="line-height:1.9">
+      1. 游客可以进入旁观，<a href="/login?next=/chat">登录</a>后才能发言。<br>
+      2. 请勿刷屏、发广告，每 1.5 秒最多发一句，每分钟最多 20 句。<br>
+      3. 点右侧在线名单里的名字，可以「对 TA 说」。<br>
+      4. 聊天记录会保存，请勿泄露 QQ 密码、手机号等个人隐私。
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "layout.njk" %}
+{% from "macros.njk" import editorBar %}
+{% block body %}
+<div class="col1">
+  <div class="box red">
+    <div class="box-hd">{{ title }}</div>
+    <form method="post" action="{{ action }}" style="padding:8px">
+      <input type="hidden" name="_csrf" value="{{ csrf }}">
+      {% if error %}<div class="field-err" style="padding:4px 8px;background:#fee;border:1px solid #c99;margin-bottom:6px">✘ {{ error }}</div>{% endif %}
+      <table class="ftable">
+        <tr><th><span class="red">*</span> 频　道：</th><td>
+          <select class="sel" name="channel_id" required>
+            <option value="">-- 请选择频道 --</option>
+            {% for c in channels %}<option value="{{ c.id }}"{% if form.channel_id == c.id or form.channel_id == (c.id | string) %} selected{% endif %}>{{ c.name }}</option>{% endfor %}
+          </select></td></tr>
+        <tr><th><span class="red">*</span> 标　题：</th><td><input class="ipt w400" name="title" value="{{ form.title }}" required maxlength="60"> <span class="tip">4-60 个字</span></td></tr>
+        <tr><th>标　签：</th><td><input class="ipt w400" name="tags" value="{{ form.tags }}" maxlength="120" placeholder="用空格分隔，例如：西塘 江南 周末游"> <span class="tip">最多 8 个</span></td></tr>
+        <tr><th><span class="red">*</span> 正　文：</th><td>
+          {{ editorBar('note-content') }}
+          <textarea class="ta" id="note-content" name="content" rows="22" required data-maxlen="50000" data-mode="note">{{ form.content }}</textarea>
+          <div class="flex-between"><span class="tip">空一行为新段落。图片可用 [img=说明]地址[/img]，图文环绕用 [fimg=说明]地址[/fimg]，三图并排用 [gallery]…[/gallery]。<a href="/help#ubb" target="_blank">UBB 代码说明</a></span><span class="tip" data-len-for="note-content"></span></div>
+          <div class="editor-preview hidden" id="note-content-preview"></div>
+        </td></tr>
+        <tr><th></th><td><button class="btn" type="submit" style="font-weight:bold">{% if editing %}保存修改{% else %}发表笔记{% endif %}</button> <button class="btn" type="reset">重 填</button> {% if editing %}<a href="/notes/{{ editing.id }}">返回笔记</a>{% endif %}</td></tr>
+      </table>
+    </form>
+  </div>
+</div>
+{% endblock %}

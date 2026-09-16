@@ -1,0 +1,31 @@
+{% extends "admin/layout.njk" %}
+{% block body %}
+<div class="box">
+  <div class="box-hd"><span>▪ 频道管理</span><span class="nb">共 {{ list.length }} 个频道 · 按排序数字从小到大显示</span></div>
+  <table class="tbl" style="border:0">
+    <tr><th>排序</th><th>标识（网址）</th><th>名称</th><th>简介</th><th>笔记</th><th>操作</th></tr>
+    {% for c in list %}
+    <tr>
+      <td class="num"><input class="ipt" style="width:36px" name="sort" value="{{ c.sort }}" form="ch-{{ c.id }}"></td>
+      <td class="nowrap"><input class="ipt w80" name="slug" value="{{ c.slug }}" required maxlength="30" form="ch-{{ c.id }}"></td>
+      <td><input class="ipt w80" name="name" value="{{ c.name }}" required maxlength="20" form="ch-{{ c.id }}"></td>
+      <td><input class="ipt" style="width:220px" name="description" value="{{ c.description }}" maxlength="100" form="ch-{{ c.id }}"></td>
+      <td class="num"><a href="/notes?channel={{ c.slug }}" target="_blank">{{ c.note_count }}</a>{% if c.total_notes != c.note_count %}<span class="gray small">/{{ c.total_notes }}</span>{% endif %}</td>
+      <td class="acts">
+        <form method="post" action="/admin/channels/{{ c.id }}" id="ch-{{ c.id }}" class="inline-form"><input type="hidden" name="_csrf" value="{{ csrf }}"><button class="btn sm" type="submit">保存</button></form>
+        <form method="post" action="/admin/channels/{{ c.id }}/delete" class="inline-form" data-confirm="确定删除频道「{{ c.name }}」？"><input type="hidden" name="_csrf" value="{{ csrf }}"><button class="btn sm" type="submit"{% if c.total_notes %} disabled title="频道下还有笔记，不能删除"{% endif %}>删除</button></form>
+      </td>
+    </tr>
+    {% endfor %}
+    <tr style="background:#fffbe6">
+      <td class="num"><input class="ipt" style="width:36px" name="sort" value="{{ list.length }}" form="ch-new"></td>
+      <td><input class="ipt w80" name="slug" required maxlength="30" placeholder="如 music" form="ch-new"></td>
+      <td><input class="ipt w80" name="name" required maxlength="20" placeholder="频道名称" form="ch-new"></td>
+      <td><input class="ipt" style="width:220px" name="description" maxlength="100" placeholder="一句话简介" form="ch-new"></td>
+      <td></td>
+      <td class="acts"><form method="post" action="/admin/channels" id="ch-new" class="inline-form"><input type="hidden" name="_csrf" value="{{ csrf }}"><button class="btn sm" type="submit">添加频道</button></form></td>
+    </tr>
+  </table>
+  <div class="box-bd gray small">标识用于网址 /notes?channel=标识，只能是小写字母、数字和短横线。笔记数括号外为已发布数，斜杠后为含隐藏的总数；有笔记的频道不能删除。</div>
+</div>
+{% endblock %}

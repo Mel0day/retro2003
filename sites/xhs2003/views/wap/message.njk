@@ -1,0 +1,8 @@
+{% extends "wap/layout.njk" %}
+{% block head %}{% if redirect %}<meta http-equiv="refresh" content="3;url={{ redirect }}">{% endif %}{% endblock %}
+{% block body %}
+<div class="msg-title{% if ok %} ok{% endif %}">{% if ok %}✔{% else %}✘{% endif %} {{ title }}</div>
+<div>{{ text }}</div>
+{% if redirect %}<div class="xs gray">3 秒后自动跳转，<a href="{{ redirect }}">点此直接进入</a></div>{% endif %}
+{% if back and not redirect %}<div class="small"><a href="{{ backUrl or '/wap' }}">返回上一页</a> | <b>[0]</b> <a href="/wap" accesskey="0">首页</a></div>{% endif %}
+{% endblock %}

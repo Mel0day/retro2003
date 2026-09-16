@@ -1,0 +1,19 @@
+{% extends "layout.njk" %}
+{% block body %}
+<div class="cols2l">
+  <div class="stack">
+    <div class="box red menu">
+      <div class="box-hd">关于本站</div>
+      {% for p in pages %}<a href="/page/{{ p.slug }}"{% if p.slug == page.slug %} class="on"{% endif %}>» {{ p.title }}</a>{% endfor %}
+      <a href="/help">» 帮助中心</a>
+      <a href="/sitemap">» 网站地图</a>
+    </div>
+  </div>
+  <div class="stack">
+    <div class="box red">
+      <div class="box-hd"><span>{{ page.title }}</span><span class="nb">更新于 {{ page.updated_at | date }}</span></div>
+      <div class="note-body" style="min-height:240px">{{ page.content | ubb }}</div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "layout.njk" %}
+{% block body %}
+<div class="steps"><span class="s2">确认订单</span><span class="s1">支付宝付款</span><span class="s3">确认收货</span></div>
+<div class="successbox">
+  <div class="successtitle">√ 付款成功！</div>
+  <p class="lh19">您已通过支付宝付款 <b class="orange">￥{{ total | yuan }}</b>，货款由支付宝暂存，卖家发货、您确认收货后才会打给卖家。<br>支付宝账户余额：￥{{ balance | yuan }}</p>
+  <table class="carttable w600 center" cellpadding="6" cellspacing="0">
+    <tr class="h"><td>订单号</td><td>卖家</td><td>宝贝</td><td>金额</td></tr>
+    {% for o in orders %}<tr class="p"><td><a href="/order/{{ o.no }}">{{ o.no }}</a></td><td>{{ o.seller_name }}</td><td class="brk">{% for i in o.items %}{{ i.title | cut(18) }} ×{{ i.qty }}{% if not loop.last %}<br>{% endif %}{% endfor %}</td><td class="orange">￥{{ o.total_cents | yuan }}</td></tr>{% endfor %}
+  </table>
+  <p class="gray">寄往：{{ orders[0].receiver }} {{ orders[0].address }} {{ orders[0].tel }}</p>
+  <a href="/" class="btn btn-big">继续淘宝</a> <a href="/my/bought" class="btn btn-big">查看已买到的宝贝</a>
+</div>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "admin/layout.njk" %}
+{% block body %}
+<form method="get" action="/admin/orders" class="bar">订单号/会员名 <input name="q" value="{{ q }}" class="txt"> <select name="status" class="txt"><option value="">全部状态</option>{% for k, v in STATUS %}<option value="{{ k }}"{% if status == k %} selected{% endif %}>{{ v.short }}</option>{% endfor %}</select> <button type="submit" class="btn">查找</button> &nbsp; 共 {{ total }} 笔</form>
+<table class="t"><tr><th>订单号</th><th>买家 → 卖家</th><th>宝贝</th><th>金额</th><th>状态</th><th>时间</th><th>纠纷处理</th></tr>
+  {% for o in orders %}<tr><td><a href="/order/{{ o.no }}" target="_blank">{{ o.no }}</a></td><td>{{ o.buyer_name }} → {{ o.seller_name }}</td><td class="brk">{% for i in o.items %}{{ i.title | cut(16) }}×{{ i.qty }}{% if not loop.last %}<br>{% endif %}{% endfor %}</td><td>￥{{ o.total_cents | yuan }}</td>
+    <td style="color:{{ o.status | statusColor }}">{{ o.status | statusText }}{% if o.status == 'closed' %}<br><span class="gray">{{ o.close_reason }}</span>{% endif %}</td><td>{{ o.created_at | dt }}</td>
+    <td>{% if o.status == 'paid' or o.status == 'shipped' %}<form method="post" action="/admin/orders/{{ o.no }}/close" data-confirm="确定关闭订单 {{ o.no }} 并把 ￥{{ o.total_cents | yuan }} 退回买家吗？"><input type="hidden" name="_csrf" value="{{ csrf }}"><input name="reason" class="txt w100" maxlength="60" placeholder="处理原因"> <button type="submit" class="btn btn-red">关闭并退款</button></form>{% else %}<span class="gray">—</span>{% endif %}</td></tr>{% endfor %}
+</table>
+{% include "admin/_pager.njk" %}
+<p class="gray">交易成功和已关闭的订单不能再改状态。纠纷处理只能关闭未完成的交易并全额退款给买家，库存会退回。</p>
+{% endblock %}

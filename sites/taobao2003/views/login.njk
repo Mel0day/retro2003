@@ -1,0 +1,29 @@
+{% extends "layout.njk" %}
+{% block body %}
+<table cellpadding="0" cellspacing="0" class="full"><tr>
+<td class="half">
+<form method="post" action="/login">
+<input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="next" value="{{ next }}">
+<table class="loginbox" cellpadding="5" cellspacing="0">
+  <tr><td colspan="2" class="h">会员登录</td></tr>
+  {% if err %}<tr><td colspan="2"><div class="err">{{ err }}</div></td></tr>{% endif %}
+  <tr><td class="k">会员名：</td><td><input name="username" value="{{ username }}" maxlength="16" class="txt w170" autofocus autocomplete="username"></td></tr>
+  <tr><td class="k">密　码：</td><td><input type="password" name="password" maxlength="64" class="txt w170" autocomplete="current-password"></td></tr>
+  <tr><td></td><td><button type="submit" class="btn btn-login">登 录</button> <label class="gray"><input type="checkbox" name="remember" value="1"> 两周内免登录</label></td></tr>
+  <tr><td></td><td class="gray">忘记密码？请看 <a href="/page/help">帮助中心</a></td></tr>
+</table>
+</form>
+</td>
+<td class="half">
+<div class="box regtip"><h3>还不是淘宝会员？</h3>
+  <div class="pad lh2">
+    · 注册完全免费，一分钟搞定<br>
+    · 注册即送 <b class="orange">1000 元</b> 支付宝体验金<br>
+    · 可以买，也可以免费开店卖东西<br>
+    · 支付宝担保交易，先收货后放款<br>
+    <a href="/register{% if next %}?next={{ next | urlencode }}{% endif %}" class="btn btn-big btn-orange mt8">免费注册</a>
+  </div>
+</div>
+</td>
+</tr></table>
+{% endblock %}

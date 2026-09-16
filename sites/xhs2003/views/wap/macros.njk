@@ -1,0 +1,6 @@
+{% macro pager(p) %}
+{%- if p and p.pages > 1 -%}
+<div class="pager blk">{% if p.prev %}<a href="{{ p.prev }}" accesskey="7">上一页</a> {% endif %}{% if p.next %}<a href="{{ p.next }}" accesskey="9">下一页</a> {% endif %}({{ p.current }}/{{ p.pages }})</div>
+{%- endif -%}
+{% endmacro %}
+{% macro captcha() %}<img class="captcha" src="/captcha.svg?scope=wap" alt="验证码" width="52" height="18">{% endmacro %}

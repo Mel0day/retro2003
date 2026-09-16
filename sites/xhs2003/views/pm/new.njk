@@ -1,0 +1,28 @@
+{% extends "user/panel.njk" %}
+{% from "macros.njk" import emots %}
+{% block panel %}
+<div class="box red">
+  <div class="box-hd">写短消息</div>
+  <div class="tabs">
+    <a href="/pm">收件箱{% if unread %}({{ unread }}){% endif %}</a>
+    <a href="/pm/outbox">发件箱</a>
+    <a href="/pm/new" class="on">写短消息</a>
+  </div>
+  <form method="post" action="/pm/send" style="padding:8px">
+    <input type="hidden" name="_csrf" value="{{ csrf }}">
+    <input type="hidden" name="back" value="{{ form.back }}">
+    {% if error %}<div class="field-err" style="padding:4px 8px;background:#fee;border:1px solid #c99;margin-bottom:6px">✘ {{ error }}</div>{% endif %}
+    <table class="ftable">
+      <tr><th><span class="red">*</span> 收件人：</th><td><input class="ipt w200" name="to" value="{{ form.to }}" required maxlength="16" list="pm-friends" placeholder="输入对方用户名">
+        <datalist id="pm-friends">{% for f in friends %}<option value="{{ f.username }}">{% endfor %}</datalist>
+        {% if friends.length %}<span class="tip">可以从好友中选择</span>{% endif %}</td></tr>
+      <tr><th>标　题：</th><td><input class="ipt w400" name="title" value="{{ form.title }}" maxlength="60"></td></tr>
+      <tr><th><span class="red">*</span> 内　容：</th><td>
+        {{ emots() }}
+        <textarea class="ta" name="body" id="pm-body" rows="10" required maxlength="5000" data-maxlen="5000">{{ form.body }}</textarea>
+        <span class="tip">支持 [b]粗体[/b]、[url]链接[/url]、[quote]引用[/quote] 等 UBB 代码 · <span data-len-for="pm-body"></span></span></td></tr>
+      <tr><th></th><td><button class="btn" type="submit">发 送</button> <button class="btn" type="reset">重 填</button></td></tr>
+    </table>
+  </form>
+</div>
+{% endblock %}

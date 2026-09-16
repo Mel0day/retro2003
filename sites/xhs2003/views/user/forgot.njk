@@ -1,0 +1,31 @@
+{% extends "layout.njk" %}
+{% from "macros.njk" import captcha %}
+{% block body %}
+<div class="col1" style="padding:20px 0 30px">
+  <div class="box red" style="width:520px;margin:0 auto">
+    <div class="box-hd">找回密码 · 第 {{ step }} 步</div>
+    <form method="post" action="/forgot" class="box-bd pink" style="padding:12px 20px">
+      <input type="hidden" name="_csrf" value="{{ csrf }}">
+      {% if error %}<div class="field-err center" style="margin-bottom:6px">✘ {{ error }}</div>{% endif %}
+      {% if step == 1 %}
+      <table class="ftable">
+        <tr><th>用户名：</th><td><input class="ipt w200" name="username" value="{{ username or '' }}" required maxlength="16" autofocus></td></tr>
+        <tr><th></th><td><button class="btn" type="submit">下一步</button></td></tr>
+      </table>
+      {% else %}
+      <input type="hidden" name="username" value="{{ username }}">
+      <input type="hidden" name="step" value="2">
+      <table class="ftable">
+        <tr><th>用户名：</th><td><b>{{ username }}</b></td></tr>
+        <tr><th>提示问题：</th><td class="red">{{ question }}</td></tr>
+        <tr><th>答　案：</th><td><input class="ipt w200" name="answer" required maxlength="50" autocomplete="off" autofocus></td></tr>
+        <tr><th>新密码：</th><td><input class="ipt w200" type="password" name="password" required minlength="6" maxlength="32" autocomplete="new-password"></td></tr>
+        <tr><th>确认新密码：</th><td><input class="ipt w200" type="password" name="password2" required minlength="6" maxlength="32" autocomplete="new-password"></td></tr>
+        <tr><th>验证码：</th><td><input class="ipt w48" name="captcha" required maxlength="4" autocomplete="off"> {{ captcha('forgot') }}</td></tr>
+        <tr><th></th><td><button class="btn" type="submit">重置密码</button></td></tr>
+      </table>
+      {% endif %}
+    </form>
+  </div>
+</div>
+{% endblock %}

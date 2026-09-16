@@ -1,0 +1,74 @@
+{% extends "layout.njk" %}
+{% import "macros.njk" as m with context %}
+{% block body %}
+{% set stepN = 1 if o.status == 'paid' else (2 if o.status == 'shipped' else 3) %}
+{% if o.status != 'closed' %}<div class="steps"><span class="{{ 's1' if stepN == 1 else 's2' }}">1 买家已付款</span><span class="{{ 's1' if stepN == 2 else ('s2' if stepN > 2 else 's3') }}">2 卖家发货</span><span class="{{ 's1' if stepN == 3 else 's3' }}">3 确认收货，交易成功</span></div>{% endif %}
+<div class="box"><h3>订单 {{ o.no }} &nbsp; <span style="color:{{ o.status | statusColor }}">{{ o.status | statusLong }}</span></h3>
+  <table class="carttable noborder" cellpadding="6" cellspacing="0">
+    <tr class="h"><td>宝贝（交易快照）</td><td class="c-price">单价</td><td class="c-sold">数量</td><td class="c-price">小计</td></tr>
+    {% for i in items %}<tr class="p"><td class="brk"><table cellpadding="0" cellspacing="0"><tr><td class="pr8">{{ m.snapThumb(i) }}</td><td><a href="/item/{{ i.item_id }}">{{ i.title }}</a><div class="gray">{{ i.cat }}</div></td></tr></table></td><td>￥{{ i.price_cents | yuan }}</td><td>{{ i.qty }}</td><td class="price">￥{{ (i.price_cents * i.qty) | yuan }}</td></tr>{% endfor %}
+  </table>
+  <table class="kv" cellpadding="4" cellspacing="0">
+    <tr><td class="k">买　家：</td><td>{{ o.buyer_name }}</td><td class="k">卖　家：</td><td><a href="/shop/{{ o.seller_id }}">{{ o.seller_name }}</a></td></tr>
+    <tr><td class="k">收货人：</td><td>{{ o.receiver }} &nbsp; {{ o.tel }}</td><td class="k">配　送：</td><td>{{ o.ship | shipLabel }}</td></tr>
+    <tr><td class="k">地　址：</td><td colspan="3" class="brk">{{ o.address }}</td></tr>
+    {% if o.note %}<tr><td class="k">买家留言：</td><td colspan="3" class="brk">{{ o.note }}</td></tr>{% endif %}
+    <tr><td class="k">金　额：</td><td colspan="3">宝贝 ￥{{ o.goods_cents | yuan }} + 运费 ￥{{ o.ship_fee_cents | yuan }} = <b class="price">￥{{ o.total_cents | yuan }}</b>（支付宝担保交易）</td></tr>
+    {% if o.logistics_company %}<tr><td class="k">物　流：</td><td colspan="3">{{ o.logistics_company }}{% if o.logistics_no %} &nbsp; 运单号：{{ o.logistics_no }}{% endif %}{% if o.status == 'shipped' %} &nbsp; <span class="gray">{{ o.auto_confirm_at | dt }} 前买家未确认，系统将自动确认收货</span>{% endif %}</td></tr>{% endif %}
+    {% if o.status == 'closed' %}<tr><td class="k">关闭原因：</td><td colspan="3">{{ o.close_reason }}（{% if o.closed_by == 'buyer' %}买家取消{% elif o.closed_by == 'seller' %}卖家关闭{% else %}淘宝小二处理{% endif %}，{{ o.closed_at | dt }}）</td></tr>{% endif %}
+  </table>
+</div>
+
+{# ---------- 操作区 ---------- #}
+<div class="box mt10"><h3>交易操作</h3><div class="pad">
+{% if role == 'buyer' %}
+  {% if o.status == 'paid' %}
+    <p>您已付款，等待卖家发货。如果不想买了，可以在卖家发货前取消交易，货款会立即退回支付宝。</p>
+    <form method="post" action="/order/{{ o.no }}/cancel" data-confirm="确定要取消这笔交易吗？">{{ m.csrfField() }}取消原因：<select name="reason" class="txt">{% for r in CANCEL_REASONS %}<option>{{ r }}</option>{% endfor %}</select> <button type="submit" class="btn">取消交易</button></form>
+  {% elif o.status == 'shipped' %}
+    <p>卖家已经发货。<b>收到货并检查没有问题后</b>再确认收货，确认后支付宝会把货款打给卖家。</p>
+    <form method="post" action="/order/{{ o.no }}/confirm" data-confirm="确认已经收到货了吗？确认后货款将打给卖家，不能撤回。">{{ m.csrfField() }}<button type="submit" class="btn btn-big btn-orange">确认收货</button></form>
+  {% elif o.status == 'done' %}<p class="green">交易成功，货款已打给卖家。</p>
+  {% else %}<p class="gray">交易已关闭，货款已退回您的支付宝账户。</p>{% endif %}
+{% elif role == 'seller' %}
+  {% if o.status == 'paid' %}
+    <p>买家已通过支付宝付款，请尽快发货。</p>
+    <form method="post" action="/order/{{ o.no }}/ship" class="mb8">{{ m.csrfField() }}物流公司：<select name="company" class="txt">{% for c in LOGISTICS %}<option>{{ c }}</option>{% endfor %}</select> 运单号：<input name="tracking_no" maxlength="30" class="txt w160" placeholder="选填"> <button type="submit" class="btn btn-orange">确认发货</button></form>
+    <form method="post" action="/order/{{ o.no }}/close" data-confirm="确定关闭交易吗？货款会退回买家。">{{ m.csrfField() }}缺货或不能发货？ <select name="reason" class="txt">{% for r in CLOSE_REASONS %}<option>{{ r }}</option>{% endfor %}</select> <button type="submit" class="btn">关闭交易</button></form>
+  {% elif o.status == 'shipped' %}<p>已发货，等待买家确认收货。</p>
+  {% elif o.status == 'done' %}<p class="green">交易成功，货款 ￥{{ o.total_cents | yuan }} 已打入您的支付宝账户。</p>
+  {% else %}<p class="gray">交易已关闭。</p>{% endif %}
+{% else %}
+  <p class="gray">淘宝小二查看中。{% if o.status == 'paid' or o.status == 'shipped' %}需要处理纠纷请到 <a href="/admin/orders?q={{ o.no }}">交易管理</a>。{% endif %}</p>
+{% endif %}
+</div></div>
+
+{# ---------- 评价 ---------- #}
+{% if o.status == 'done' %}
+<div class="box mt10" id="rate"><h3>信用评价</h3><div class="pad">
+  <table class="reviews" cellpadding="6" cellspacing="0">
+    <tr class="h"><td class="c-who2">评价方</td><td>内容</td></tr>
+    <tr><td>买家评卖家</td><td class="brk">{% if byBuyer %}{{ m.gradeTag(byBuyer.grade) }} {% if byBuyer.hidden %}<span class="gray">内容已被屏蔽</span>{% else %}{{ byBuyer.text }}{% endif %} <span class="gray">{{ byBuyer.created_at | dt }}</span>{% if not byBuyer.counted %} <span class="gray">（30 天内重复评价，不计分）</span>{% endif %}{% if byBuyer.reply %}<div class="replyline">卖家解释：{{ byBuyer.reply }}</div>{% endif %}{% else %}<span class="gray">买家还没有评价</span>{% endif %}</td></tr>
+    <tr><td>卖家评买家</td><td class="brk">{% if bySeller %}{{ m.gradeTag(bySeller.grade) }} {% if bySeller.hidden %}<span class="gray">内容已被屏蔽</span>{% else %}{{ bySeller.text }}{% endif %} <span class="gray">{{ bySeller.created_at | dt }}</span>{% if not bySeller.counted %} <span class="gray">（30 天内重复评价，不计分）</span>{% endif %}{% if bySeller.reply %}<div class="replyline">买家解释：{{ bySeller.reply }}</div>{% endif %}{% else %}<span class="gray">卖家还没有评价</span>{% endif %}</td></tr>
+  </table>
+  {% set mineRate = byBuyer if role == 'buyer' else (bySeller if role == 'seller' else null) %}
+  {% set toMe = bySeller if role == 'buyer' else (byBuyer if role == 'seller' else null) %}
+  {% if role != 'admin' and not mineRate %}
+  <form method="post" action="/order/{{ o.no }}/rate" class="reviewform">{{ m.csrfField() }}
+    <b>给{{ '卖家' if role == 'buyer' else '买家' }}评价：</b>
+    <label class="g1"><input type="radio" name="grade" value="1" checked> 好评</label> <label class="g0"><input type="radio" name="grade" value="0"> 中评</label> <label class="g-1"><input type="radio" name="grade" value="-1"> 差评</label><br>
+    <input name="text" maxlength="200" class="txt w400 mt4" placeholder="说说这次交易怎么样（中评、差评请写明原因）"> <button type="submit" class="btn">提交评价</button>
+    <div class="gray mt4">评价后不能修改。好评 +1 分，中评 0 分，差评 -1 分，<a href="/page/rules" target="_blank">评价规则</a></div>
+  </form>
+  {% endif %}
+  {% if toMe and not toMe.reply and role != 'admin' %}
+  <form method="post" action="/order/{{ o.no }}/reply" class="reviewform">{{ m.csrfField() }}<b>解释对方的评价：</b><input name="text" maxlength="200" class="txt w300"> <button type="submit" class="btn">发表解释</button></form>
+  {% endif %}
+</div></div>
+{% endif %}
+
+<div class="box mt10"><h3>交易记录</h3>
+  {% for l in logs %}<div class="line"><span class="brk">{{ l.text }}</span><span class="gray nowrap">{{ l.actor }} · {{ l.created_at | dt }}</span></div>{% endfor %}
+</div>
+<div class="mt10"><a href="{{ '/my/sold' if role == 'seller' else '/my/bought' }}" class="btn btn-big">返回{{ '已卖出的宝贝' if role == 'seller' else '已买到的宝贝' }}</a></div>
+{% endblock %}

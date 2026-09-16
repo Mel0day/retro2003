@@ -1,0 +1,26 @@
+{% extends "user/panel.njk" %}
+{% block panel %}
+<div class="box red">
+  <div class="box-hd">修改资料</div>
+  <form method="post" action="/my/profile" style="padding:8px">
+    <input type="hidden" name="_csrf" value="{{ csrf }}">
+    {% if error %}<div class="field-err" style="padding:4px 8px;background:#fee;border:1px solid #c99;margin-bottom:6px">✘ {{ error }}</div>{% endif %}
+    <table class="ftable">
+      <tr><th>用户名：</th><td><b>{{ user.username }}</b> <span class="tip">用户名注册后不能修改</span></td></tr>
+      <tr><th>性　别：</th><td>
+        <label><input type="radio" name="gender" value="male" class="chk"{% if form.gender == 'male' %} checked{% endif %}> 男</label>
+        <label><input type="radio" name="gender" value="female" class="chk"{% if form.gender == 'female' %} checked{% endif %}> 女</label>
+        <label><input type="radio" name="gender" value="" class="chk"{% if not form.gender %} checked{% endif %}> 保密</label></td></tr>
+      <tr><th>来　自：</th><td><input class="ipt w200" name="location" value="{{ form.location }}" maxlength="30" placeholder="例如：上海 徐汇"></td></tr>
+      <tr><th>个性签名：</th><td><textarea class="ta" name="signature" rows="3" maxlength="100" id="sig" data-maxlen="100">{{ form.signature }}</textarea><span class="tip">显示在留言和帖子下方，最多 100 字 <span data-len-for="sig"></span></span></td></tr>
+    </table>
+    <div class="box-hd mt8" style="border:1px solid #ddd">▪ 密码提示问题 <span class="nb gray6">（不修改请留空答案）</span></div>
+    <table class="ftable">
+      <tr><th>提示问题：</th><td><input class="ipt w300" name="question" value="{{ form.question }}" maxlength="50"></td></tr>
+      <tr><th>新答案：</th><td><input class="ipt w200" name="answer" maxlength="50" autocomplete="off"> <span class="tip">修改问题时必须填写</span></td></tr>
+      <tr><th>当前密码：</th><td><input class="ipt w200" type="password" name="current_password" maxlength="32" autocomplete="current-password"> <span class="tip">修改提示问题需要验证当前密码</span></td></tr>
+      <tr><th></th><td><button class="btn" type="submit">保存资料</button> <button class="btn" type="reset">重 填</button></td></tr>
+    </table>
+  </form>
+</div>
+{% endblock %}

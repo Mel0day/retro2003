@@ -1,0 +1,5 @@
+{% extends "my/layout.njk" %}
+{% import "macros.njk" as m with context %}
+{% block main %}{% set mode = 'bought' %}{% include "my/_orderlist.njk" %}
+<div class="gray mt8">交易流程：付款 → 卖家发货 → 确认收货（货款打给卖家）→ 双方评价。收到货有问题，请先不要确认收货，在宝贝页给卖家留言协商。</div>
+{% endblock %}

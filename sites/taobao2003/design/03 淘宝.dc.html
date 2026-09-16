@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>淘宝网 - 淘！我喜欢</title>
+<style>
+body{margin:0;background:#fff;font-family:"SimSun","宋体","Songti SC",Tahoma,serif;font-size:12px;color:#333}
+a{color:#0033cc;text-decoration:underline}a:hover{color:#ff6600}
+@keyframes marq{from{transform:translateX(100%)}to{transform:translateX(-100%)}}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+</style>
+</helmet>
+<div style="width:778px;margin:0 auto;border-left:1px solid #ddd;border-right:1px solid #ddd">
+  <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse">
+    <tr><td style="background:#f2f2f2;padding:3px 8px;color:#666;border-bottom:1px solid #ddd;display:flex;justify-content:space-between">
+      <span><sc-if value="{{ logged }}" hint-placeholder-val="{{ false }}"><span>您好，<b style="color:#f60">{{ user }}</b>！ <a href="#" onClick="{{ logout }}">退出</a></span></sc-if><sc-if value="{{ notLogged }}" hint-placeholder-val="{{ true }}"><span>您好，欢迎来淘宝！ <a href="#" onClick="{{ goLogin }}">[请登录]</a> <a href="#" onClick="{{ goLogin }}">[免费注册]</a></span></sc-if></span>
+      <span><a href="#" onClick="{{ goCart }}">我的购物车({{ cartCount }})</a> | <a href="#" onClick="{{ goOrders }}">我的淘宝</a> | <a href="#">收藏本站</a> | <a href="#">帮助中心</a></span>
+    </td></tr>
+    <tr><td style="padding:10px 12px">
+      <table cellpadding="0" cellspacing="0" style="width:100%"><tr>
+        <td style="width:200px"><a href="#" onClick="{{ goHome }}" style="text-decoration:none"><span style="font:bold 34px/1 'Microsoft YaHei','PingFang SC',sans-serif;background:linear-gradient(#ffb05c,#ff5000);-webkit-background-clip:text;background-clip:text;color:transparent">淘宝网</span></a><div style="color:#f60;font-weight:bold;margin-top:2px">淘！我喜欢</div></td>
+        <td style="vertical-align:middle">
+          <div style="border:2px solid #f60;display:flex;align-items:stretch">
+            <select value="{{ cat }}" onChange="{{ setCat }}" style="border:0;border-right:1px solid #f9c;font-size:12px;padding:0 4px;background:#fff8f0"><option value="all">全部宝贝</option><option value="数码">数码</option><option value="服饰">服饰</option><option value="图书">图书</option><option value="家居">家居</option></select>
+            <input value="{{ q }}" onChange="{{ setQ }}" onKeyDown="{{ qKey }}" placeholder="输入宝贝名称，如：MP3" style="flex:1;border:0;font-size:13px;padding:4px 6px;outline:none">
+            <button onClick="{{ search }}" style="border:0;background:linear-gradient(#ff9a3c,#ff5000);color:#fff;font-weight:bold;padding:0 18px;cursor:pointer;font-size:13px">搜 索</button>
+          </div>
+          <div style="color:#666;margin-top:4px">热门：<a href="#" onClick="{{ hot1 }}">MP3</a> <a href="#" onClick="{{ hot2 }}">牛仔裤</a> <a href="#" onClick="{{ hot3 }}">哈利波特</a> <a href="#" onClick="{{ hot4 }}">摄像头</a> <a href="#" onClick="{{ hot5 }}">台灯</a></div>
+        </td>
+        <td style="width:160px;text-align:right;vertical-align:top;color:#666">今日在线宝贝<br><b style="font:bold 20px 'Courier New',monospace;color:#f60">{{ productCount }}</b> 件</td>
+      </tr></table>
+    </td></tr>
+    <tr><td style="background:linear-gradient(#ff8a3c,#f60);padding:0;display:flex;font-weight:bold">
+      <a href="#" onClick="{{ goHome }}" style="color:#fff;text-decoration:none;padding:6px 18px;background:#c40">首页</a>
+      <a href="#" onClick="{{ cat1 }}" style="color:#fff;text-decoration:none;padding:6px 18px">数码</a>
+      <a href="#" onClick="{{ cat2 }}" style="color:#fff;text-decoration:none;padding:6px 18px">服饰</a>
+      <a href="#" onClick="{{ cat3 }}" style="color:#fff;text-decoration:none;padding:6px 18px">图书</a>
+      <a href="#" onClick="{{ cat4 }}" style="color:#fff;text-decoration:none;padding:6px 18px">家居</a>
+      <a href="#" onClick="{{ goCart }}" style="color:#fff;text-decoration:none;padding:6px 18px">购物车</a>
+      <a href="#" onClick="{{ goOrders }}" style="color:#fff;text-decoration:none;padding:6px 18px">我的订单</a>
+    </td></tr>
+    <tr><td style="background:#fff8e6;padding:3px 8px;border-bottom:1px solid #fc9;overflow:hidden;white-space:nowrap"><div style="display:inline-block;animation:marq 22s linear infinite;color:#c30">☆ 淘宝公告：支付宝担保交易正式上线，先收货后付款，安全无忧！新用户注册即送 10 元淘金币 ☆</div></td></tr>
+    <tr><td style="padding:8px 12px;color:#666;border-bottom:1px dotted #ccc">所在位置：<a href="#" onClick="{{ goHome }}">淘宝网</a> &gt; {{ crumb }}</td></tr>
+    <tr><td style="padding:10px 12px">
+
+      <sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+        <table cellpadding="0" cellspacing="0" style="width:100%"><tr>
+          <td style="width:150px;vertical-align:top;padding-right:10px">
+            <div style="border:1px solid #fc9"><div style="background:#ffe8cc;padding:4px 8px;font-weight:bold;color:#c40">宝贝分类</div>
+              <sc-for list="{{ cats }}" as="c" hint-placeholder-count="5"><a href="#" onClick="{{ c.select }}" style="display:block;padding:4px 10px;border-bottom:1px dotted #fc9;background:{{ c.bg }}">{{ c.label }} ({{ c.n }})</a></sc-for>
+            </div>
+            <div style="border:1px solid #fc9;margin-top:10px"><div style="background:#ffe8cc;padding:4px 8px;font-weight:bold;color:#c40">价格区间</div>
+              <sc-for list="{{ priceBands }}" as="b" hint-placeholder-count="4"><a href="#" onClick="{{ b.select }}" style="display:block;padding:4px 10px;border-bottom:1px dotted #fc9;background:{{ b.bg }}">{{ b.label }}</a></sc-for>
+            </div>
+            <div style="border:1px solid #fc9;margin-top:10px;padding:8px;text-align:center;background:repeating-linear-gradient(45deg,#fff3e0,#fff3e0 4px,#fff 4px,#fff 8px);color:#999;font-family:'Courier New',monospace;font-size:11px;height:90px;display:flex;align-items:center;justify-content:center">[ 120×90<br>广告位 ]</div>
+          </td>
+          <td style="vertical-align:top">
+            <div style="background:#f5f5f5;border:1px solid #ddd;padding:4px 8px;display:flex;justify-content:space-between;align-items:center">
+              <span>共找到 <b style="color:#f60">{{ resultCount }}</b> 件宝贝 &nbsp; {{ qTip }}</span>
+              <span>排序：<a href="#" onClick="{{ sortDefault }}">默认</a> | <a href="#" onClick="{{ sortPriceAsc }}">价格↑</a> | <a href="#" onClick="{{ sortPriceDesc }}">价格↓</a> | <a href="#" onClick="{{ sortSold }}">销量</a></span>
+            </div>
+            <table cellpadding="6" cellspacing="0" style="width:100%;border-collapse:collapse;margin-top:6px">
+              <tr style="background:#ffe8cc;color:#c40"><td style="width:70px">图片</td><td>宝贝名称</td><td style="width:70px">价格</td><td style="width:60px">已售</td><td style="width:90px">卖家</td><td style="width:60px">操作</td></tr>
+              <sc-for list="{{ results }}" as="p" hint-placeholder-count="6">
+                <tr style="border-bottom:1px dotted #ccc">
+                  <td><div style="width:60px;height:60px;border:1px solid #ccc;background:repeating-linear-gradient(45deg,#f5f5f5,#f5f5f5 3px,#fff 3px,#fff 6px);display:flex;align-items:center;justify-content:center;color:#aaa;font-size:10px;font-family:'Courier New',monospace">{{ p.cat }}</div></td>
+                  <td><a href="#" onClick="{{ p.open }}" style="font-weight:bold">{{ p.name }}</a><div style="color:#888;margin-top:3px">{{ p.desc }}</div><div style="color:#f60;margin-top:2px">{{ p.tag }}</div></td>
+                  <td style="color:#f60;font-weight:bold">￥{{ p.price }}</td><td>{{ p.sold }}</td><td>{{ p.seller }}<div style="color:#f90">{{ p.stars }}</div></td>
+                  <td><a href="#" onClick="{{ p.add }}" style="display:inline-block;padding:2px 8px;text-decoration:none;color:#c40;font-weight:bold;background:linear-gradient(#fff,#ffe0b0 50%,#ffc070 51%,#ffd090);border:1px solid #e80;border-radius:4px">加入购物车</a></td>
+                </tr>
+              </sc-for>
+            </table>
+            <sc-if value="{{ noResult }}" hint-placeholder-val="{{ false }}"><div style="padding:30px;text-align:center;color:#999">没有找到相关宝贝，换个关键词试试？</div></sc-if>
+          </td>
+        </tr></table>
+      </sc-if>
+
+      <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+        <table cellpadding="0" cellspacing="0" style="width:100%"><tr>
+          <td style="width:260px;vertical-align:top">
+            <div style="width:240px;height:240px;border:1px solid #ccc;background:repeating-linear-gradient(45deg,#f5f5f5,#f5f5f5 5px,#fff 5px,#fff 10px);display:flex;align-items:center;justify-content:center;color:#aaa;font-family:'Courier New',monospace">[ 宝贝大图 240×240 ]</div>
+            <div style="display:flex;gap:6px;margin-top:6px"><div style="width:52px;height:52px;border:1px solid #f60;background:#f5f5f5"></div><div style="width:52px;height:52px;border:1px solid #ccc;background:#f5f5f5"></div><div style="width:52px;height:52px;border:1px solid #ccc;background:#f5f5f5"></div></div>
+          </td>
+          <td style="vertical-align:top;padding-left:10px">
+            <h1 style="font-size:16px;margin:0 0 8px;color:#c40">{{ d.name }}</h1>
+            <table cellpadding="4" cellspacing="0" style="width:100%;background:#fff8e6;border:1px solid #fc9">
+              <tr><td style="width:70px;color:#666">一口价：</td><td><b style="font:bold 22px Arial;color:#f60">￥{{ d.price }}</b> <span style="color:#999;text-decoration:line-through">￥{{ d.orig }}</span></td></tr>
+              <tr><td style="color:#666">运费：</td><td>卖家承担运费（平邮）</td></tr>
+              <tr><td style="color:#666">已售：</td><td>{{ d.sold }} 件 &nbsp; 库存：{{ d.stock }} 件</td></tr>
+              <tr><td style="color:#666">所在地：</td><td>{{ d.city }}</td></tr>
+              <tr><td style="color:#666">数量：</td><td style="display:flex;gap:4px;align-items:center"><button onClick="{{ qtyMinus }}" style="font-size:12px;width:20px">-</button><input value="{{ qty }}" onChange="{{ setQty }}" style="width:36px;text-align:center;border:1px solid #999;font-size:12px"><button onClick="{{ qtyPlus }}" style="font-size:12px;width:20px">+</button></td></tr>
+            </table>
+            <div style="display:flex;gap:10px;margin-top:10px">
+              <a href="#" onClick="{{ buyNow }}" style="display:inline-block;padding:6px 22px;text-decoration:none;color:#fff;font-weight:bold;background:linear-gradient(#ff9a3c,#ff5000 50%,#e04000 51%,#ff7020);border:1px solid #c40;border-radius:5px;text-shadow:1px 1px 0 #a30">立刻购买</a>
+              <a href="#" onClick="{{ addDetail }}" style="display:inline-block;padding:6px 22px;text-decoration:none;color:#c40;font-weight:bold;background:linear-gradient(#fff,#ffe0b0 50%,#ffc070 51%,#ffd090);border:1px solid #e80;border-radius:5px">加入购物车</a>
+              <span style="color:#1a8a1a;align-self:center">{{ addTip }}</span>
+            </div>
+            <div style="margin-top:12px;border:1px solid #ddd;padding:8px;background:#fafafa"><b>卖家信息</b><div style="line-height:1.8;margin-top:4px">店铺：{{ d.seller }} &nbsp; 信用：<span style="color:#f90">{{ d.stars }}</span><br>好评率：{{ d.rate }}% &nbsp; <a href="#">和我联系</a> &nbsp; <a href="#">进入店铺</a></div></div>
+          </td>
+        </tr></table>
+        <div style="margin-top:14px;border-top:2px solid #f60"><div style="display:inline-block;background:#f60;color:#fff;padding:3px 14px;font-weight:bold">宝贝详情</div><div style="display:inline-block;padding:3px 14px;color:#666">评价({{ d.reviewCount }})</div>
+          <div style="padding:10px;line-height:1.9">{{ d.desc }}<br>{{ d.detail }}</div>
+          <table cellpadding="6" cellspacing="0" style="width:100%;border-collapse:collapse;border:1px solid #ddd"><tr style="background:#f5f5f5"><td>买家</td><td>评价</td><td>时间</td></tr>
+            <sc-for list="{{ d.reviews }}" as="r" hint-placeholder-count="2"><tr style="border-top:1px dotted #ccc"><td style="width:80px">{{ r.who }}</td><td>{{ r.text }}</td><td style="width:90px;color:#999">{{ r.time }}</td></tr></sc-for>
+          </table>
+        </div>
+        <div style="margin-top:8px"><a href="#" onClick="{{ backList }}">&lt;&lt; 返回宝贝列表</a></div>
+      </sc-if>
+
+      <sc-if value="{{ isCart }}" hint-placeholder-val="{{ false }}">
+        <table cellpadding="6" cellspacing="0" style="width:100%;border-collapse:collapse;border:1px solid #fc9">
+          <tr style="background:#ffe8cc;color:#c40;font-weight:bold"><td>宝贝</td><td style="width:80px">单价</td><td style="width:110px">数量</td><td style="width:80px">小计</td><td style="width:50px">操作</td></tr>
+          <sc-for list="{{ cart }}" as="c" hint-placeholder-count="2">
+            <tr style="border-bottom:1px dotted #ccc"><td><a href="#" onClick="{{ c.open }}">{{ c.name }}</a><div style="color:#888">{{ c.seller }}</div></td><td style="color:#f60">￥{{ c.price }}</td><td style="display:flex;gap:4px;align-items:center"><button onClick="{{ c.minus }}" style="font-size:12px;width:20px">-</button><span style="width:24px;text-align:center">{{ c.qty }}</span><button onClick="{{ c.plus }}" style="font-size:12px;width:20px">+</button></td><td style="color:#f60;font-weight:bold">￥{{ c.sub }}</td><td><a href="#" onClick="{{ c.remove }}" style="color:#c00">删除</a></td></tr>
+          </sc-for>
+          <sc-if value="{{ cartEmpty }}" hint-placeholder-val="{{ false }}"><tr><td colspan="5" style="text-align:center;padding:30px;color:#999">购物车是空的，快去<a href="#" onClick="{{ goHome }}">逛逛</a>吧！</td></tr></sc-if>
+        </table>
+        <div style="margin-top:10px;text-align:right;background:#fff8e6;border:1px solid #fc9;padding:10px">
+          共 <b>{{ cartCount }}</b> 件宝贝 &nbsp; 合计：<b style="font:bold 20px Arial;color:#f60">￥{{ cartTotal }}</b> &nbsp;
+          <a href="#" onClick="{{ goCheckout }}" style="display:inline-block;padding:6px 22px;text-decoration:none;color:#fff;font-weight:bold;background:linear-gradient(#ff9a3c,#ff5000 50%,#e04000 51%,#ff7020);border:1px solid #c40;border-radius:5px">去结算 &gt;&gt;</a>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ false }}">
+        <table cellpadding="5" cellspacing="0" style="margin:20px auto;border:1px solid #f60;background:#fff8e6;width:360px">
+          <tr><td colspan="2" style="background:#f60;color:#fff;font-weight:bold">会员登录</td></tr>
+          <tr><td style="text-align:right;width:80px">会员名：</td><td><input value="{{ loginName }}" onChange="{{ setLoginName }}" style="width:170px;border:1px solid #999;font-size:12px;padding:2px"></td></tr>
+          <tr><td style="text-align:right">密　码：</td><td><input type="password" value="{{ loginPwd }}" onChange="{{ setLoginPwd }}" style="width:170px;border:1px solid #999;font-size:12px;padding:2px"></td></tr>
+          <tr><td></td><td><button onClick="{{ doLogin }}" style="padding:2px 16px;font-size:12px;cursor:pointer;background:linear-gradient(#fff,#ffe0b0 50%,#ffc070 51%,#ffd090);border:1px solid #e80;border-radius:4px">登 录</button> <span style="color:#c00">{{ loginErr }}</span></td></tr>
+          <tr><td colspan="2" style="color:#888;font-size:11px">任意会员名 + 密码即可登录体验</td></tr>
+        </table>
+      </sc-if>
+
+      <sc-if value="{{ isCheckout }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;gap:0;margin-bottom:12px;font-weight:bold"><span style="padding:4px 14px;background:#f60;color:#fff">1 确认订单</span><span style="padding:4px 14px;background:#ffe8cc;color:#c40">2 支付宝付款</span><span style="padding:4px 14px;background:#f5f5f5;color:#999">3 确认收货</span></div>
+        <table cellpadding="0" cellspacing="0" style="width:100%"><tr>
+          <td style="vertical-align:top;width:55%;padding-right:12px">
+            <div style="border:1px solid #fc9"><div style="background:#ffe8cc;padding:4px 8px;font-weight:bold;color:#c40">收货地址</div>
+              <table cellpadding="4" style="width:100%">
+                <tr><td style="width:70px;text-align:right">收货人：</td><td><input value="{{ addr.name }}" onChange="{{ setAddrName }}" style="width:200px;border:1px solid #999;font-size:12px;padding:2px"></td></tr>
+                <tr><td style="text-align:right">地　址：</td><td><input value="{{ addr.addr }}" onChange="{{ setAddrAddr }}" style="width:260px;border:1px solid #999;font-size:12px;padding:2px"></td></tr>
+                <tr><td style="text-align:right">电　话：</td><td><input value="{{ addr.tel }}" onChange="{{ setAddrTel }}" style="width:200px;border:1px solid #999;font-size:12px;padding:2px"></td></tr>
+                <tr><td style="text-align:right">配送：</td><td><label><input type="radio" name="ship" checked="{{ shipPost }}" onChange="{{ setShipPost }}"> 平邮 (5-10 天) 免费</label> <label><input type="radio" name="ship" checked="{{ shipEms }}" onChange="{{ setShipEms }}"> EMS (2-3 天) ￥20</label></td></tr>
+                <tr><td style="text-align:right">留言：</td><td><input value="{{ note }}" onChange="{{ setNote }}" placeholder="给卖家留言" style="width:260px;border:1px solid #999;font-size:12px;padding:2px"></td></tr>
+              </table>
+            </div>
+          </td>
+          <td style="vertical-align:top">
+            <div style="border:1px solid #fc9"><div style="background:#ffe8cc;padding:4px 8px;font-weight:bold;color:#c40">订单明细</div>
+              <sc-for list="{{ cart }}" as="c" hint-placeholder-count="2"><div style="padding:4px 8px;border-bottom:1px dotted #ccc;display:flex;justify-content:space-between"><span>{{ c.name }} ×{{ c.qty }}</span><span style="color:#f60">￥{{ c.sub }}</span></div></sc-for>
+              <div style="padding:4px 8px;display:flex;justify-content:space-between"><span>运费</span><span>￥{{ shipFee }}</span></div>
+              <div style="padding:8px;background:#fff8e6;text-align:right">应付总额：<b style="font:bold 20px Arial;color:#f60">￥{{ payTotal }}</b></div>
+            </div>
+            <div style="margin-top:10px;text-align:right"><a href="#" onClick="{{ pay }}" style="display:inline-block;padding:6px 22px;text-decoration:none;color:#fff;font-weight:bold;background:linear-gradient(#5aa9ff,#1a6fd0 50%,#0f5cb8 51%,#3a86e0);border:1px solid #0a4a9a;border-radius:5px">使用支付宝付款</a><div style="color:#c00;margin-top:4px">{{ payErr }}</div></div>
+          </td>
+        </tr></table>
+      </sc-if>
+
+      <sc-if value="{{ isSuccess }}" hint-placeholder-val="{{ false }}">
+        <div style="text-align:center;padding:30px;border:1px solid #9c9;background:#f0fff0">
+          <div style="font-size:18px;font-weight:bold;color:#1a8a1a">√ 付款成功！订单号：{{ lastOrder }}</div>
+          <p style="line-height:1.9;color:#555">货款已由支付宝暂存，卖家发货、您确认收货后才会打给卖家。<br>可在 <a href="#" onClick="{{ goOrders }}">我的订单</a> 中查看物流状态。</p>
+          <a href="#" onClick="{{ goHome }}" style="display:inline-block;padding:6px 22px;text-decoration:none;color:#c40;font-weight:bold;background:linear-gradient(#fff,#ffe0b0 50%,#ffc070 51%,#ffd090);border:1px solid #e80;border-radius:5px">继续淘宝</a>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isOrders }}" hint-placeholder-val="{{ false }}">
+        <table cellpadding="6" cellspacing="0" style="width:100%;border-collapse:collapse;border:1px solid #fc9">
+          <tr style="background:#ffe8cc;color:#c40;font-weight:bold"><td>订单号</td><td>宝贝</td><td>金额</td><td>状态</td><td>操作</td></tr>
+          <sc-for list="{{ orders }}" as="o" hint-placeholder-count="1"><tr style="border-bottom:1px dotted #ccc"><td>{{ o.id }}</td><td>{{ o.items }}</td><td style="color:#f60">￥{{ o.total }}</td><td style="color:{{ o.color }}">{{ o.status }}</td><td><a href="#" onClick="{{ o.confirm }}">{{ o.action }}</a></td></tr></sc-for>
+          <sc-if value="{{ noOrders }}" hint-placeholder-val="{{ false }}"><tr><td colspan="5" style="text-align:center;padding:30px;color:#999">暂无订单</td></tr></sc-if>
+        </table>
+      </sc-if>
+
+    </td></tr>
+    <tr><td style="border-top:2px solid #f60;background:#f5f5f5;padding:10px;text-align:center;color:#666;line-height:1.9">
+      <a href="#">关于淘宝</a> | <a href="#">诚聘英才</a> | <a href="#">联系我们</a> | <a href="#">安全交易</a> | <a href="#">支付宝</a> | <a href="#">网站地图</a><br>
+      Copyright © 2003 淘宝网 Taobao.com 版权所有 &nbsp; 浙ICP证030001号 &nbsp; 推荐 IE5.5 以上 1024×768 浏览<br>
+      <span style="background:#000;color:#3f3;font-family:'Courier New',monospace;padding:0 4px">访问量 00{{ visitors }}</span>
+    </td></tr>
+  </table>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    view: 'list', logged: false, user: '', loginName: '', loginPwd: '', loginErr: '', afterLogin: 'list',
+    q: '', qApplied: '', cat: 'all', band: 0, sort: 'default', detailId: null, qty: 1, addTip: '',
+    cart: [], addr: { name: '', addr: '', tel: '' }, ship: 'post', note: '', payErr: '', orders: [], lastOrder: '', visitors: 7738621,
+    products: [
+      { id: 1, cat: '数码', name: '爱国者 MP3 播放器 128M 带 FM 收音', desc: '支持 MP3/WMA，USB 1.1 即插即用，附耳机', tag: '支付宝担保交易', price: 399, orig: 499, sold: 128, stock: 15, seller: '数码小铺', stars: '★★★★☆', rate: 98.5, city: '广东 深圳', detail: '全新正品，保修一年，送挂绳一条。', reviews: [{ who: 'tb_88', text: '音质不错，就是充电有点慢', time: '2003-06-12' }, { who: 'cool_boy', text: '很小巧，好评！', time: '2003-06-08' }] },
+      { id: 2, cat: '数码', name: '清华紫光 USB 摄像头 30 万像素', desc: '视频聊天必备，支持 Win98/2000/XP', tag: '', price: 128, orig: 168, sold: 56, stock: 40, seller: '电脑城老陈', stars: '★★★☆☆', rate: 96.1, city: '北京', detail: '附驱动光盘。', reviews: [{ who: 'lucy', text: '画面还行，够用', time: '2003-05-30' }] },
+      { id: 3, cat: '数码', name: '诺基亚 3310 二手 9 成新', desc: '经典机型，贪吃蛇，超长待机', tag: '二手', price: 350, orig: 1200, sold: 9, stock: 1, seller: '二手机王', stars: '★★★★★', rate: 99.2, city: '上海', detail: '无拆无修，带原装电池和充电器。', reviews: [] },
+      { id: 4, cat: '服饰', name: '李维斯 501 直筒牛仔裤 (专柜正品)', desc: '经典蓝，32 码', tag: '支付宝担保交易', price: 268, orig: 599, sold: 74, stock: 12, seller: '潮流前线', stars: '★★★★☆', rate: 97.8, city: '浙江 杭州', detail: '支持七天退换。', reviews: [{ who: 'jeanslover', text: '版型很正，值', time: '2003-06-10' }] },
+      { id: 5, cat: '服饰', name: '纯棉短袖 T 恤 印花 白色', desc: '夏日必备，多色可选', tag: '', price: 29, orig: 59, sold: 412, stock: 200, seller: '小乖服饰', stars: '★★★★☆', rate: 98.0, city: '广东 广州', detail: '100% 纯棉。', reviews: [] },
+      { id: 6, cat: '图书', name: '哈利·波特与凤凰社 (中文版)', desc: '人民文学出版社，2003 年新书', tag: '新书上架', price: 45, orig: 59, sold: 233, stock: 60, seller: '书香门第', stars: '★★★★★', rate: 99.6, city: '北京', detail: '正版新书，塑封未拆。', reviews: [{ who: 'reader01', text: '第一时间拿到了，很厚一本', time: '2003-06-14' }] },
+      { id: 7, cat: '图书', name: '大话西游 VCD 双碟装', desc: '周星驰经典，国粤双语', tag: '', price: 18, orig: 28, sold: 88, stock: 30, seller: '影碟世界', stars: '★★★☆☆', rate: 95.0, city: '广东 深圳', detail: '', reviews: [] },
+      { id: 8, cat: '家居', name: '护眼台灯 学生学习灯', desc: '可调光，节能灯管', tag: '', price: 58, orig: 88, sold: 67, stock: 25, seller: '温馨家居', stars: '★★★★☆', rate: 97.2, city: '江苏 苏州', detail: '附赠灯管一支。', reviews: [] },
+      { id: 9, cat: '家居', name: '不锈钢保温杯 500ml', desc: '24 小时保温', tag: '包邮', price: 35, orig: 49, sold: 150, stock: 80, seller: '温馨家居', stars: '★★★★☆', rate: 97.2, city: '江苏 苏州', detail: '', reviews: [] }
+    ]
+  };
+  pv(e) { e && e.preventDefault && e.preventDefault(); }
+  needLogin(next) { if (this.state.logged) return this.setState({ view: next }); this.setState({ view: 'login', afterLogin: next }); }
+  renderVals() {
+    const s = this.state, pv = e => this.pv(e);
+    const bands = [{ label: '全部价格', min: 0, max: 1e9 }, { label: '50 元以下', min: 0, max: 50 }, { label: '50-200 元', min: 50, max: 200 }, { label: '200 元以上', min: 200, max: 1e9 }];
+    const bd = bands[s.band];
+    let results = s.products.filter(p => (s.cat === 'all' || p.cat === s.cat) && p.price >= bd.min && p.price < bd.max && (!s.qApplied || (p.name + p.desc).toLowerCase().includes(s.qApplied.toLowerCase())));
+    if (s.sort === 'asc') results = [...results].sort((a, b) => a.price - b.price); if (s.sort === 'desc') results = [...results].sort((a, b) => b.price - a.price); if (s.sort === 'sold') results = [...results].sort((a, b) => b.sold - a.sold);
+    const addToCart = (p, qty) => { const ex = s.cart.find(c => c.id === p.id); const cart = ex ? s.cart.map(c => c.id === p.id ? { ...c, qty: c.qty + qty } : c) : [...s.cart, { id: p.id, qty }]; this.setState({ cart, addTip: `已加入购物车 ${qty} 件` }); };
+    const open = p => e => { pv(e); this.setState({ view: 'detail', detailId: p.id, qty: 1, addTip: '' }); };
+    const d = s.products.find(p => p.id === s.detailId) || s.products[0];
+    const cart = s.cart.map(c => { const p = s.products.find(x => x.id === c.id); return { ...p, qty: c.qty, sub: (p.price * c.qty).toFixed(2), open: open(p), plus: () => this.setState({ cart: s.cart.map(x => x.id === c.id ? { ...x, qty: x.qty + 1 } : x) }), minus: () => this.setState({ cart: s.cart.map(x => x.id === c.id ? { ...x, qty: Math.max(1, x.qty - 1) } : x) }), remove: e => { pv(e); this.setState({ cart: s.cart.filter(x => x.id !== c.id) }); } }; });
+    const cartTotal = cart.reduce((a, c) => a + c.price * c.qty, 0), shipFee = s.ship === 'ems' ? 20 : 0;
+    const setCat = cat => e => { pv(e); this.setState({ cat, view: 'list', qApplied: '', q: '' }); };
+    const hot = w => e => { pv(e); this.setState({ q: w, qApplied: w, cat: 'all', view: 'list' }); };
+    const crumbs = { list: s.cat === 'all' ? '全部宝贝' : s.cat, detail: d.cat + ' > ' + d.name, cart: '我的购物车', login: '会员登录', checkout: '确认订单', success: '付款成功', orders: '我的订单' };
+    return {
+      logged: s.logged, notLogged: !s.logged, user: s.user, cartCount: s.cart.reduce((a, c) => a + c.qty, 0), productCount: '1,203,847', visitors: s.visitors, crumb: crumbs[s.view],
+      isList: s.view === 'list', isDetail: s.view === 'detail', isCart: s.view === 'cart', isLogin: s.view === 'login', isCheckout: s.view === 'checkout', isSuccess: s.view === 'success', isOrders: s.view === 'orders',
+      goHome: e => { pv(e); this.setState({ view: 'list', cat: 'all', qApplied: '', q: '' }); }, goCart: e => { pv(e); this.setState({ view: 'cart' }); }, goLogin: e => { pv(e); this.setState({ view: 'login', afterLogin: 'list' }); }, goOrders: e => { pv(e); this.needLogin('orders'); },
+      logout: e => { pv(e); this.setState({ logged: false, user: '', view: 'list' }); },
+      q: s.q, setQ: e => this.setState({ q: e.target.value }), qKey: e => { if (e.key === 'Enter') this.setState({ qApplied: s.q, view: 'list' }); }, search: () => this.setState({ qApplied: s.q, view: 'list' }),
+      cat: s.cat, setCat: e => this.setState({ cat: e.target.value }), cat1: setCat('数码'), cat2: setCat('服饰'), cat3: setCat('图书'), cat4: setCat('家居'),
+      hot1: hot('MP3'), hot2: hot('牛仔裤'), hot3: hot('哈利'), hot4: hot('摄像头'), hot5: hot('台灯'),
+      cats: [['all', '全部宝贝'], ['数码', '数码'], ['服饰', '服饰'], ['图书', '图书'], ['家居', '家居']].map(([k, label]) => ({ label, n: k === 'all' ? s.products.length : s.products.filter(p => p.cat === k).length, bg: s.cat === k ? '#ffe8cc' : 'transparent', select: setCat(k) })),
+      priceBands: bands.map((b, i) => ({ label: b.label, bg: s.band === i ? '#ffe8cc' : 'transparent', select: e => { pv(e); this.setState({ band: i }); } })),
+      resultCount: results.length, noResult: results.length === 0, qTip: s.qApplied ? `关键词：“${s.qApplied}”` : '',
+      sortDefault: e => { pv(e); this.setState({ sort: 'default' }); }, sortPriceAsc: e => { pv(e); this.setState({ sort: 'asc' }); }, sortPriceDesc: e => { pv(e); this.setState({ sort: 'desc' }); }, sortSold: e => { pv(e); this.setState({ sort: 'sold' }); },
+      results: results.map(p => ({ ...p, price: p.price.toFixed(2), open: open(p), add: e => { pv(e); addToCart(p, 1); this.setState({ view: 'cart' }); } })),
+      d: { ...d, price: d.price.toFixed(2), orig: d.orig.toFixed(2), reviewCount: d.reviews.length }, qty: s.qty, setQty: e => this.setState({ qty: Math.max(1, parseInt(e.target.value) || 1) }), qtyPlus: () => this.setState({ qty: s.qty + 1 }), qtyMinus: () => this.setState({ qty: Math.max(1, s.qty - 1) }), addTip: s.addTip,
+      addDetail: e => { pv(e); addToCart(d, s.qty); }, buyNow: e => { pv(e); addToCart(d, s.qty); this.needLogin('checkout'); }, backList: e => { pv(e); this.setState({ view: 'list' }); },
+      cart, cartEmpty: cart.length === 0, cartTotal: cartTotal.toFixed(2), goCheckout: e => { pv(e); if (cart.length) this.needLogin('checkout'); },
+      loginName: s.loginName, loginPwd: s.loginPwd, loginErr: s.loginErr, setLoginName: e => this.setState({ loginName: e.target.value }), setLoginPwd: e => this.setState({ loginPwd: e.target.value }),
+      doLogin: () => { if (!s.loginName.trim() || !s.loginPwd) return this.setState({ loginErr: '请输入会员名和密码' }); this.setState({ logged: true, user: s.loginName.trim(), view: s.afterLogin, loginErr: '', addr: { ...s.addr, name: s.addr.name || s.loginName.trim() } }); },
+      addr: s.addr, setAddrName: e => this.setState({ addr: { ...s.addr, name: e.target.value } }), setAddrAddr: e => this.setState({ addr: { ...s.addr, addr: e.target.value } }), setAddrTel: e => this.setState({ addr: { ...s.addr, tel: e.target.value } }),
+      shipPost: s.ship === 'post', shipEms: s.ship === 'ems', setShipPost: () => this.setState({ ship: 'post' }), setShipEms: () => this.setState({ ship: 'ems' }), note: s.note, setNote: e => this.setState({ note: e.target.value }),
+      shipFee: shipFee.toFixed(2), payTotal: (cartTotal + shipFee).toFixed(2), payErr: s.payErr,
+      pay: e => { pv(e); if (!s.addr.name || !s.addr.addr || !s.addr.tel) return this.setState({ payErr: '请填写完整收货信息' }); const id = 'TB' + Date.now().toString().slice(-8); this.setState({ orders: [{ id, items: cart.map(c => c.name + '×' + c.qty).join('；'), total: (cartTotal + shipFee).toFixed(2), status: '卖家已发货' }, ...s.orders], cart: [], view: 'success', lastOrder: id, payErr: '' }); },
+      lastOrder: s.lastOrder,
+      orders: s.orders.map(o => ({ ...o, color: o.status === '交易成功' ? '#1a8a1a' : '#f60', action: o.status === '交易成功' ? '评价' : '确认收货', confirm: e => { pv(e); this.setState({ orders: s.orders.map(x => x.id === o.id ? { ...x, status: '交易成功' } : x) }); } })), noOrders: s.orders.length === 0
+    };
+  }
+}
+</script>
+</body>
+</html>

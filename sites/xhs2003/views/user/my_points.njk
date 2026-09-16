@@ -1,0 +1,40 @@
+{% extends "user/panel.njk" %}
+{% from "macros.njk" import pager as pagerLinks %}
+{% block panel %}
+<div class="box red">
+  <div class="box-hd"><span>积分记录</span><span class="nb">当前积分 <b style="color:#ff0">{{ user.points }}</b> · {{ level.name }}</span></div>
+  <table class="tbl" style="border:0">
+    <tr><th>时间</th><th>原因</th><th>积分变化</th></tr>
+    {% for l in logs %}
+    <tr>
+      <td class="num gray">{{ l.created_at | dt }}</td>
+      <td class="t">{{ l.reason }}</td>
+      <td class="num">{% if l.delta > 0 %}<b class="green">+{{ l.delta }}</b>{% else %}<b class="red">{{ l.delta }}</b>{% endif %}</td>
+    </tr>
+    {% else %}<tr><td colspan="3" class="box-empty">暂无积分记录</td></tr>{% endfor %}
+  </table>
+  {{ pagerLinks(pager) }}
+</div>
+
+<div class="grid2">
+  <div class="box">
+    <div class="box-hd">▪ 等级说明</div>
+    <table class="tbl" style="border:0">
+      <tr><th>等级</th><th>星级</th><th>所需积分</th></tr>
+      {% for l in levels %}
+      <tr{% if level.level.name == l.name %} style="font-weight:bold"{% endif %}>
+        <td class="nowrap">{{ l.name }}</td><td class="nowrap stars">{{ l.starsText }}</td>
+        <td class="num">{{ l.min }}{% if l.max %} ~ {{ l.max }}{% else %} 以上{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div class="box">
+    <div class="box-hd">▪ 如何获得积分</div>
+    <table class="tbl" style="border:0">
+      <tr><th>行为</th><th>积分</th></tr>
+      {% for r in rules %}<tr><td>{{ r.reason }}</td><td class="num green">+{{ r.delta }}</td></tr>{% endfor %}
+    </table>
+  </div>
+</div>
+{% endblock %}

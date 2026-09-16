@@ -1,0 +1,28 @@
+{% extends "user/panel.njk" %}
+{% block head %}<link rel="stylesheet" href="/static/css/shop.css?v={{ assetVersion }}">{% endblock %}
+{% block panel %}
+<div class="box red">
+  <div class="box-hd"><span>订单详情 · {{ order.order_no }}</span><a href="/my/orders">&lt;&lt; 返回订单列表</a></div>
+  {% include "shop/_order-flow.njk" %}
+  <table class="ftable">
+    <tr><th>订单号：</th><td class="verdana">{{ order.order_no }}</td></tr>
+    <tr><th>订单状态：</th><td><span class="status-{{ order.status }}">{{ statusLabels[order.status] }}</span>{% if order.tracking_no %}　快递单号：<b class="verdana">{{ order.tracking_no }}</b>{% endif %}</td></tr>
+    <tr><th>商　品：</th><td>{% if product %}<a href="/shop/{{ product.id }}">{{ order.product_name }}</a>{% else %}{{ order.product_name }} <span class="gray">（已下架）</span>{% endif %}</td></tr>
+    <tr><th>单价 × 数量：</th><td>¥{{ order.price_cents | yuan }} × {{ order.qty }}</td></tr>
+    <tr><th>应付金额：</th><td><span class="price-big">¥{{ order.total_cents | yuan }}</span></td></tr>
+    <tr><th>付款方式：</th><td>{{ paymentLabel }}</td></tr>
+    <tr><th>收货人：</th><td>{{ order.receiver }}　{{ order.phone }}</td></tr>
+    <tr><th>收货地址：</th><td>{{ order.address }}</td></tr>
+    {% if order.remark %}<tr><th>备　注：</th><td>{{ order.remark }}</td></tr>{% endif %}
+    <tr><th>下单时间：</th><td>{{ order.created_at | dt }}</td></tr>
+    <tr><th>最后更新：</th><td>{{ order.updated_at | dt }}</td></tr>
+  </table>
+  {% if order.status == 'pending' or order.status == 'confirmed' %}<div class="pay-tip"><b>{{ paymentLabel }}</b>：{{ tip }}</div>{% endif %}
+  {% if order.status == 'pending' %}
+  <form method="post" action="/my/orders/{{ order.order_no }}/cancel" class="center" style="padding:6px" data-confirm="确定要取消这个订单吗？">
+    <input type="hidden" name="_csrf" value="{{ csrf }}">
+    <button class="btn" type="submit">取消订单</button>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

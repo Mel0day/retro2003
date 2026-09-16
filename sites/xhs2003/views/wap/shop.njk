@@ -1,0 +1,13 @@
+{% extends "wap/layout.njk" %}
+{% from "wap/macros.njk" import pager as pg %}
+{% block body %}
+<div class="crumb"><a href="/wap">首页</a> &gt; 好物推荐</div>
+{% for p in products %}
+<div class="rec item">{% if p.image %}<a class="thumb" href="/wap/shop/{{ p.id }}"><img src="{{ p.image }}" alt="" loading="lazy"></a>{% endif %}
+  <div class="rec-txt small"><a href="/wap/shop/{{ p.id }}">{{ p.name }}</a><br><b class="red">¥{{ p.price }}</b> <span class="tiny gray8">已售 {{ p.sales }}</span></div></div>
+{% else %}
+<div class="gray small">暂无商品。</div>
+{% endfor %}
+{{ pg(pager) }}
+{% endblock %}
+{% block bottom %}<div class="small"><b>[0]</b> <a href="/wap" accesskey="0">首页</a></div>{% endblock %}

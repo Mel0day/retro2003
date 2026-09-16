@@ -1,0 +1,18 @@
+{% extends "my/layout.njk" %}
+{% import "macros.njk" as m with context %}
+{% block main %}
+<div class="box"><h3><span class="alipaytag">支付宝</span> 我的支付宝账户</h3>
+  <table class="kv" cellpadding="5" cellspacing="0">
+    <tr><td class="k">可用余额：</td><td><b class="bigprice sm">￥{{ balance | yuan }}</b></td></tr>
+    <tr><td class="k">担保中（我付出）：</td><td>￥{{ escrow | yuan }} <span class="gray">等卖家发货或等我确认收货的交易</span></td></tr>
+    <tr><td class="k">担保中（待收款）：</td><td>￥{{ incoming | yuan }} <span class="gray">买家确认收货后到账</span></td></tr>
+  </table>
+  <div class="pad gray">本站资金为演示用虚拟资金，新会员注册即送 1000 元，只能在本站购物，不能充值和提现。</div>
+</div>
+<table class="carttable mt10" cellpadding="6" cellspacing="0">
+  <tr class="h"><td class="c-time3">时间</td><td>说明</td><td class="c-price">收入/支出</td><td class="c-price">余额</td></tr>
+  {% for l in logs %}<tr class="p"><td class="gray">{{ l.created_at | dt }}</td><td class="brk">{{ l.text }}{% if l.order_no %} <a href="/order/{{ l.order_no }}">{{ l.order_no }}</a>{% endif %}</td><td class="{{ 'green' if l.amount_cents > 0 else 'red' }}">{{ '+' if l.amount_cents > 0 }}{{ l.amount_cents | yuan }}</td><td>{{ l.balance_cents | yuan }}</td></tr>{% endfor %}
+  {% if not logs.length %}<tr><td colspan="4" class="empty-s">暂无记录</td></tr>{% endif %}
+</table>
+{{ m.pagerBar(pager) }}
+{% endblock %}

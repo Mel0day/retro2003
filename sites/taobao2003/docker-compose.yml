@@ -1,0 +1,26 @@
+services:
+  taobao2003:
+    build:
+      context: .
+      args:
+        NPM_REGISTRY: ${NPM_REGISTRY:-https://registry.npmjs.org}
+    image: taobao2003:latest
+    container_name: taobao2003
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      DATA_DIR: /data
+    ports:
+      # 前面有 Nginx 时建议改成 "127.0.0.1:3004:3004"，只让本机访问
+      - "${TAOBAO_PORT:-3004}:3004"
+    volumes:
+      - taobao-data:/data
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  taobao-data:

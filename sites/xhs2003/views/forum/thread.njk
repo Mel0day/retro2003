@@ -1,0 +1,132 @@
+{% extends "layout.njk" %}
+{% from "macros.njk" import avatar, pager as pagerLinks, editorBar, emots %}
+{% block head %}<link rel="stylesheet" href="/static/css/forum.css?v={{ assetVersion }}">{% endblock %}
+{% block body %}
+<div class="col1">
+  <div class="forum-bar">
+    <span>
+      <a class="btn" href="/forum/board/{{ board.id }}/new">✎ 发表新主题</a>
+      {% if canReply %}<a class="btn" href="#reply-content">回复主题</a>{% endif %}
+    </span>
+    {{ pagerLinks(pager) }}
+  </div>
+
+  <div class="box" style="border-color:#c00">
+    <div class="thread-title">
+      {% if thread.sticky %}<span class="tflag">[置顶]</span>{% endif %}
+      {% if thread.digest %}<span class="tflag">[精华]</span>{% endif %}
+      {% if thread.is_poll %}<span class="tflag">[投票]</span>{% endif %}
+      {% if thread.locked %}<span class="tflag">[已锁定]</span>{% endif %}
+      <span class="ellipsis">{{ thread.title }}</span>
+      <span class="meta">查看 {{ thread.hits }} · 回复 {{ thread.reply_count }}</span>
+    </div>
+    {% if thread.status != 'published' %}<div class="note-hidden">该主题已被隐藏，仅版主和站长可见</div>{% endif %}
+
+    {% if mod %}
+    <div class="mod-bar no-print">
+      <b>版主操作：</b>
+      <form method="post" action="/forum/thread/{{ thread.id }}/mod">
+        <input type="hidden" name="_csrf" value="{{ csrf }}">
+        {% if thread.sticky %}<button class="btn sm" name="op" value="unsticky">取消置顶</button>{% else %}<button class="btn sm" name="op" value="sticky">置顶</button>{% endif %}
+        {% if thread.digest %}<button class="btn sm" name="op" value="undigest">取消精华</button>{% else %}<button class="btn sm" name="op" value="digest">加精</button>{% endif %}
+        {% if thread.locked %}<button class="btn sm" name="op" value="unlock">解锁</button>{% else %}<button class="btn sm" name="op" value="lock">锁定</button>{% endif %}
+        {% if thread.status == 'published' %}<button class="btn sm" name="op" value="hide" data-confirm="确定隐藏整个主题吗？">隐藏主题</button>{% else %}<button class="btn sm" name="op" value="unhide">恢复主题</button>{% endif %}
+      </form>
+      <form method="post" action="/forum/thread/{{ thread.id }}/mod">
+        <input type="hidden" name="_csrf" value="{{ csrf }}">
+        <input type="hidden" name="op" value="move">
+        移动到
+        <select class="sel" name="board_id">
+          {% for c in boards %}<optgroup label="{{ c.name }}">{% for b in c.boards %}<option value="{{ b.id }}"{% if b.id == thread.board_id %} selected{% endif %}>{{ b.name }}</option>{% endfor %}</optgroup>{% endfor %}
+        </select>
+        <button class="btn sm" type="submit">移动</button>
+      </form>
+    </div>
+    {% endif %}
+
+    {% for p in posts %}
+    {% if p.floor == 1 and poll %}
+    <div id="poll" style="padding:6px 10px;border-bottom:1px solid #ddd">
+      <div class="poll">
+        <div class="poll-t">[投票] 单选投票，共有 {{ poll.total }} 人参与</div>
+        {% set canVote = user and not poll.votedOptionId and thread.status == 'published' and not thread.locked %}
+        {% if canVote %}<form method="post" action="/forum/thread/{{ thread.id }}/vote"><input type="hidden" name="_csrf" value="{{ csrf }}">{% endif %}
+        {% for o in poll.options %}
+        <div class="poll-row">
+          <span>{% if canVote %}<input type="radio" name="option_id" value="{{ o.id }}" class="chk" required>{% else %}{{ loop.index }}.{% endif %}</span>
+          <span class="ellipsis">{{ o.label }}{% if poll.votedOptionId == o.id %} <span class="red small">（我的选择）</span>{% endif %}</span>
+          <span><span class="poll-bar" style="width:{{ o.percent * 1.5 }}px"></span></span>
+          <span class="verdana small">{{ o.votes }} 票 {{ o.percent }}%</span>
+        </div>
+        {% endfor %}
+        {% if canVote %}<div class="mt4"><button class="btn" type="submit">投 票</button></div></form>
+        {% elif not user %}<div class="gray mt4"><a href="/login?next={{ ('/forum/thread/' + thread.id) | urlencode }}">登录</a> 后才能投票</div>
+        {% elif poll.votedOptionId %}<div class="gray mt4">您已经投过票了，感谢参与！</div>{% endif %}
+      </div>
+    </div>
+    {% endif %}
+    <div class="fpost{% if p.status != 'published' %} hidden-post{% endif %}" id="floor-{{ p.floor }}">
+      <div class="fpost-side">
+        {{ avatar(p, 80) }}
+        <a href="/u/{{ p.user_id }}" class="b">{{ p.username }}</a>
+        <div><span class="stars">{{ p.level.stars }}</span></div>
+        <div class="gray6 small">{{ p.level.name }}{% if p.user_role == 'admin' %} · 站长{% elif p.user_role == 'moderator' %} · 版主{% endif %}</div>
+        <div class="info">
+          <div>帖子：{{ p.post_count }}</div>
+          <div>积分：{{ p.points }}</div>
+          <div>注册：{{ p.user_created_at | date }}</div>
+        </div>
+      </div>
+      <div class="fpost-main">
+        <div class="fpost-meta">
+          <span><span class="floor">{% if p.floor == 1 %}楼主{% else %}{{ p.floor }} 楼{% endif %}</span> 发表于 {{ p.created_at | dt }}{% if p.status != 'published' %} <span class="red">[已隐藏]</span>{% endif %}</span>
+          <span class="no-print">
+            {% if canReply %}
+            <a href="#reply-content" data-reply="{{ p.floor }} 楼 {{ p.username }}">[回复]</a>
+            <a href="#reply-content" data-quote="post-{{ p.id }}" data-name="{{ p.username }}">[引用]</a>
+            {% endif %}
+            {% if p.canEdit %}<a href="/forum/post/{{ p.id }}/edit">[编辑]</a>{% endif %}
+            {% if mod %}
+              {% if p.status == 'published' %}<a href="/forum/post/{{ p.id }}/hide" data-post-link data-confirm="{% if p.floor == 1 %}隐藏 1 楼会隐藏整个主题，确定吗？{% else %}确定隐藏这一楼吗？{% endif %}">[删除]</a>
+              {% else %}<a href="/forum/post/{{ p.id }}/restore" data-post-link>[恢复]</a>{% endif %}
+            {% endif %}
+            {% if user %}<a href="/report?type=post&id={{ p.id }}&back={{ ('/forum/thread/' + thread.id) | urlencode }}">[举报]</a>{% endif %}
+          </span>
+        </div>
+        <div class="fpost-body ubb-plain" id="post-{{ p.id }}" data-raw="{{ p.content }}">{{ p.content | ubb('post') }}</div>
+        {% if p.edited_at %}<div class="fpost-edited">[ 本帖最后编辑于 {{ p.edited_at | dt }} ]</div>{% endif %}
+        {% if p.signature %}<div class="fpost-sig">{{ p.signature }}</div>{% endif %}
+      </div>
+    </div>
+    {% else %}
+    <div class="box-empty">该主题暂无可显示的帖子</div>
+    {% endfor %}
+  </div>
+
+  <div class="forum-bar">
+    <span class="gray6">上一主题：{% if prev %}<a href="/forum/thread/{{ prev.id }}">{{ prev.title | cut(20) }}</a>{% else %}没有了{% endif %} · 下一主题：{% if next %}<a href="/forum/thread/{{ next.id }}">{{ next.title | cut(20) }}</a>{% else %}没有了{% endif %}</span>
+    {{ pagerLinks(pager) }}
+  </div>
+
+  <div class="box no-print">
+    <div class="box-hd">▪ 快速回复主题</div>
+    {% if canReply %}
+    <form class="reply-box" method="post" action="/forum/thread/{{ thread.id }}/reply">
+      <input type="hidden" name="_csrf" value="{{ csrf }}">
+      {% if thread.locked %}<div class="red">该主题已锁定，只有版主和站长可以回复。</div>{% endif %}
+      {{ editorBar('reply-content') }}
+      <textarea class="ta" id="reply-content" name="content" rows="6" required maxlength="20000" data-mode="post" data-purpose="post" style="margin-top:-6px"></textarea>
+      <div class="editor-preview hidden" id="reply-content-preview"></div>
+      <div class="flex-between">{{ emots() }}<span><button class="btn" type="submit" style="font-weight:bold">发表回复</button> <button class="btn" type="reset">重 填</button></span></div>
+      <span class="gray small">* 回帖积分 +1，请勿灌水。</span>
+    </form>
+    {% elif not user %}
+    <div class="box-empty">您需要 <a href="/login?next={{ ('/forum/thread/' + thread.id) | urlencode }}">登录</a> 后才能回帖，没有账号？<a href="/register">免费注册</a></div>
+    {% elif thread.locked %}
+    <div class="box-empty">该主题已被锁定，不能回复。</div>
+    {% else %}
+    <div class="box-empty">该主题暂不能回复。</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

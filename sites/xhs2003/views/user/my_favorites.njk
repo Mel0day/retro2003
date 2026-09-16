@@ -1,0 +1,23 @@
+{% extends "user/panel.njk" %}
+{% from "macros.njk" import pager as pagerLinks %}
+{% block panel %}
+<div class="box red">
+  <div class="box-hd"><span>我的收藏</span><span class="nb">共 {{ pager.total }} 篇</span></div>
+  <table class="tbl" style="border:0">
+    <tr><th style="width:30px"></th><th>标题</th><th>作者</th><th>点击/回复</th><th>收藏时间</th><th>操作</th></tr>
+    {% for n in list %}
+    <tr>
+      <td class="num red">{% if n.has_image %}[图]{% else %}[文]{% endif %}</td>
+      <td class="t"><div class="ellipsis"><span class="gray6">[{{ n.channel_name }}]</span> {% if n.status == 'published' %}<a href="/notes/{{ n.id }}" title="{{ n.title }}">{{ n.title }}</a>{% else %}<span class="gray">{{ n.title }}（已被隐藏）</span>{% endif %}</div></td>
+      <td class="nowrap"><a href="/u/{{ n.user_id }}" class="gray6">{{ n.username }}</a></td>
+      <td class="num">{{ n.hits }}/{{ n.comment_count }}</td>
+      <td class="num gray">{{ n.fav_at | dt }}</td>
+      <td class="nowrap"><form method="post" action="/my/favorites/{{ n.id }}/delete" class="inline-form" data-confirm="确定取消收藏吗？" style="display:inline"><input type="hidden" name="_csrf" value="{{ csrf }}"><button class="btn sm" type="submit">取消收藏</button></form></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6" class="box-empty">还没有收藏任何笔记，看到喜欢的笔记点「收藏本文」就能在这里找到啦。</td></tr>
+    {% endfor %}
+  </table>
+  {{ pagerLinks(pager) }}
+</div>
+{% endblock %}

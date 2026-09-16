@@ -1,0 +1,47 @@
+{% extends "admin/layout.njk" %}
+{% block head %}<link rel="stylesheet" href="/static/css/shop.css?v={{ assetVersion }}">{% endblock %}
+{% block body %}
+<div class="box red">
+  <div class="box-hd"><span>订单详情 · {{ order.order_no }}</span><a href="/admin/orders">&lt;&lt; 返回订单列表</a></div>
+  {% include "shop/_order-flow.njk" %}
+  <table class="ftable">
+    <tr><th>订单号：</th><td class="verdana">{{ order.order_no }}</td></tr>
+    <tr><th>状　态：</th><td><span class="status-{{ order.status }}">{{ statusLabels[order.status] }}</span>{% if order.tracking_no %}　快递单号：<b class="verdana">{{ order.tracking_no }}</b>{% endif %}</td></tr>
+    <tr><th>买　家：</th><td><a href="/u/{{ order.user_id }}" target="_blank">{{ order.username }}</a> <a href="/pm/new?to={{ order.username | urlencode }}" target="_blank">[发短消息]</a></td></tr>
+    <tr><th>商　品：</th><td>{% if product %}<a href="/shop/{{ product.id }}" target="_blank">{{ order.product_name }}</a>（当前库存 {{ product.stock }}）{% else %}{{ order.product_name }} <span class="gray">（商品已删除）</span>{% endif %}</td></tr>
+    <tr><th>单价 × 数量：</th><td>¥{{ order.price_cents | yuan }} × {{ order.qty }} = <span class="price-big">¥{{ order.total_cents | yuan }}</span></td></tr>
+    <tr><th>付款方式：</th><td>{{ paymentLabels[order.payment] }}</td></tr>
+    <tr><th>收货人：</th><td>{{ order.receiver }}</td></tr>
+    <tr><th>联系电话：</th><td class="verdana">{{ order.phone }}</td></tr>
+    <tr><th>收货地址：</th><td>{{ order.address }}</td></tr>
+    <tr><th>备　注：</th><td>{{ order.remark or '无' }}</td></tr>
+    <tr><th>下单时间：</th><td>{{ order.created_at | dt }}</td></tr>
+    <tr><th>最后更新：</th><td>{{ order.updated_at | dt }}</td></tr>
+  </table>
+</div>
+
+<div class="box">
+  <div class="box-hd">▪ 处理订单</div>
+  <div class="box-bd">
+    {% if actions.length %}
+    {% for a in actions %}
+      {% if a.key == 'ship' %}
+      <form method="post" action="/admin/orders/{{ order.order_no }}/status" class="form-row" style="margin:4px 0">
+        <input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="action" value="ship">
+        快递单号：<input class="ipt w200" name="tracking_no" required minlength="4" maxlength="40">
+        <button class="btn" type="submit">确认发货</button>
+      </form>
+      {% else %}
+      <form method="post" action="/admin/orders/{{ order.order_no }}/status" class="inline-form"{% if a.key == 'cancel' %} data-confirm="确定取消订单？库存会自动恢复，并通知买家。"{% endif %}>
+        <input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="action" value="{{ a.key }}">
+        <button class="btn" type="submit">{{ a.label }}</button>
+      </form>
+      {% endif %}
+    {% endfor %}
+    <div class="gray small mt6">操作后会自动给买家发送系统短消息通知。</div>
+    {% else %}
+    <span class="gray">该订单已{{ statusLabels[order.status] }}，无需处理。</span>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,93 @@
+/* 小红书 2003 · WAP 2.0 手机版。数值取自 Claude Design 原型「WAP 2003」 */
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#e8e8e8;font-family:var(--f-song-13);font-size:13px;color:#000;line-height:1.45}
+a{color:#0000cc;text-decoration:underline}
+a:hover,a:focus{color:#fff;background:#0000cc}
+img{border:0}
+p,figure,h3,ol,ul{margin:0}
+.wap{max-width:480px;margin:0 auto;background:#fff;min-height:100vh;display:flex;flex-direction:column}
+.wap-body{flex:1;padding:6px 8px;display:flex;flex-direction:column;gap:3px;min-height:0}
+.wap-end{margin-top:auto;display:flex;flex-direction:column;gap:3px;padding-top:3px}
+.wap-bar{display:flex;align-items:center;justify-content:space-between;background:#c00;color:#fff;padding:3px 6px}
+.wap-logo,.wap-logo:hover{font-family:var(--f-hei);font-size:18px;letter-spacing:1px;color:#fff;background:none;text-decoration:none}
+.wap-ver{font-size:10px;font-family:var(--f-sans-10)}
+.wap-foot{font-size:10px;color:#888;font-family:var(--f-sans-10);text-align:center}
+.softkeys{display:flex;justify-content:space-between;background:linear-gradient(#e9eef7,#c5cfe3);border-top:1px solid #7d8db0;padding:1px 8px;font-size:12px;font-family:var(--f-song-12);font-weight:bold;color:#223;position:sticky;bottom:0}
+.softkeys a{color:#223;text-decoration:none}
+.softkeys a:hover{color:#fff;background:#2f4a86}
+
+.sep{border-top:1px solid #ccc;padding-top:3px}
+.bot{border-bottom:1px solid #ccc;padding-bottom:3px}
+.gray{color:#666}.gray8{color:#888}.red{color:#c00}.green{color:#060}
+.small{font-size:12px;font-family:var(--f-song-12)}.xs{font-size:11px;font-family:var(--f-song-11)}.tiny{font-size:10px;font-family:var(--f-sans-10)}
+.new{color:#c00;font-size:10px;font-family:var(--f-sans-10)}
+.center{text-align:center}
+.nowrap{white-space:nowrap}
+.line{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;font-family:var(--f-song-12);flex-shrink:0}
+.h{font-weight:bold;color:#c00}
+.blk{flex-shrink:0}
+
+/* 今日推荐 / 缩略图条目 */
+.rec{display:flex;gap:6px;border-bottom:1px solid #ccc;padding-bottom:3px}
+.thumb{width:64px;height:48px;flex-shrink:0;border:1px solid #999;display:block}
+.thumb:hover{background:none}
+.thumb img{display:block;width:100%;height:100%;object-fit:cover}
+.rec-txt{min-width:0}
+
+/* 正文 */
+.crumb{font-size:11px;font-family:var(--f-song-11);color:#666}
+.title{font-weight:bold;font-size:14px;font-family:var(--f-song-14);color:#c00;line-height:1.3}
+.meta{font-size:11px;font-family:var(--f-song-11);color:#666}
+.content{font-size:12px;font-family:var(--f-song-12);overflow-wrap:anywhere}
+.content p{margin:0 0 3px;text-indent:2em}
+.content figure{margin:2px 0;display:flex;flex-direction:column;gap:1px}
+.content figure a{display:block;border:1px solid #999}
+.content figure a:hover{background:none}
+.content figure img{display:block;width:100%;height:clamp(72px,26vw,180px);object-fit:cover}
+.content figcaption{font-size:10px;font-family:var(--f-song-10);color:#666;text-align:center;text-indent:0}
+.content .ubb-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin:2px 0}
+.content .ubb-gallery img{height:clamp(44px,16vw,100px)}
+.content .ubb-h{font-size:12px;font-family:var(--f-song-12);color:#c00;margin:4px 0 2px;border-left:3px solid #c00;padding-left:4px;line-height:1.3}
+.content table{border-collapse:collapse;width:100%;font-size:11px;font-family:var(--f-song-11);margin:2px 0}
+.content td,.content th{border:1px solid #999;padding:1px 3px}
+.content th{background:#eee}
+.content ol,.content ul{margin:0 0 3px;padding-left:2em}
+.content blockquote{margin:2px 0;padding:2px 4px;border:1px dashed #999;background:#f6f6f6;font-size:11px;font-family:var(--f-song-11)}
+.content blockquote p{text-indent:0}
+.content .ubb-quote-who{color:#888;font-size:10px;font-family:var(--f-song-10)}
+.content pre{white-space:pre-wrap;font-size:11px;font-family:var(--f-song-11);background:#f4f4f4;border:1px solid #ccc;padding:2px 4px;margin:2px 0}
+.content .ubb-center{text-align:center}
+.content .ubb-right{text-align:right}
+.content hr{border:0;border-top:1px dashed #999;margin:3px 0}
+.plain p{text-indent:0}
+
+/* 列表 */
+.item{border-bottom:1px dotted #ccc;padding:2px 0;font-size:12px;font-family:var(--f-song-12)}
+.item:last-child{border-bottom:0}
+.floor{font-size:11px;font-family:var(--f-song-11);color:#888}
+.pager{font-size:12px;font-family:var(--f-song-12)}
+.pager b{color:#c00}
+.chat-msg{font-size:12px;font-family:var(--f-song-12);border-bottom:1px dotted #ddd;padding:1px 0;overflow-wrap:anywhere}
+.chat-msg .t{color:#999;font-family:var(--f-sans-10);font-size:10px}
+.chat-msg.sys{color:#080}
+.photo img{display:block;width:100%;max-height:70vh;object-fit:contain;border:1px solid #999;background:#f4f4f4}
+.poll-bar{display:inline-block;height:8px;background:#c00;vertical-align:middle}
+
+/* 表单 */
+.form{display:flex;flex-direction:column;gap:3px;font-size:12px;font-family:var(--f-song-12)}
+.form label{display:block}
+.ipt{border:1px solid #7f9db9;font-size:13px;padding:1px 3px;font-family:var(--f-song-13);max-width:100%;box-sizing:border-box;height:22px}
+.ipt.full{width:100%}
+.ipt.w48{width:56px}
+.ta{width:100%;box-sizing:border-box;border:1px solid #7f9db9;font-size:13px;font-family:var(--f-song-13);padding:2px}
+select.ipt{height:22px}
+.btn{font-size:12px;font-family:var(--f-song-12);padding:1px 10px;background:#ece9d8;border:1px solid;border-color:#fff #444 #444 #fff;color:#000;cursor:pointer}
+.btn:active{border-color:#444 #fff #fff #444}
+.lnk{background:none;border:0;padding:0;font:inherit;color:#0000cc;text-decoration:underline;cursor:pointer}
+.lnk:hover,.lnk:focus{color:#fff;background:#0000cc}
+form.inline{display:inline;margin:0}
+.captcha{vertical-align:middle;height:18px;width:52px}
+.err{color:#c00}
+.msg-title{font-weight:bold;padding:2px 4px;color:#fff;background:#c00}
+.msg-title.ok{background:#2f4a86}
+.menu{display:flex;flex-direction:column;gap:3px}

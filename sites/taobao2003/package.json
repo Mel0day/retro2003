@@ -1,0 +1,28 @@
+{
+  "name": "taobao2003",
+  "version": "1.0.0",
+  "private": true,
+  "description": "淘宝网 2003 · 复古 C2C 网上交易站",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed": "node scripts/seed.js",
+    "test": "node --test --test-concurrency=1 test/*.test.js",
+    "test:e2e": "node --test --test-concurrency=1 test/e2e/*.test.js",
+    "create-admin": "node scripts/create-admin.js",
+    "backup": "node scripts/backup.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "express": "^5.2.1",
+    "multer": "^2.4.0",
+    "nunjucks": "^3.2.4"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}

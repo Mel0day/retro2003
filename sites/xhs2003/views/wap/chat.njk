@@ -1,0 +1,23 @@
+{% extends "wap/layout.njk" %}
+{% block body %}
+<div class="crumb"><a href="/wap">首页</a> &gt; <a href="/wap/chat">聊天室</a> &gt; {{ room.name }}</div>
+{% if user %}
+<form class="form bot" method="post" action="/wap/chat/{{ room.slug }}">
+  <input type="hidden" name="_csrf" value="{{ csrf }}">
+  <div style="display:flex;gap:3px"><input class="ipt" name="content" maxlength="200" required style="flex:1;min-width:0"><button class="btn" type="submit">说</button></div>
+</form>
+{% else %}
+<div class="small bot"><a href="/wap/login?next={{ ('/wap/chat/' + room.slug) | urlencode }}">登录</a> 后才能发言</div>
+{% endif %}
+<div class="small"><b>[5]</b> <a href="/wap/chat/{{ room.slug }}" accesskey="5">刷新</a> <span class="xs gray">最新消息在上面</span></div>
+{% for m in messages %}
+{% if m.kind == 'system' %}
+<div class="chat-msg sys"><span class="t">{{ m.time }}</span> 【系统】{{ m.content }}</div>
+{% else %}
+<div class="chat-msg"><span class="t">{{ m.time }}</span> <b style="color:{{ m.color }}">{{ m.username }}</b>{% if m.action %}{{ m.action }}{% endif %}{% if m.to_name %}对 <b>{{ m.to_name }}</b>{% endif %}说：<span style="color:{{ m.color }}">{{ m.content }}</span></div>
+{% endif %}
+{% else %}
+<div class="gray small">还没有人说话。</div>
+{% endfor %}
+{% endblock %}
+{% block bottom %}<div class="small"><b>[0]</b> <a href="/wap" accesskey="0">首页</a></div>{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "wap/layout.njk" %}
+{% from "wap/macros.njk" import pager as pg %}
+{% block body %}
+<div class="crumb"><a href="/wap">首页</a> &gt; <a href="/wap/my">我的</a> &gt; {{ title }}</div>
+{% for n in items %}<div class="item line">· <a href="/wap/note/{{ n.id }}">{{ n.title }}</a> <span class="tiny gray8">{{ n.created_at | md }}</span></div>{% else %}<div class="gray small">暂无。</div>{% endfor %}
+{{ pg(pager) }}
+{% endblock %}
+{% block bottom %}<div class="small"><b>[0]</b> <a href="/wap" accesskey="0">首页</a></div>{% endblock %}

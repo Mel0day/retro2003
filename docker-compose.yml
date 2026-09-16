@@ -1,0 +1,51 @@
+# 本地一条命令跑起两个站点：docker compose up -d --build
+# 小红书 2003 → http://localhost:3003　　淘宝网 2003 → http://localhost:3004
+# 数据在命名卷里，docker compose down 不会删；加 -v 才会。
+services:
+  xhs2003:
+    build: ./sites/xhs2003
+    image: retro2003-xhs:latest
+    container_name: retro2003-xhs
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATA_DIR: /data
+      TZ: Asia/Shanghai
+      # 首次启动导入演示数据；正式部署请改成 false
+      SEED_DEMO: "true"
+      ADMIN_USERNAME: ${XHS_ADMIN_USERNAME:-站长}
+      # 本地体验用的默认密码，公网部署一定要改
+      ADMIN_PASSWORD: ${XHS_ADMIN_PASSWORD:-retro2003-demo-admin}
+      TRUST_PROXY: ${TRUST_PROXY:-loopback,uniquelocal}
+    ports:
+      - "${XHS_PORT:-3003}:3003"
+    volumes:
+      - xhs-data:/data
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  taobao2003:
+    build: ./sites/taobao2003
+    image: retro2003-taobao:latest
+    container_name: retro2003-taobao
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      DATA_DIR: /data
+      TZ: Asia/Shanghai
+      SEED_DEMO: "true"
+      ADMIN_USERNAME: ${TAOBAO_ADMIN_USERNAME:-淘宝小二}
+      ADMIN_PASSWORD: ${TAOBAO_ADMIN_PASSWORD:-retro2003-demo-admin}
+      TRUST_PROXY: ${TRUST_PROXY:-loopback,uniquelocal}
+    ports:
+      - "${TAOBAO_PORT:-3004}:3004"
+    volumes:
+      - taobao-data:/data
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+volumes:
+  xhs-data:
+  taobao-data:

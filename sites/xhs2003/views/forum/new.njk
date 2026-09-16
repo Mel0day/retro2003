@@ -1,0 +1,28 @@
+{% extends "layout.njk" %}
+{% from "macros.njk" import editorBar, emots %}
+{% block head %}<link rel="stylesheet" href="/static/css/forum.css?v={{ assetVersion }}">{% endblock %}
+{% block body %}
+<div class="col1">
+  <div class="box red">
+    <div class="box-hd">发表新主题 · {{ board.name }}</div>
+    <form method="post" action="/forum/board/{{ board.id }}/new" style="padding:8px">
+      <input type="hidden" name="_csrf" value="{{ csrf }}">
+      {% if error %}<div class="field-err" style="padding:4px 8px;background:#fee;border:1px solid #c99;margin-bottom:6px">✘ {{ error }}</div>{% endif %}
+      <table class="ftable">
+        <tr><th><span class="red">*</span> 标　题：</th><td><input class="ipt w400" name="title" value="{{ form.title }}" required maxlength="60"> <span class="tip">2-60 个字</span></td></tr>
+        <tr><th><span class="red">*</span> 内　容：</th><td>
+          {{ editorBar('thread-content') }}
+          <textarea class="ta" id="thread-content" name="content" rows="14" required data-maxlen="20000" data-mode="post" data-purpose="post">{{ form.content }}</textarea>
+          <div class="flex-between">{{ emots() }}<span class="tip" data-len-for="thread-content"></span></div>
+          <div class="editor-preview hidden" id="thread-content-preview"></div>
+        </td></tr>
+        <tr><th>投　票：</th><td>
+          <label><input type="checkbox" name="poll" value="1" class="chk"{% if form.poll %} checked{% endif %}> 发起投票（单选，每人一票）</label>
+          <div class="mt4"><textarea class="ta" name="poll_options" rows="5" placeholder="每行一个选项，2 到 10 个&#10;例如：&#10;丽江&#10;西藏&#10;三亚" style="width:300px">{{ form.poll_options }}</textarea></div>
+        </td></tr>
+        <tr><th></th><td><button class="btn" type="submit" style="font-weight:bold">发表主题</button> <button class="btn" type="reset">重 填</button> <a href="/forum/board/{{ board.id }}">返回版块</a></td></tr>
+      </table>
+    </form>
+  </div>
+</div>
+{% endblock %}

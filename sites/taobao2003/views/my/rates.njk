@@ -1,0 +1,17 @@
+{% extends "my/layout.njk" %}
+{% import "macros.njk" as m with context %}
+{% block main %}
+<div class="box"><h3>我的信用</h3>
+  <table class="kv" cellpadding="5" cellspacing="0">
+    <tr><td class="k">卖家信用：</td><td>{{ m.creditBadge(sellerCredit) }} {{ sellerCredit.title }} &nbsp; 好评 {{ sellerCredit.good }} / 中评 {{ sellerCredit.neutral }} / 差评 {{ sellerCredit.bad }} &nbsp; 好评率 {{ sellerCredit.rate }}%</td></tr>
+    <tr><td class="k">买家信用：</td><td>{{ m.creditBadge(buyerCredit) }} {{ buyerCredit.title }} &nbsp; 好评 {{ buyerCredit.good }} / 中评 {{ buyerCredit.neutral }} / 差评 {{ buyerCredit.bad }}</td></tr>
+  </table>
+  <div class="pad gray">好评 +1，中评 0，差评 -1；同一会员 30 天内的多次评价只计一次。<a href="/page/rules">评价规则</a></div>
+</div>
+<div class="tabs"><a href="/my/rates" class="tab{% if tab == 'seller' %} on{% endif %}">作为卖家收到的</a><a href="/my/rates?tab=buyer" class="tab{% if tab == 'buyer' %} on{% endif %}">作为买家收到的</a><a href="/my/rates?tab=given" class="tab{% if tab == 'given' %} on{% endif %}">我给出的</a></div>
+<table class="reviews" cellpadding="6" cellspacing="0">
+  <tr class="h"><td class="c-who">{{ '评价对象' if tab == 'given' else '评价人' }}</td><td>评价</td><td class="c-time2">宝贝</td><td class="c-time">时间</td></tr>
+  {% for r in rows %}<tr><td class="brk">{{ r.other_name }}</td><td class="brk">{{ m.gradeTag(r.grade) }} {% if r.hidden %}<span class="gray">内容已被屏蔽</span>{% else %}{{ r.text }}{% endif %}{% if not r.counted %} <span class="gray">（不计分）</span>{% endif %}{% if r.reply %}<div class="replyline">解释：{{ r.reply }}</div>{% endif %}</td><td class="brk">{% if r.item_id %}<a href="/item/{{ r.item_id }}" class="plain">{{ r.item_title | cut(14) }}</a>{% endif %}</td><td class="gray">{{ r.created_at | date }}</td></tr>{% endfor %}
+  {% if not rows.length %}<tr><td colspan="4" class="empty-s">暂无评价</td></tr>{% endif %}
+</table>
+{% endblock %}

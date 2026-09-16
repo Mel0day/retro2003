@@ -1,0 +1,117 @@
+{% extends "layout.njk" %}
+{% block body %}
+<div class="cols2l">
+  <div class="stack">
+    <div class="box red menu">
+      <div class="box-hd">帮助中心</div>
+      <a href="#guide">» 新手指南</a>
+      <a href="#note">» 如何发表笔记</a>
+      <a href="#ubb">» UBB 代码说明</a>
+      <a href="#points">» 积分与等级</a>
+      <a href="#rules">» 社区规则</a>
+      <a href="#faq">» 常见问题</a>
+    </div>
+    <div class="box menu">
+      <div class="box-hd">▪ 更多信息</div>
+      {% for p in pages %}<a href="/page/{{ p.slug }}">» {{ p.title }}</a>{% endfor %}
+      <a href="/sitemap">» 网站地图</a>
+    </div>
+  </div>
+
+  <div class="stack">
+    <div class="box red" id="guide">
+      <div class="box-hd">一、新手指南</div>
+      <div class="box-bd" style="line-height:1.9">
+        <p>欢迎来到 <b>{{ site.site_name }}</b>！这里是分享穿搭、美食、旅行和生活好物的社区。第一次来，可以按下面几步开始：</p>
+        <ol class="ubb-list" style="margin-top:4px">
+          <li><a href="/register">免费注册</a>一个会员账号，记得设置密码提示问题，忘记密码时要用。</li>
+          <li>在<a href="/my/profile">控制面板</a>里完善资料、<a href="/my/avatar">上传头像</a>。</li>
+          <li>逛逛<a href="/notes">笔记频道</a>，看到喜欢的就「顶一下」「收藏」或「送花」。</li>
+          <li><a href="/notes/new">发表第一篇笔记</a>，每篇奖励 10 积分。</li>
+          <li>去<a href="/forum">论坛</a>灌灌水、去<a href="/chat">聊天室</a>认识新朋友。</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="box" id="note">
+      <div class="box-hd">▪ 二、如何发表笔记</div>
+      <div class="box-bd" style="line-height:1.9">
+        <p>登录后点击导航栏「笔记」页面左侧的 <b>✎ 发表笔记</b> 按钮，或首页会员信息里的「发表笔记」。</p>
+        <ol class="ubb-list" style="margin-top:4px">
+          <li>选择频道，填写标题（4-60 个字）和标签（用空格分隔，最多 8 个）。</li>
+          <li>正文里空一行就是新段落；用编辑器上方的按钮可以快速插入粗体、小标题、表格等。</li>
+          <li>点「上传图片」可以一次选多张，单张不超过 <b>{{ uploadKb }}KB</b>，太大的照片会先自动压缩。</li>
+          <li>发表前可以点「预览」看看排版效果。发表后自己可以随时编辑或删除。</li>
+        </ol>
+        <p>相册每人免费空间 <b>{{ quotaMb }}MB</b>，适合存放旅行照片。</p>
+      </div>
+    </div>
+
+    <div class="box" id="ubb">
+      <div class="box-hd">▪ 三、UBB 代码说明</div>
+      <div class="box-bd">
+        <p class="gray6" style="margin-bottom:6px">本站不支持 HTML，排版请使用下面的 UBB 代码。留言里只能使用粗体、颜色、链接和引用。</p>
+        <table class="tbl">
+          <tr><th style="width:110px">用途</th><th>代码</th><th>效果</th></tr>
+          {% for ex in examples %}
+          <tr>
+            <td class="nowrap">{{ ex[0] }}</td>
+            <td><pre class="ubb-code" style="margin:0">{{ ex[1] }}</pre></td>
+            <td class="ubb-plain" style="font-size:12px;font-family:var(--f-song-12)">{{ ex[1] | ubb }}</td>
+          </tr>
+          {% endfor %}
+          <tr>
+            <td class="nowrap">图片</td>
+            <td colspan="2"><pre class="ubb-code" style="margin:0">[img=图片说明]图片地址[/img]        居中大图，带说明
+[fimg=图片说明]图片地址[/fimg]      靠左小图，文字环绕在右边
+[gallery][img=图1]地址1[/img][img=图2]地址2[/img][img=图3]地址3[/img][/gallery]   三张并排</pre></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="box" id="points">
+      <div class="box-hd">▪ 四、积分与等级</div>
+      <div class="grid2" style="padding:6px">
+        <table class="tbl">
+          <tr><th>等级</th><th>星级</th><th>所需积分</th></tr>
+          {% for l in levels %}
+          <tr><td class="nowrap">{{ l.name }}</td><td class="stars nowrap">{{ l.starsText }}</td><td class="num">{{ l.min }}{% if l.max %} ~ {{ l.max }}{% else %} 以上{% endif %}</td></tr>
+          {% endfor %}
+        </table>
+        <table class="tbl">
+          <tr><th>行为</th><th>积分</th></tr>
+          {% for r in rules %}<tr><td>{{ r.reason }}</td><td class="num green">+{{ r.delta }}</td></tr>{% endfor %}
+        </table>
+      </div>
+      <div class="box-bd gray6">站长和版主可以为有突出贡献的会员设置专属头衔（比如「资深驴友」）。</div>
+    </div>
+
+    <div class="box" id="rules">
+      <div class="box-hd">▪ 五、社区规则</div>
+      <div class="box-bd" style="line-height:1.9">
+        <ol class="ubb-list">
+          <li>遵守国家法律法规，不发布违法、色情、暴力、反动信息。</li>
+          <li>禁止发布广告，禁止在笔记、论坛、聊天室刷屏灌水。</li>
+          <li>尊重他人，禁止人身攻击、地域歧视和恶意诋毁。</li>
+          <li>转载请注明出处，尊重原创作者。</li>
+          <li>发现违规内容请点「举报」，版主会尽快处理。违规者视情节删帖、扣分直至封号。</li>
+        </ol>
+        <p>完整条款请阅读<a href="/page/terms">《会员服务条款》</a>和<a href="/page/disclaimer">《免责声明》</a>。</p>
+      </div>
+    </div>
+
+    <div class="box" id="faq">
+      <div class="box-hd">▪ 六、常见问题</div>
+      <div class="box-bd" style="line-height:1.9">
+        <p><b class="red">问：忘记密码怎么办？</b><br>答：在登录框点「忘记密码?」，回答注册时设置的提示问题即可重置。如果没有设置提示问题，请<a href="/page/contact">联系站长</a>。</p>
+        <p class="mt6"><b class="red">问：验证码看不清？</b><br>答：点一下验证码图片就会换一张。</p>
+        <p class="mt6"><b class="red">问：为什么我的留言没有显示？</b><br>答：游客留言需要管理员审核后才会显示，注册会员留言可以直接显示。</p>
+        <p class="mt6"><b class="red">问：「记住我」安全吗？</b><br>答：勾选后两周内免登录。在网吧等公共电脑上请不要勾选，用完记得点「退出」。</p>
+        <p class="mt6"><b class="red">问：可以用手机访问吗？</b><br>答：可以！手机访问会自动打开 <a href="/wap">WAP 手机版</a>，页面更小更省流量。</p>
+        <p class="mt6"><b class="red">问：怎样成为版主？</b><br>答：请看<a href="/page/jobs">《诚聘版主》</a>。</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

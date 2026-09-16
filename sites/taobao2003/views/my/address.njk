@@ -1,0 +1,19 @@
+{% extends "my/layout.njk" %}
+{% block main %}
+<table class="carttable" cellpadding="6" cellspacing="0">
+  <tr class="h"><td class="c-who">收货人</td><td>地址</td><td class="c-tel">电话</td><td class="c-op2">操作</td></tr>
+  {% for a in addresses %}<tr class="p"><td class="brk">{{ a.receiver }}</td><td class="brk">{{ a.address }}</td><td>{{ a.tel }}</td><td><form method="post" action="/my/address/{{ a.id }}/delete" class="inline" data-confirm="删除这条地址？"><input type="hidden" name="_csrf" value="{{ csrf }}"><button type="submit" class="linkbtn red">删除</button></form></td></tr>{% endfor %}
+  {% if not addresses.length %}<tr><td colspan="4" class="empty-s">还没有保存地址，结算时填写的地址会自动保存到这里。</td></tr>{% endif %}
+</table>
+<div class="box mt10"><h3>添加新地址（最多 {{ MAX_ADDRESSES }} 条）</h3>
+  {% if err %}<div class="err m8">{{ err }}</div>{% endif %}
+  <form method="post" action="/my/address"><input type="hidden" name="_csrf" value="{{ csrf }}">
+  <table class="form" cellpadding="5" cellspacing="0">
+    <tr><td class="k">收货人：</td><td><input name="receiver" value="{{ form.receiver }}" maxlength="20" class="txt w160"></td></tr>
+    <tr><td class="k">详细地址：</td><td><input name="address" value="{{ form.address }}" maxlength="120" class="txt w400"></td></tr>
+    <tr><td class="k">电话：</td><td><input name="tel" value="{{ form.tel }}" maxlength="20" class="txt w160"></td></tr>
+    <tr><td></td><td><button type="submit" class="btn">保存地址</button></td></tr>
+  </table>
+  </form>
+</div>
+{% endblock %}

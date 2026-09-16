@@ -1,0 +1,18 @@
+{% extends "admin/layout.njk" %}
+{% block body %}
+<div class="msgbox" style="width:520px;margin:20px auto">
+  <div class="box-hd">{{ title }}</div>
+  <form method="post" action="{{ action }}" class="msgbox-bd">
+    <input type="hidden" name="_csrf" value="{{ csrf }}">
+    <input type="hidden" name="confirm" value="1">
+    <div class="icon">⚠</div>
+    {% if kind == 'category' %}
+    <p>分区「<b>{{ target.name }}</b>」下还有 <b class="red">{{ boards.length }}</b> 个版块（{% for b in boards %}{{ b.name }}{% if not loop.last %}、{% endif %}{% endfor %}），共 <b class="red">{{ threads }}</b> 个主题。</p>
+    {% else %}
+    <p>版块「<b>{{ target.name }}</b>」下还有 <b class="red">{{ threads }}</b> 个主题。</p>
+    {% endif %}
+    <p class="red">删除后这些版块、主题和所有回帖都会被永久删除，无法恢复！</p>
+    <div class="mt8"><button class="btn" type="submit">确认删除</button> <a class="btn" href="/admin/forum">取 消</a></div>
+  </form>
+</div>
+{% endblock %}

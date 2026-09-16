@@ -1,0 +1,24 @@
+# 不用 Docker 时的 systemd 服务示例
+# 放到 /etc/systemd/system/xhs2003.service，然后：
+#   systemctl daemon-reload && systemctl enable --now xhs2003
+[Unit]
+Description=xhs2003 community site
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/opt/xhs2003
+EnvironmentFile=/opt/xhs2003/.env
+Environment=NODE_ENV=production
+Environment=DATA_DIR=/var/lib/xhs2003
+ExecStart=/usr/bin/node src/server.js
+Restart=always
+RestartSec=3
+# 基本加固
+NoNewPrivileges=true
+ProtectSystem=full
+ReadWritePaths=/var/lib/xhs2003
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,11 @@
+{% extends "layout.njk" %}
+{% block body %}
+<div class="msgbox ok">
+  <div class="box-hd">退出登录</div>
+  <form method="post" action="/logout" class="msgbox-bd">
+    <input type="hidden" name="_csrf" value="{{ csrf }}">
+    <div>确定要退出登录吗？</div>
+    <div class="mt8"><button class="btn" type="submit">确定退出</button> <a class="btn" href="/" >返回首页</a></div>
+  </form>
+</div>
+{% endblock %}

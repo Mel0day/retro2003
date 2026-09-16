@@ -1,0 +1,123 @@
+{% extends "layout.njk" %}
+{% from "macros.njk" import avatar, pager as pagerLinks %}
+{% block body %}
+<div class="cols2l" style="grid-template-columns:200px 1fr">
+  <div class="stack">
+    <div class="box red">
+      <div class="box-hd">会员资料</div>
+      <div class="ucard">
+        {{ avatar(profile, 100) }}
+        <div class="mt4"><b style="font-size:14px;font-family:var(--f-song-14)">{{ profile.username }}</b>{% if profile.role == 'admin' %} <span class="red small">[站长]</span>{% elif profile.role == 'moderator' %} <span class="red small">[版主]</span>{% endif %}</div>
+        <div><span class="stars">{{ profileLevel.stars }}</span> <span class="gray6">{{ profileLevel.name }}</span></div>
+        <div class="ucard-info">
+          <div>积　分：<b>{{ profile.points }}</b></div>
+          <div>笔　记：<b>{{ profile.note_count }}</b> 篇</div>
+          <div>帖　子：<b>{{ profile.post_count }}</b> 帖</div>
+          <div>性　别：{{ genderText }}</div>
+          <div>来　自：{{ profile.location or '保密' }}</div>
+          <div>注　册：{{ profile.created_at | date }}</div>
+          <div>最后访问：{% if profile.last_seen_at %}{{ profile.last_seen_at | ago }}{% else %}很久以前{% endif %}</div>
+        </div>
+        {% if not isSelf %}
+        <div class="ucard-acts">
+          <div class="flex" style="gap:4px">
+            <a href="/pm/new?to={{ profile.username | urlencode }}">[短消息]</a>
+            <button type="button" class="link" data-action="/api/friends/{{ profile.id }}">[{% if isFriend %}已是好友{% else %}加好友{% endif %}]</button>
+          </div>
+          <a href="/report?type=user&id={{ profile.id }}&back={{ ('/u/' + profile.id) | urlencode }}">[举报]</a>
+        </div>
+        {% else %}
+        <div class="ucard-acts"><a href="/my/profile">[修改资料]</a><a href="/my/avatar">[修改头像]</a></div>
+        {% endif %}
+      </div>
+    </div>
+    {% if profile.signature %}
+    <div class="box">
+      <div class="box-hd">▪ 个性签名</div>
+      <div class="box-bd dark" style="word-break:break-all">{{ profile.signature }}</div>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="stack">
+    {% if profile.banned %}
+    <div class="box red">
+      <div class="box-hd">提示</div>
+      <div class="box-bd pink center" style="padding:20px">✘ 该会员已被封禁，其发表的内容暂不公开。</div>
+    </div>
+    {% else %}
+    <div class="box">
+      <div class="box-hd"><span>▪ {{ profile.username }} 的空间</span></div>
+      <div class="tabs">
+        <a href="/u/{{ profile.id }}"{% if tab == 'notes' %} class="on"{% endif %}>TA的笔记 ({{ profile.note_count }})</a>
+        <a href="/u/{{ profile.id }}?tab=posts"{% if tab == 'posts' %} class="on"{% endif %}>TA的帖子 ({{ profile.post_count }})</a>
+        <a href="/u/{{ profile.id }}?tab=albums"{% if tab == 'albums' %} class="on"{% endif %}>TA的相册 ({{ counts.albums }})</a>
+        <a href="/u/{{ profile.id }}?tab=friends"{% if tab == 'friends' %} class="on"{% endif %}>TA的好友 ({{ counts.friends }})</a>
+      </div>
+
+      {% if tab == 'notes' %}
+      <table class="tbl" style="border:0">
+        <tr><th style="width:30px"></th><th>标题</th><th>频道</th><th>点击/回复</th><th>发表时间</th></tr>
+        {% for n in list %}
+        <tr>
+          <td class="num red">{% if n.has_image %}[图]{% else %}[文]{% endif %}</td>
+          <td class="t"><div class="ellipsis"><a href="/notes/{{ n.id }}" title="{{ n.title }}">{{ n.title }}</a></div></td>
+          <td class="nowrap"><a href="/notes?channel={{ n.channel_slug }}" class="gray6">{{ n.channel_name }}</a></td>
+          <td class="num">{{ n.hits }}/{{ n.comment_count }}</td>
+          <td class="num gray">{{ n.created_at | dt }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="box-empty">TA 还没有发表过笔记</td></tr>
+        {% endfor %}
+      </table>
+      {{ pagerLinks(pager) }}
+
+      {% elif tab == 'posts' %}
+      <div class="box-hd" style="border-top:0">▪ 发表的主题</div>
+      <table class="tbl" style="border:0">
+        <tr><th>主题</th><th>版块</th><th>回复/点击</th><th>发表时间</th></tr>
+        {% for t in threads %}
+        <tr>
+          <td class="t"><div class="ellipsis">{% if t.is_poll %}<span class="red">[投票]</span> {% endif %}<a href="/forum/thread/{{ t.id }}">{{ t.title }}</a></div></td>
+          <td class="nowrap"><a href="/forum/board/{{ t.board_id }}" class="gray6">{{ t.board_name }}</a></td>
+          <td class="num">{{ t.reply_count }}/{{ t.hits }}</td>
+          <td class="num gray">{{ t.created_at | dt }}</td>
+        </tr>
+        {% else %}<tr><td colspan="4" class="box-empty">暂无主题</td></tr>{% endfor %}
+      </table>
+      <div class="box-hd">▪ 最近回复</div>
+      {% for p in replies %}
+      <div class="row"><a href="/forum/thread/{{ p.thread_id }}?floor={{ p.floor }}#floor-{{ p.floor }}" title="{{ p.title }}">· 回复《{{ p.title }}》：{{ p.content | cut(40) }}</a><span class="count">{{ p.created_at | md }}</span></div>
+      {% else %}<div class="box-empty">暂无回复</div>{% endfor %}
+
+      {% elif tab == 'albums' %}
+      {% if albums.length %}
+      <div class="pics col4">
+        {% for a in albums %}
+        <div class="pic">
+          <a class="pic-img" href="/album/{{ a.id }}">{% if a.cover %}<img src="{{ a.cover }}" alt="{{ a.title }}" loading="lazy">{% else %}<span class="noimg">暂无封面</span>{% endif %}</a>
+          <a href="/album/{{ a.id }}" title="{{ a.title }}">{{ a.title }}</a>
+          <span class="pic-meta">{{ a.photo_count }} 张 · 浏览 {{ a.hits }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}<div class="box-empty">TA 还没有创建相册</div>{% endif %}
+
+      {% else %}
+      {% if friends.length %}
+      <div class="pics col5">
+        {% for f in friends %}
+        <div class="pic">
+          <a href="/u/{{ f.id }}" style="display:block">{{ avatar(f, 60) }}</a>
+          <a href="/u/{{ f.id }}" title="{{ f.username }}">{{ f.username }}</a>
+          <span class="pic-meta">{{ f.levelName }}</span>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}<div class="box-empty">TA 还没有添加好友</div>{% endif %}
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

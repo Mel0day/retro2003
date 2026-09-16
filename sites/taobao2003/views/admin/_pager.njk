@@ -1,0 +1,1 @@
+{% if pager.pages > 1 %}<div class="pager">{% if pager.prev %}<a href="{{ pager.prev }}">上一页</a>{% endif %}{% for n in pager.nums %}{% if n.current %}<b>[{{ n.n }}]</b>{% else %}<a href="{{ n.url }}">{{ n.n }}</a>{% endif %}{% endfor %}{% if pager.next %}<a href="{{ pager.next }}">下一页</a>{% endif %} 共 {{ pager.pages }} 页</div>{% endif %}

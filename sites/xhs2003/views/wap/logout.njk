@@ -1,0 +1,9 @@
+{% extends "wap/layout.njk" %}
+{% block body %}
+<div class="crumb"><a href="/wap">首页</a> &gt; 退出</div>
+<form class="form" method="post" action="/wap/logout">
+  <input type="hidden" name="_csrf" value="{{ csrf }}">
+  <div>确定要退出登录吗？</div>
+  <div><button class="btn" type="submit">确定退出</button> <a href="/wap">取消</a></div>
+</form>
+{% endblock %}

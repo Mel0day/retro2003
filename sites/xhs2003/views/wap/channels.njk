@@ -1,0 +1,8 @@
+{% extends "wap/layout.njk" %}
+{% block body %}
+<div class="crumb"><a href="/wap">首页</a> &gt; 频道</div>
+{% for c in channels %}
+<div class="item"><b>[{{ loop.index if loop.index < 10 else '·' }}]</b> <a href="/wap/notes?channel={{ c.slug }}"{% if loop.index < 10 %} accesskey="{{ loop.index }}"{% endif %}>{{ c.name }}</a> <span class="tiny gray8">({{ c.note_count }})</span></div>
+{% endfor %}
+{% endblock %}
+{% block bottom %}<div class="small"><b>[0]</b> <a href="/wap" accesskey="0">首页</a></div>{% endblock %}

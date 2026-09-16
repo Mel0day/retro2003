@@ -1,0 +1,27 @@
+{% extends "my/layout.njk" %}
+{% block main %}
+<div class="box"><h3>{{ '编辑宝贝' if item else '我要卖：发布宝贝' }}</h3>
+{% if errors.length %}<div class="err m8">{% for e in errors %}{{ e }}{% if not loop.last %}<br>{% endif %}{% endfor %}</div>{% endif %}
+<form method="post" action="{{ '/my/items/' ~ item.id ~ '/edit' if item else '/sell' }}" enctype="multipart/form-data" id="sellform">
+<input type="hidden" name="_csrf" value="{{ csrf }}">
+<table class="form" cellpadding="5" cellspacing="0">
+  <tr><td class="k">宝贝分类：</td><td><select name="cat" class="txt"><option value="">请选择</option>{% for c in CATS %}<option value="{{ c }}"{% if form.cat == c %} selected{% endif %}>{{ c }}</option>{% endfor %}</select></td></tr>
+  <tr><td class="k">宝贝标题：</td><td><input name="title" value="{{ form.title }}" maxlength="60" class="txt w400"> <span class="gray">4-60 字，写清品牌、型号、新旧</span></td></tr>
+  <tr><td class="k">一句话描述：</td><td><input name="descr" value="{{ form.descr }}" maxlength="60" class="txt w400"> <span class="gray">显示在列表页标题下面</span></td></tr>
+  <tr><td class="k">标签：</td><td><input name="tag" value="{{ form.tag }}" maxlength="10" class="txt w120" list="tags"><datalist id="tags"><option value="全新"><option value="二手"><option value="包邮"><option value="新款"><option value="担保交易"></datalist> <span class="gray">选填，最多 10 字</span></td></tr>
+  <tr><td class="k">一口价：</td><td>￥<input name="price" value="{{ form.price }}" maxlength="10" class="txt w80"> 元 &nbsp; 原价：￥<input name="orig" value="{{ form.orig }}" maxlength="10" class="txt w80"> 元 <span class="gray">原价选填，要高于一口价</span></td></tr>
+  <tr><td class="k">库存：</td><td><input name="stock" value="{{ form.stock }}" maxlength="4" class="txt w60"> 件</td></tr>
+  <tr><td class="k">所在地：</td><td><input name="city" value="{{ form.city }}" maxlength="20" class="txt w160" placeholder="如：浙江 杭州"></td></tr>
+  <tr><td class="k">运费：</td><td class="gray">全站统一：平邮 ￥{{ SHIP.post.fee | yuan }}，EMS ￥{{ SHIP.ems.fee | yuan }}，由买家下单时选择</td></tr>
+  <tr><td class="k">宝贝图片：</td><td>
+    {% if item and item.imageList.length %}<div class="keepimgs">{% for src in item.imageList %}<label class="keepimg"><img src="{{ src }}" alt=""><br><input type="checkbox" name="keep_image" value="{{ src }}" checked> 保留</label>{% endfor %}</div>{% endif %}
+    <input type="file" name="images" accept="image/jpeg,image/png,image/gif,image/webp" multiple class="txt"> <span class="gray">最多 {{ MAX_IMAGES }} 张，每张不超过 2MB，支持 JPG/PNG/GIF/WEBP，第一张是主图</span>
+  </td></tr>
+  <tr><td class="k">宝贝详情：</td><td><textarea name="detail" maxlength="5000" class="txt detailarea">{{ form.detail }}</textarea><div class="gray">成色、配件、保修、发货时间等，最多 5000 字</div></td></tr>
+  <tr><td class="k">发布方式：</td><td><label><input type="radio" name="status" value="onsale"{% if form.status != 'warehouse' %} checked{% endif %}> 立刻上架</label> <label><input type="radio" name="status" value="warehouse"{% if form.status == 'warehouse' %} checked{% endif %}> 放入仓库</label></td></tr>
+  <tr><td></td><td><button type="submit" class="btn btn-big btn-orange">{{ '保存修改' if item else '确认发布' }}</button> {% if item %}<a href="/item/{{ item.id }}">查看宝贝</a>{% endif %}
+    <div class="gray mt4">发布即表示遵守淘宝网发布规则：禁止发布违禁品、侵权商品和虚假信息，违规宝贝会被淘宝小二下架。</div></td></tr>
+</table>
+</form>
+</div>
+{% endblock %}

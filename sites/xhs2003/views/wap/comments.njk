@@ -1,0 +1,26 @@
+{% extends "wap/layout.njk" %}
+{% from "wap/macros.njk" import pager as pg, captcha %}
+{% block body %}
+<div class="crumb"><a href="/wap">首页</a> &gt; <a href="/wap/note/{{ note.id }}">正文</a> &gt; 回复</div>
+<div class="title">回复：{{ note.title }}</div>
+{% for c in comments %}
+<div class="item" id="floor-{{ c.floor }}"><span class="floor">{{ c.floor }}楼</span> <b>{% if c.user_id %}{{ c.username }}{% else %}{{ c.guest_name }}<span class="gray8 xs">(游客)</span>{% endif %}</b> <span class="tiny gray8">{{ c.created_at | dt }}</span>
+  <div class="content plain">{{ c.html | safe }}</div></div>
+{% else %}
+<div class="gray small">还没有人回复，快来抢沙发！</div>
+{% endfor %}
+{{ pg(pager) }}
+{% if user or allowGuest %}
+<form class="form sep" method="post" action="/wap/note/{{ note.id }}/comments">
+  <input type="hidden" name="_csrf" value="{{ csrf }}">
+  {% if user %}<div>昵称：<b>{{ user.username }}</b></div>
+  {% else %}<label>昵称：<input class="ipt" name="nickname" maxlength="16" required></label>{% endif %}
+  <textarea class="ta" name="content" rows="3" maxlength="2000" required></textarea>
+  {% if not user %}<label>验证码：<input class="ipt w48" name="captcha" maxlength="4" autocomplete="off" required> {{ captcha() }}</label>{% endif %}
+  <div><button class="btn" type="submit">发表回复</button>{% if review %} <span class="xs gray">审核后显示</span>{% endif %}</div>
+</form>
+{% else %}
+<div class="small sep">请先 <a href="/wap/login?next={{ ('/wap/note/' + note.id + '/comments') | urlencode }}">登录</a> 后回复</div>
+{% endif %}
+{% endblock %}
+{% block bottom %}<div class="small"><b>[5]</b> <a href="/wap/note/{{ note.id }}" accesskey="5">返回正文</a> <b>[0]</b> <a href="/wap" accesskey="0">首页</a></div>{% endblock %}

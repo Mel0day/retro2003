@@ -1,0 +1,17 @@
+{% extends "layout.njk" %}
+{% block body %}
+<form method="post" action="/register">
+<input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="next" value="{{ next }}">
+<div class="hp" aria-hidden="true"><label>网址 <input name="website" tabindex="-1" autocomplete="off"></label></div>
+<table class="loginbox wide" cellpadding="6" cellspacing="0">
+  <tr><td colspan="2" class="h">免费注册淘宝会员</td></tr>
+  {% if err.length %}<tr><td colspan="2"><div class="err">{% for e in err %}{{ e }}{% if not loop.last %}<br>{% endif %}{% endfor %}</div></td></tr>{% endif %}
+  <tr><td class="k">会员名：</td><td><input name="username" value="{{ form.username }}" maxlength="16" class="txt w170" autofocus autocomplete="username"> <span class="gray">2-16 位中文、字母、数字或下划线，注册后不能修改</span></td></tr>
+  <tr><td class="k">密　码：</td><td><input type="password" name="password" maxlength="64" class="txt w170" autocomplete="new-password"> <span class="gray">6-64 位</span></td></tr>
+  <tr><td class="k">确认密码：</td><td><input type="password" name="password2" maxlength="64" class="txt w170" autocomplete="new-password"></td></tr>
+  <tr><td class="k">所在地：</td><td><input name="city" value="{{ form.city }}" maxlength="20" class="txt w170" placeholder="如：浙江 杭州"> <span class="gray">选填，发布宝贝时默认使用</span></td></tr>
+  <tr><td></td><td><label><input type="checkbox" name="agree" value="1" checked> 我已阅读并同意 <a href="/page/rules" target="_blank">淘宝网服务协议与信用评价规则</a></label></td></tr>
+  <tr><td></td><td><button type="submit" class="btn btn-big btn-orange">同意协议，注册</button> &nbsp; 已有账号？<a href="/login{% if next %}?next={{ next | urlencode }}{% endif %}">直接登录</a></td></tr>
+</table>
+</form>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "admin/layout.njk" %}
+{% block body %}
+<div class="box">
+  <div class="box-hd"><span>▪ 公告跑马灯</span><span class="nb">跑马灯总开关：{% if marqueeOn %}<span class="green b">已开启</span>{% else %}<span class="gray">已关闭</span>{% endif %} · <a href="/admin/settings">去设置</a></span></div>
+  <div class="marquee" style="border-top:0">
+    <b>[预览]</b>
+    <div class="marquee-box"><span class="marquee-txt">{% for a in list %}{% if a.active %}★ {{ a.content }} {% endif %}{% endfor %}★</span></div>
+  </div>
+  <table class="tbl" style="border:0">
+    <tr><th>排序</th><th>公告内容</th><th>启用</th><th>操作</th></tr>
+    {% for a in list %}
+    <tr>
+      <td class="num"><input class="ipt" style="width:36px" name="sort" value="{{ a.sort }}" form="an-{{ a.id }}"></td>
+      <td><input class="ipt" style="width:480px" name="content" value="{{ a.content }}" required maxlength="200" form="an-{{ a.id }}"></td>
+      <td class="num"><input type="checkbox" class="chk" name="active" value="1"{% if a.active %} checked{% endif %} form="an-{{ a.id }}"></td>
+      <td class="acts">
+        <form method="post" action="/admin/announcements/{{ a.id }}" id="an-{{ a.id }}" class="inline-form"><input type="hidden" name="_csrf" value="{{ csrf }}"><button class="btn sm" type="submit">保存</button></form>
+        <form method="post" action="/admin/announcements/{{ a.id }}/delete" class="inline-form" data-confirm="确定删除这条公告？"><input type="hidden" name="_csrf" value="{{ csrf }}"><button class="btn sm" type="submit">删除</button></form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" class="box-empty">还没有公告</td></tr>
+    {% endfor %}
+    <tr style="background:#fffbe6">
+      <td class="num"><input class="ipt" style="width:36px" name="sort" value="{{ list.length }}" form="an-new"></td>
+      <td><input class="ipt" style="width:480px" name="content" required maxlength="200" placeholder="新公告内容，例如：第四届网友摄影大赛开始报名啦" form="an-new"></td>
+      <td class="num"><input type="checkbox" class="chk" name="active" value="1" checked form="an-new"></td>
+      <td class="acts"><form method="post" action="/admin/announcements" id="an-new" class="inline-form"><input type="hidden" name="_csrf" value="{{ csrf }}"><button class="btn sm" type="submit">添加</button></form></td>
+    </tr>
+  </table>
+</div>
+{% endblock %}

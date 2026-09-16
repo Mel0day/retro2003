@@ -1,0 +1,39 @@
+{% extends "admin/layout.njk" %}
+{% from "macros.njk" import pager as pagerLinks %}
+{% block body %}
+<div class="box">
+  <div class="box-hd"><span>▪ 会员管理</span><span class="nb">共 {{ pager.total }} 人</span></div>
+  <form method="get" action="/admin/users" class="admin-toolbar">
+    用户名：<input class="ipt w120" name="q" value="{{ filters.q }}" maxlength="16">
+    <select class="sel" name="role"><option value="">全部角色</option><option value="user"{% if filters.role == 'user' %} selected{% endif %}>会员</option><option value="moderator"{% if filters.role == 'moderator' %} selected{% endif %}>版主</option><option value="admin"{% if filters.role == 'admin' %} selected{% endif %}>站长</option></select>
+    <select class="sel" name="banned"><option value="">状态不限</option><option value="0"{% if filters.banned == '0' %} selected{% endif %}>正常</option><option value="1"{% if filters.banned == '1' %} selected{% endif %}>已封禁</option></select>
+    排序：<select class="sel" name="sort"><option value="new">注册时间</option><option value="points"{% if filters.sort == 'points' %} selected{% endif %}>积分</option><option value="login"{% if filters.sort == 'login' %} selected{% endif %}>最近登录</option><option value="notes"{% if filters.sort == 'notes' %} selected{% endif %}>笔记数</option></select>
+    <button class="btn" type="submit">筛选</button> <a href="/admin/users">清除</a>
+  </form>
+  <table class="tbl" style="border:0">
+    <tr><th>ID</th><th>用户名</th><th>角色</th><th>等级 / 头衔</th><th>积分</th><th>笔记/帖子</th><th>来自</th><th>注册时间</th><th>最近登录</th><th>操作</th></tr>
+    {% for u in list %}
+    <tr>
+      <td class="num gray">{{ u.id }}</td>
+      <td class="nowrap"><a href="/admin/users/{{ u.id }}" class="b">{{ u.username }}</a>{% if u.banned %} <span class="red small">[封禁]</span>{% endif %}</td>
+      <td class="num">{% if u.role == 'admin' %}<span class="red b">站长</span>{% elif u.role == 'moderator' %}<span class="blue b">版主</span>{% else %}会员{% endif %}</td>
+      <td class="nowrap gray6">{{ u.levelName }}</td>
+      <td class="num">{{ u.points }}</td>
+      <td class="num">{{ u.note_count }}/{{ u.post_count }}</td>
+      <td class="nowrap gray6">{{ u.location | cut(8) }}</td>
+      <td class="num gray">{{ u.created_at | date }}</td>
+      <td class="num gray">{{ (u.last_login_at | dt) if u.last_login_at else '-' }}</td>
+      <td class="acts">
+        <a class="btn sm" href="/admin/users/{{ u.id }}">编辑</a>
+        {% if u.id != user.id %}
+        <form method="post" action="/admin/users/{{ u.id }}/ban"{% if not u.banned %} data-confirm="确定封禁 {{ u.username }}？"{% endif %}><input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="back" value="list"><input type="hidden" name="banned" value="{{ '0' if u.banned else '1' }}"><button class="btn sm" type="submit">{{ '解封' if u.banned else '封禁' }}</button></form>
+        {% endif %}
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="10" class="box-empty">没有符合条件的会员</td></tr>
+    {% endfor %}
+  </table>
+  {{ pagerLinks(pager) }}
+</div>
+{% endblock %}

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#e8e8e8;font-family:"宋体",SimSun,Tahoma,Verdana,sans-serif;font-size:12px;color:#000}
+a{color:#0000cc;text-decoration:underline}a:hover{color:#fff;background:#0000cc}
+</style>
+</helmet>
+<div style="display:flex;flex-wrap:wrap;gap:56px;justify-content:center;padding:32px 16px;font-family:'宋体',SimSun,Tahoma,Verdana,sans-serif;font-size:12px">
+
+  <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+    <span style="font-family:Verdana,sans-serif;font-size:11px;color:#666">Nokia N95 · 240×320 · wap.xhs2003.net/index.wml</span>
+    <div style="width:312px;background:linear-gradient(#6b5a66,#3d3038);border-radius:22px;padding:14px 12px 0;box-shadow:0 8px 0 #22191e,0 12px 20px rgba(0,0,0,.35)">
+      <div style="display:flex;justify-content:space-between;align-items:center;color:#cfc6cc;font-family:Verdana,sans-serif;font-size:9px;letter-spacing:2px;padding:0 6px 8px"><span>NOKIA</span><span style="width:6px;height:6px;border-radius:50%;background:#111;border:1px solid #777"></span></div>
+      <div style="background:#000;border:2px solid #111;padding:2px">
+      <div style="width:280px;height:373px;background:#fff;color:#000;overflow:hidden;display:flex;flex-direction:column;font-size:13px;line-height:1.45">
+        <div style="display:flex;justify-content:space-between;align-items:center;background:linear-gradient(#e9eef7,#c5cfe3);border-bottom:1px solid #7d8db0;padding:1px 6px;font-family:Verdana,sans-serif;font-size:10px;color:#223"><span>▮▮▮▮▯ 3G</span><span>{{ clock }}</span><span>▮▮▮▯</span></div>
+        <div style="display:flex;align-items:center;gap:6px;background:linear-gradient(#5b78b8,#2f4a86);color:#fff;padding:2px 6px;font-size:11px;font-family:Verdana,sans-serif"><span style="background:#fff;color:#2f4a86;font-weight:bold;padding:0 3px;font-size:9px">Web</span><span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">wap.xhs2003.net</span></div>
+        <div style="flex:1;padding:6px 8px;overflow:hidden;display:flex;flex-direction:column;gap:3px;min-height:0">
+          <div style="display:flex;align-items:center;justify-content:space-between;background:#c00;color:#fff;padding:3px 6px"><span style="font-family:Impact,'黑体',SimHei,sans-serif;font-size:18px;letter-spacing:1px">小红书</span><span style="font-size:10px;font-family:Verdana,sans-serif">WAP 2.0</span></div>
+          <div style="display:flex;gap:6px;border-bottom:1px solid #ccc;padding-bottom:3px">
+            <div style="width:64px;height:48px;flex-shrink:0;border:1px solid #999"><img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=160&q=60" alt="" style="display:block;width:100%;height:100%;object-fit:cover"></div>
+            <div style="min-width:0"><b style="color:#c00">今日推荐</b><br><a href="#">秋季通勤穿搭 5 套</a><br><span style="color:#666;font-size:11px">小鹿乱撞 · 点击 8213</span></div>
+          </div>
+          <div style="flex-shrink:0"><b>[1]</b> <a href="#">最新笔记</a> <span style="color:#c00;font-size:10px;font-family:Verdana,sans-serif">NEW</span></div>
+          <div style="flex-shrink:0"><b>[2]</b> <a href="#">穿搭</a> <a href="#">美妆</a> <a href="#">美食</a> <a href="#">旅游</a></div>
+          <div style="flex-shrink:0"><b>[3]</b> <a href="#">论坛</a> · <a href="#">聊天室</a> · <a href="#">相册</a></div>
+          <div style="flex-shrink:0"><b>[4]</b> <a href="#">好物推荐</a> · <a href="#">我的小红书</a></div>
+          <div style="flex-shrink:0;border-top:1px solid #ccc;padding-top:3px"><b>热门：</b></div>
+          <sc-for list="{{ hot }}" as="h" hint-placeholder-count="3">
+            <div style="flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px">· <a href="#">{{ h.title }}</a> <span style="color:#888;font-size:10px;font-family:Verdana,sans-serif">({{ h.hits }})</span></div>
+          </sc-for>
+                    <div style="margin-top:auto;font-size:11px;color:#666"><b>[0]</b> <a href="#">登录</a> | <a href="#">注册</a> | <a href="#">电脑版</a></div>
+          <div style="font-size:10px;color:#888;font-family:Verdana,sans-serif;text-align:center">4.8KB · 在线 1247</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;background:linear-gradient(#e9eef7,#c5cfe3);border-top:1px solid #7d8db0;padding:1px 8px;font-size:12px;font-weight:bold;color:#223"><span>选项</span><span>返回</span></div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+    <span style="font-family:Verdana,sans-serif;font-size:11px;color:#666">Nokia N95 · 240×320 · wap.xhs2003.net/note.wml?id=5107</span>
+    <div style="width:312px;background:linear-gradient(#6b5a66,#3d3038);border-radius:22px;padding:14px 12px 0;box-shadow:0 8px 0 #22191e,0 12px 20px rgba(0,0,0,.35)">
+      <div style="background:#000;border:2px solid #111;padding:2px">
+      <div style="width:280px;height:373px;background:#fff;color:#000;overflow:hidden;display:flex;flex-direction:column;font-size:13px;line-height:1.45">
+        <div style="display:flex;justify-content:space-between;align-items:center;background:linear-gradient(#e9eef7,#c5cfe3);border-bottom:1px solid #7d8db0;padding:1px 6px;font-family:Verdana,sans-serif;font-size:10px;color:#223"><span>▮▮▮▮▯ 3G</span><span>{{ clock }}</span><span>▮▮▮▯</span></div>
+        <div style="display:flex;align-items:center;gap:6px;background:linear-gradient(#5b78b8,#2f4a86);color:#fff;padding:2px 6px;font-size:11px;font-family:Verdana,sans-serif"><span style="background:#fff;color:#2f4a86;font-weight:bold;padding:0 3px;font-size:9px">Web</span><span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">wap.xhs2003.net/note.wml?id=5107</span></div>
+        <div style="flex:1;padding:6px 8px;overflow:hidden;display:flex;flex-direction:column;gap:3px;min-height:0">
+          <div style="font-size:11px;color:#666"><a href="#">首页</a> &gt; <a href="#">旅游攻略</a> &gt; 正文</div>
+          <div style="font-weight:bold;font-size:14px;color:#c00;line-height:1.3">西塘两日游攻略（附路线、住宿、花费）</div>
+          <div style="font-size:11px;color:#666">背包客小张 · 2003-11-28 · 点击 5107 · 回复 38</div>
+          <div style="height:72px;border:1px solid #999;margin:2px 0;flex-shrink:0"><img src="https://loremflickr.com/320/140/xitang,canal/all?lock=11" alt="" style="display:block;width:100%;height:100%;object-fit:cover"></div>
+          <div style="font-size:10px;color:#666;text-align:center;margin-top:-2px">图1：早晨的西街 (12KB)</div>
+          <div style="flex-shrink:0;text-indent:2em;font-size:12px">上周末终于去了西塘。人民广场坐旅游专线，两个半小时，22 元。两天一夜人均 <b style="color:#c00">186 元</b>。门票 30 元，晚 5 点后小巷进不收票……</div>
+          <div style="flex-shrink:0;font-size:12px"><a href="#">下一页</a> (1/4) · <a href="#">看全文</a></div>
+          <div style="flex-shrink:0;border-top:1px solid #ccc;padding-top:3px;font-size:12px"><b>[1]</b> <a href="#">回复(38)</a> <b>[2]</b> <a href="#">顶(126)</a> <b>[3]</b> <a href="#">收藏</a></div>
+          <div style="flex-shrink:0;font-size:12px"><b>[7]</b> <a href="#">上一篇</a> <b>[9]</b> <a href="#">下一篇</a> <b>[0]</b> <a href="#">首页</a></div>
+          <div style="margin-top:auto;font-size:10px;color:#888;font-family:Verdana,sans-serif;text-align:center">18.6KB · 第 1/4 页</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;background:linear-gradient(#e9eef7,#c5cfe3);border-top:1px solid #7d8db0;padding:1px 8px;font-size:12px;font-weight:bold;color:#223"><span>选项</span><span>返回</span></div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const d = new Date();
+    return {
+      clock: `${String(d.getHours()).padStart(2,"0")}:${String(d.getMinutes()).padStart(2,"0")}`,
+      hot: [["自制珍珠奶茶全过程",6520],["西塘两日游攻略",5107],["平价洗面奶测评",4933]].map(([title,hits])=>({title,hits})),
+    };
+  }
+}
+</script>
+</body>
+</html>

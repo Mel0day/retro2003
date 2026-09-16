@@ -1,0 +1,41 @@
+{% extends "admin/layout.njk" %}
+{% from "macros.njk" import pager as pagerLinks %}
+{% block body %}
+<div class="box">
+  <div class="box-hd"><span>▪ 举报处理</span><span class="nb">共 {{ pager.total }} 条</span></div>
+  <div class="tabs">
+    <a href="/admin/reports?status=open"{% if status == 'open' %} class="on"{% endif %}>待处理 ({{ counts.open or 0 }})</a>
+    <a href="/admin/reports?status=resolved"{% if status == 'resolved' %} class="on"{% endif %}>已处理 ({{ counts.resolved or 0 }})</a>
+    <a href="/admin/reports?status=dismissed"{% if status == 'dismissed' %} class="on"{% endif %}>已驳回 ({{ counts.dismissed or 0 }})</a>
+  </div>
+  <table class="tbl" style="border:0">
+    <tr><th>类型</th><th>被举报对象</th><th>举报理由</th><th>举报人</th><th>时间</th>{% if status == 'open' %}<th>操作</th>{% else %}<th>处理人</th>{% endif %}</tr>
+    {% for rep in list %}
+    <tr>
+      <td class="num">{{ rep.typeLabel }}</td>
+      <td style="max-width:220px">
+        {% if rep.target.gone %}<span class="gray">[对象已不存在] #{{ rep.target_id }}</span>
+        {% else %}<div class="ellipsis"><a href="{{ rep.target.url }}" target="_blank" title="{{ rep.target.label }}">{{ rep.target.label }}</a></div>{% if rep.target.note %}<span class="gray small">[{{ rep.target.note }}]</span>{% endif %}{% if rep.target.adminUrl and isAdmin %} <a href="{{ rep.target.adminUrl }}" class="small">[管理会员]</a>{% endif %}{% endif %}
+      </td>
+      <td style="max-width:220px;word-break:break-all">{{ rep.reason }}</td>
+      <td class="nowrap">{% if rep.reporter %}<a href="/u/{{ rep.reporter_id }}" target="_blank">{{ rep.reporter }}</a>{% else %}<span class="gray">-</span>{% endif %}</td>
+      <td class="num gray">{{ rep.created_at | dt }}</td>
+      {% if status == 'open' %}
+      <td class="acts">
+        <form method="post" action="/admin/reports/{{ rep.id }}/resolve"><input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="back" value="{{ url }}"><button class="btn sm" type="submit">已处理</button></form>
+        <form method="post" action="/admin/reports/{{ rep.id }}/dismiss"><input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="back" value="{{ url }}"><button class="btn sm" type="submit">驳回</button></form>
+        {% if (rep.target_type == 'note' or rep.target_type == 'comment') and not rep.target.gone %}
+        <form method="post" action="/admin/reports/{{ rep.id }}/remove" data-confirm="确定删除被举报的{{ rep.typeLabel }}并标记为已处理？"><input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="back" value="{{ url }}"><button class="btn sm" type="submit">删除内容并处理</button></form>
+        {% endif %}
+      </td>
+      {% else %}
+      <td class="nowrap gray6">{{ rep.handler or '-' }}<br><span class="gray small verdana">{{ rep.handled_at | dt }}</span></td>
+      {% endif %}
+    </tr>
+    {% else %}
+    <tr><td colspan="6" class="box-empty">{% if status == 'open' %}✔ 没有待处理的举报{% else %}暂无记录{% endif %}</td></tr>
+    {% endfor %}
+  </table>
+  {{ pagerLinks(pager) }}
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "admin/layout.njk" %}
+{% block body %}
+<div class="stat">
+  <div>注册会员<b>{{ stat.users }}</b><span>24 小时新增 {{ stat.newUsers }}</span></div>
+  <div>在售宝贝<b>{{ stat.onsale }}</b><span>全部 {{ stat.items }} · 卖家 {{ stat.sellers }}</span></div>
+  <div>交易总数<b>{{ stat.orders }}</b><span>24 小时 {{ stat.today }}</span></div>
+  <div>成交金额<b>￥{{ stat.gmv | yuan }}</b><span>交易成功的订单</span></div>
+  <div>担保中资金<b>￥{{ stat.escrow | yuan }}</b><span>待发货 {{ stat.waiting }} · 已发货 {{ stat.shipped }}</span></div>
+  <div>30 天差评<b>{{ stat.bad }}</b><span><a href="/admin/ratings">去看看</a></span></div>
+</div>
+<div class="cols">
+  <div><h3>分类成交（交易成功）</h3>
+    <table class="t"><tr><th>分类</th><th>件数</th><th>金额</th></tr>
+      {% for c in byCat %}<tr><td>{{ c.cat }}</td><td>{{ c.qty }}</td><td>￥{{ c.cents | yuan }}</td></tr>{% endfor %}
+      {% if not byCat.length %}<tr><td colspan="3" class="gray">暂无成交</td></tr>{% endif %}
+    </table>
+    <h3>近 7 天下单</h3>
+    <table class="t"><tr><th>日期</th><th>订单数</th><th>金额</th></tr>
+      {% for d in days %}<tr><td>{{ d.ts | date }}</td><td>{{ d.n }}</td><td>￥{{ d.cents | yuan }}</td></tr>{% endfor %}
+    </table>
+  </div>
+  <div><h3>成交额最高的卖家</h3>
+    <table class="t"><tr><th>卖家</th><th>成功交易</th><th>金额</th></tr>
+      {% for s in topSellers %}<tr><td><a href="/shop/{{ s.id }}" target="_blank">{{ s.username }}</a></td><td>{{ s.n }}</td><td>￥{{ s.cents | yuan }}</td></tr>{% endfor %}
+      {% if not topSellers.length %}<tr><td colspan="3" class="gray">暂无</td></tr>{% endif %}
+    </table>
+  </div>
+</div>
+{% endblock %}

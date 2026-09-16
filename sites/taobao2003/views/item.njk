@@ -1,0 +1,68 @@
+{% extends "layout.njk" %}
+{% import "macros.njk" as m with context %}
+{% block body %}
+{% if mine %}<div class="note">这是您发布的宝贝{% if item.status != 'onsale' %}（{{ '仓库中' if item.status == 'warehouse' else item.status }}）{% endif %}{% if item.blocked %}，已被淘宝小二下架：{{ item.block_reason }}{% endif %}。 <a href="/my/items/{{ item.id }}/edit">编辑宝贝</a> | <a href="/my/items">出售中的宝贝</a></div>{% endif %}
+{% if notice %}<div class="okbox">{{ notice }}</div>{% endif %}
+<table cellpadding="0" cellspacing="0" class="full"><tr>
+  <td class="gallery">
+    <div class="bigpic" id="bigpic">{% if item.cover %}<img src="{{ item.cover }}" alt="{{ item.title }}">{% else %}[ 宝贝大图 240×240 ]{% endif %}</div>
+    <div class="thumbs">{% for i in range(3) %}{% set src = item.imageList[i] %}<div{% if loop.first %} class="on"{% endif %}{% if src %} data-src="{{ src }}"{% endif %}>{% if src %}<img src="{{ src }}" alt="">{% endif %}</div>{% endfor %}</div>
+    <div class="gray mt6">浏览 {{ item.views }} 次 &nbsp; 收藏 {{ favCount }} 人</div>
+  </td>
+  <td class="iteminfo">
+    <h1 class="itemname brk">{{ item.title }}</h1>
+    {% if item.descr %}<div class="desc mb6">{{ item.descr }}</div>{% endif %}
+    <form method="get" action="/checkout" id="buyform">
+    <input type="hidden" name="item" value="{{ item.id }}">
+    <table class="infobox" cellpadding="4" cellspacing="0">
+      <tr><td class="k">一口价：</td><td><b class="bigprice">￥{{ item.price_cents | yuan }}</b> {% if item.orig_cents > item.price_cents %}<span class="strike">原价 ￥{{ item.orig_cents | yuan }}</span>{% endif %}</td></tr>
+      <tr><td class="k">运　费：</td><td>平邮 ￥{{ SHIP.post.fee | yuan }} &nbsp; EMS ￥{{ SHIP.ems.fee | yuan }}</td></tr>
+      <tr><td class="k">已　售：</td><td>{{ item.sold }} 件 &nbsp; 库存：{{ item.stock }} 件</td></tr>
+      <tr><td class="k">所在地：</td><td>{{ item.city }}</td></tr>
+      <tr><td class="k">交　易：</td><td><span class="alipaytag">支付宝</span> 担保交易，确认收货后才付款给卖家</td></tr>
+      {% if not problem %}<tr><td class="k">数　量：</td><td><span class="qtycell"><button type="button" class="qbtn" data-qty="-1">-</button><input name="qty" value="1" class="qtyinput" data-max="{{ item.stock if item.stock < 99 else 99 }}" maxlength="2" aria-label="购买数量"><button type="button" class="qbtn" data-qty="1">+</button></span> <span class="gray">件</span></td></tr>{% endif %}
+    </table>
+    </form>
+    <div class="actions">
+      {% if not problem %}
+      <button type="submit" form="buyform" class="btn btn-big btn-orange">立刻购买</button>
+      <form method="post" action="/cart/add" class="inline" id="cartform">{{ m.csrfField() }}<input type="hidden" name="item_id" value="{{ item.id }}"><input type="hidden" name="from" value="item"><input type="hidden" name="qty" value="1" id="cartqty"><button type="submit" class="btn btn-big">加入购物车</button></form>
+      {% if added %}<span class="tip">已加入购物车 {{ added }} 件 <a href="/cart">去结算</a></span>{% endif %}
+      {% else %}<span class="red">{{ problem }}</span>{% endif %}
+      {% if not mine %}<form method="post" action="/item/{{ item.id }}/favorite" class="inline">{{ m.csrfField() }}{% if faved %}<input type="hidden" name="remove" value="1"><button type="submit" class="linkbtn">[取消收藏]</button>{% else %}<button type="submit" class="linkbtn">[收藏宝贝]</button>{% endif %}</form>{% endif %}
+    </div>
+    {% set cr = credit(item.seller_id) %}
+    <div class="sellerbox">
+      <b>卖家信息</b>
+      <div class="lh18 mt4">
+        卖家：<a href="/shop/{{ seller.id }}">{{ seller.username }}</a> &nbsp; 信用：{{ m.creditBadge(cr, '/shop/' ~ seller.id ~ '?tab=rates') }} &nbsp; 好评率：<b>{{ cr.rate }}%</b><br>
+        所在地：{{ seller.city or '未填写' }} &nbsp; 开店时间：{{ seller.created_at | date }} &nbsp; 在售宝贝：{{ onsale }} 件<br>
+        <a href="#questions">给卖家留言</a> &nbsp; <a href="/shop/{{ seller.id }}">进入店铺</a>
+      </div>
+    </div>
+  </td>
+</tr></table>
+
+<div class="tabs" id="detail"><a href="#detail" class="tab on">宝贝详情</a><a href="#rates" class="tab">评价({{ ratings.length }})</a><a href="#questions" class="tab">留言({{ questions.length }})</a></div>
+<div class="detailtext brk">{% if item.detail %}{{ item.detail | nl2br }}{% else %}<span class="gray">卖家没有填写详细描述。</span>{% endif %}
+  {% if item.imageList.length > 1 %}<div class="mt10">{% for src in item.imageList %}<img src="{{ src }}" alt="" class="detailimg">{% endfor %}</div>{% endif %}
+</div>
+
+<h4 class="sectionh" id="rates">买家评价（该卖家共收到 {{ credit(item.seller_id).total }} 条评价，好评率 {{ credit(item.seller_id).rate }}%）</h4>
+<table class="reviews" cellpadding="6" cellspacing="0">
+  <tr class="h"><td class="c-who">买家</td><td>评价</td><td class="c-time">时间</td></tr>
+  {% for r in ratings %}<tr><td>{{ r.from_name }}</td><td class="brk">{{ m.gradeTag(r.grade) }} {% if r.hidden %}<span class="gray">该评价内容已被淘宝小二屏蔽</span>{% else %}{{ r.text }}{% endif %}{% if r.reply and not r.hidden %}<div class="replyline">卖家解释：{{ r.reply }}</div>{% endif %}</td><td class="gray">{{ r.created_at | date }}</td></tr>{% endfor %}
+  {% if not ratings.length %}<tr><td colspan="3" class="empty-s">还没有评价，买过的买家交易成功后可以在订单页评价。</td></tr>{% endif %}
+</table>
+{% if moreRatings %}<div class="mt4"><a href="/shop/{{ seller.id }}?tab=rates">查看该卖家的全部评价 &gt;&gt;</a></div>{% endif %}
+
+<h4 class="sectionh" id="questions">宝贝留言</h4>
+<div class="qbox">
+  {% for q in questions %}<div class="qa brk"><span class="gray">{{ q.asker_name }} 问（{{ q.created_at | dt }}）：</span>{{ q.text }}{% if q.reply %}<div class="replyline">卖家回复：{{ q.reply }}</div>{% else %}<div class="gray">等待卖家回复</div>{% endif %}</div>{% endfor %}
+  {% if not questions.length %}<div class="qa gray">还没有人留言。对宝贝有疑问，可以先问问卖家。</div>{% endif %}
+  {% if user and not mine %}
+  <form method="post" action="/item/{{ item.id }}/question" class="qform">{{ m.csrfField() }}<input name="text" maxlength="200" class="txt w400" placeholder="想问卖家什么？（留言会公开显示）" required> <button type="submit" class="btn">发表留言</button></form>
+  {% elif not user %}<div class="qa">请先 <a href="/login?next={{ here | urlencode }}">登录</a> 后留言。</div>{% endif %}
+</div>
+<div class="mt8"><a href="/?cat={{ item.cat | urlencode }}">&lt;&lt; 返回{{ item.cat }}宝贝列表</a></div>
+{% endblock %}
