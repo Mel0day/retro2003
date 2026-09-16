@@ -114,6 +114,7 @@ if (fontSource) {
 } else {
   console.warn('! 没找到点阵字体。到 https://github.com/Mel0day/retro2003 下载任一站点的 public/fonts 和 public/css/fonts.css 放进新站点，否则中文会用系统字体，失去 2003 年的观感。');
 }
+fs.mkdirSync(path.join(outDir, 'seed/images'), { recursive: true });
 fs.writeFileSync(path.join(outDir, 'seed/images/.gitkeep'), '');
 
 const rel = path.relative(process.cwd(), outDir) || outDir;
